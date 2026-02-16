@@ -3,136 +3,385 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎰 Reaper Casino</title>
+<title>Reaper Casino</title>
 <style>
 body {
     margin:0;
     font-family:"Segoe UI",Arial,sans-serif;
     background: linear-gradient(135deg,#0b0c10,#1f2833);
     color:white;
+    min-height:100vh;
 }
 
-/* ===== Приветственная надпись ===== */
-.welcome {
-    text-align:center;
-    margin-top:80px;
-    font-size:48px;
-    font-weight:bold;
-    color:#ff4b2b;
-    text-shadow: 2px 2px 15px rgba(255,75,43,0.6), 0 0 20px rgba(255,75,43,0.4);
-}
-.welcome span {
-    color:#ffb347;
-    text-shadow: 2px 2px 20px rgba(255,179,71,0.5);
+.topBar {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 15px;
+    background: rgba(0,0,0,0.5);
+    padding: 8px 12px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    z-index: 2000;
 }
 
-/* ===== Ссылки на игры ===== */
-.navLinks {
-    position:absolute;
-    top:15px;
-    left:15px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
-.navLinks a {
-    display:block;
-    padding:8px 16px;
-    border-radius:12px;
-    background: #555;
-    color:white;
-    text-decoration:none;
-    font-weight:bold;
-    text-align:center;
-    transition:0.2s;
-}
-.navLinks a:hover { background:#777; }
-
-/* ===== Баланс ===== */
 .balanceDisplay {
-    position:absolute;
-    right:15px;
-    top:15px;
     padding:6px 12px;
     border-radius:10px;
     background: rgba(255,255,255,0.15);
     color:white;
     font-weight:bold;
-    font-size:1.2em;
-    text-align:center;
+    font-size:1.1em;
 }
 
-/* ===== Контейнер игр ===== */
-.container {
-    max-width:1000px;
-    margin:40px auto 60px auto;
-    display:flex;
-    flex-wrap:wrap;
-    gap:30px;
-    justify-content:center;
-}
-.card {
-    background: rgba(255,255,255,0.05);
-    border-radius:15px;
-    padding:25px;
-    text-align:center;
-    width:280px;
-    transition: all 0.3s;
-    box-shadow:0 5px 15px rgba(0,0,0,0.4);
-}
-.card:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow:0 10px 25px rgba(0,0,0,0.6);
-}
-.card h2 { font-size:24px; margin-bottom:10px; }
-.card p { font-size:15px; margin-bottom:15px; }
-.card a {
-    display:inline-block;
-    padding:10px 20px;
-    border-radius:12px;
-    text-decoration:none;
-    background:#555;
+.profileTab {
+    padding:6px 12px;
+    border-radius:10px;
+    background: rgba(255,255,255,0.15);
     color:white;
     font-weight:bold;
+    cursor:pointer;
     transition:0.2s;
 }
-.card a:hover { background:#777; }
+.profileTab:hover { background: rgba(255,255,255,0.3); }
 
-/* ===== Адаптив ===== */
-@media screen and (max-width:900px){
-    .container { flex-direction:column; align-items:center; }
-    .welcome { font-size:36px; margin-top:60px; }
+#addFundsBtn {
+    position:fixed;
+    right:15px;
+    bottom:15px;
+    padding:12px 24px;
+    border:none;
+    border-radius:12px;
+    background:#28a745;
+    color:white;
+    font-weight:bold;
+    font-size:1.1em;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,0.5);
+    transition:0.2s;
+}
+#addFundsBtn:hover { background:#1e7e34; transform: translateY(-2px); }
+
+header {
+    padding:100px 15px 40px;
+    text-align:center;
+}
+
+.welcome {
+    font-size:64px;
+    font-weight:900;
+    color:#ff4b2b;
+    text-shadow: 0 0 30px rgba(255,75,43,0.7);
+    margin-bottom:10px;
+}
+.welcome span { color:#ffb347; }
+
+.subtitle {
+    font-size:24px;
+    color:#ccc;
+    margin-bottom:40px;
+}
+
+/* Карточки игр на главной */
+.gamesContainer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+.gameCard {
+    background: linear-gradient(145deg, #1f2833, #0b0c10);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+}
+
+.gameCard:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 50px rgba(255,75,43,0.25);
+}
+
+.gameIcon {
+    font-size: 80px;
+    margin: 30px 0 15px;
+    line-height: 1;
+}
+
+.gameCard h2 {
+    font-size: 28px;
+    margin: 0 0 12px;
+    color: #ffb347;
+}
+
+.gameCard p {
+    font-size: 16px;
+    color: #bbb;
+    padding: 0 20px 25px;
+    margin: 0;
+}
+
+.gameCard a {
+    display: block;
+    padding: 16px 0;
+    background: #444;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.gameCard a:hover {
+    background: #666;
+}
+
+/* Модальное окно профиля */
+.profileModal {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.85);
+    justify-content:center;
+    align-items:center;
+    z-index:2000;
+}
+
+.profileContent {
+    background:#1f2833;
+    padding:35px;
+    border-radius:16px;
+    color:white;
+    width:420px;
+    max-width:92%;
+    text-align:center;
+    box-shadow:0 15px 40px rgba(0,0,0,0.8);
+    position:relative;
+}
+
+.profileContent h2 {
+    margin:0 0 30px;
+    color:#ffb347;
+    font-size:28px;
+}
+
+.gameStatsButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 25px 0 35px;
+}
+
+.gameStatsButtons button {
+    padding: 16px;
+    font-size: 1.15em;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.poker-btn { background: #4a0000; color: #ff9999; }
+.poker-btn:hover { background: #660000; }
+
+.blackjack-btn { background: #1a0000; color: #ffcccc; }
+.blackjack-btn:hover { background: #330000; }
+
+.roulette-btn { background: #003300; color: #99ff99; }
+.roulette-btn:hover { background: #004d00; }
+
+.statsDetails {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #444;
+}
+
+.statsDetails h3 {
+    color: #ffb347;
+    margin-bottom: 18px;
+}
+
+.statsDetails p {
+    font-size: 1.1em;
+    margin: 10px 0;
+}
+
+.closeProfile {
+    position:absolute;
+    top:15px;
+    right:20px;
+    font-size:32px;
+    color:#ff4b2b;
+    cursor:pointer;
+}
+
+.resetAllBtn {
+    margin-top: 30px;
+    padding: 14px 40px;
+    background: #c62828;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.resetAllBtn:hover {
+    background: #b71c1c;
+    transform: translateY(-2px);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .welcome { font-size: 48px; }
+    .gamesContainer { padding: 0 15px; }
+    .profileContent { padding: 25px; width: 90%; }
 }
 </style>
 </head>
 <body>
 
+<div class="topBar">
+    <div class="balanceDisplay">Баланс: <span id="casinoBalance">10000</span></div>
+    <div class="profileTab" onclick="openProfile()">Профиль 📊</div>
+</div>
 
-<div class="balanceDisplay">Баланс: <span id="balance">10000</span></div>
+<header>
+    <div class="welcome">Reaper<span> Casino</span></div>
+    <p class="subtitle">Добро пожаловать в мир азарта</p>
+</header>
 
-<div class="welcome">Добро пожаловать в <span>Reaper Casino</span>!</div>
-
-<div class="container">
-    <div class="card">
-        <h2>🎡 Рулетка</h2>
-        <p>Ставьте на числа и цвет. Испытайте удачу!</p>
-        <a href="roulette.html">Играть</a>
+<div class="gamesContainer">
+    <div class="gameCard">
+        <div class="gameIcon">🂡</div>
+        <h2>Blackjack</h2>
+        <p>Классика казино. Обыграй дилера, не превысив 21. Есть Ultimate Bonus!</p>
+        <a href="blackjack.html">Играть</a>
     </div>
-    <div class="card">
-        <h2>🃏 Ultimate Texas Hold'em</h2>
-        <p>Проверяйте свои покерные навыки и собирайте комбинации!</p>
+
+    <div class="gameCard">
+        <div class="gameIcon">🃏</div>
+        <h2>Ultimate Texas Hold'em</h2>
+        <p>Покер против дилера. Делай ставки на префлопе, флопе, терне. Бонусы за комбинации!</p>
         <a href="poker.html">Играть</a>
     </div>
-    <div class="card">
-        <h2>🂡 Blackjack</h2>
-        <p>Обходите дилера и выигрывайте максимально!</p>
-        <a href="blackjack.html">Играть</a>
+
+    <div class="gameCard">
+        <div class="gameIcon">🎡</div>
+        <h2>Рулетка</h2>
+        <p>Европейская рулетка. Ставь на число — получи x36. История последних чисел и яркие выигрыши!</p>
+        <a href="roulette.html">Играть</a>
+    </div>
+</div>
+
+<button id="addFundsBtn">+10000</button>
+
+<!-- Модальное окно профиля -->
+<div id="profileModal" class="profileModal">
+    <div class="profileContent">
+        <span class="closeProfile" onclick="closeProfile()">✖</span>
+        <h2>Статистика игрока</h2>
+        
+        <div class="gameStatsButtons">
+            <button class="poker-btn" onclick="showGameStats('poker')">Покер</button>
+            <button class="blackjack-btn" onclick="showGameStats('blackjack')">Blackjack</button>
+            <button class="roulette-btn" onclick="showGameStats('roulette')">Рулетка</button>
+        </div>
+
+        <div id="statsDetails" class="statsDetails" style="display:none;">
+            <h3 id="statsTitle"></h3>
+            <p>Всего игр: <span id="statGames">0</span></p>
+            <p>Выигрышей: <span id="statWins">0</span></p>
+            <p>Проигрышей: <span id="statLosses">0</span></p>
+            <p id="statExtra1"></p>
+            <p id="statExtra2"></p>
+        </div>
+
+        <button class="resetAllBtn" onclick="resetAllStats()">Сбросить всю статистику</button>
     </div>
 </div>
 
 <script>
-let balance = 10000;
-function updateBalance(){ document.getElementById("balance").innerText = balance; }
+// Общий баланс
+let balance = localStorage.getItem("casinoBalance") 
+    ? parseInt(localStorage.getItem("casinoBalance")) 
+    : 10000;
+
+function updateBalance() {
+    document.getElementById("casinoBalance").innerText = balance;
+    localStorage.setItem("casinoBalance", balance);
+}
+
+// Открытие/закрытие профиля
+function openProfile() {
+    document.getElementById("profileModal").style.display = "flex";
+    document.getElementById("statsDetails").style.display = "none";
+}
+
+function closeProfile() {
+    document.getElementById("profileModal").style.display = "none";
+}
+
+// Показ статистики игры
+function showGameStats(game) {
+    const details = document.getElementById("statsDetails");
+    details.style.display = "block";
+    
+    let stats, title, extra1 = "", extra2 = "";
+    
+    if (game === "poker") {
+        stats = JSON.parse(localStorage.getItem("pokerStats") || "{}");
+        title = "Покер";
+        extra1 = `Макс. выплата: ${stats.maxWin || 0}`;
+        extra2 = `Лучшая комбинация: ${stats.bestCombo || "-"}`;
+    } 
+    else if (game === "blackjack") {
+        stats = JSON.parse(localStorage.getItem("blackjackStats") || "{}");
+        title = "Blackjack";
+        extra1 = `Сумма выигрышей: ${stats.totalWin || 0}`;
+        extra2 = `Сумма проигрышей: ${stats.totalLoss || 0}`;
+    } 
+    else if (game === "roulette") {
+        stats = JSON.parse(localStorage.getItem("rouletteStats") || "{}");
+        title = "Рулетка";
+        extra1 = `Сумма выигрышей: ${stats.totalWin || 0}`;
+        extra2 = `Сумма проигрышей: ${stats.totalLoss || 0}`;
+    }
+
+    document.getElementById("statsTitle").innerText = title;
+    document.getElementById("statGames").innerText = stats.games || 0;
+    document.getElementById("statWins").innerText = stats.wins || 0;
+    document.getElementById("statLosses").innerText = stats.losses || 0;
+    document.getElementById("statExtra1").innerText = extra1;
+    document.getElementById("statExtra2").innerText = extra2;
+}
+
+// Сброс всей статистики
+function resetAllStats() {
+    if (!confirm("Сбросить статистику ВСЕХ игр? Это действие нельзя отменить.")) return;
+    localStorage.removeItem("pokerStats");
+    localStorage.removeItem("blackjackStats");
+    localStorage.removeItem("rouletteStats");
+    closeProfile();
+    alert("Вся статистика сброшена!");
+}
+
+// Кнопка +10000
+document.getElementById("addFundsBtn").onclick = () => { 
+    balance += 10000; 
+    updateBalance(); 
+};
+
+// Инициализация
 updateBalance();
 </script>
 
