@@ -11,6 +11,56 @@ body {
     background: linear-gradient(90deg,#0b0c10,#1f2833);
     color:white;
 }
+
+.topBar {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 15px;
+    background: rgba(0,0,0,0.5);
+    padding: 8px 12px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    z-index: 2000;
+}
+
+.balanceDisplay {
+    padding:6px 12px;
+    border-radius:10px;
+    background: rgba(255,255,255,0.15);
+    color:white;
+    font-weight:bold;
+    font-size:1.1em;
+}
+
+.profileTab {
+    padding:6px 12px;
+    border-radius:10px;
+    background: rgba(255,255,255,0.15);
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
+}
+.profileTab:hover { background: rgba(255,255,255,0.3); }
+
+#addFundsBtn {
+    position:fixed;
+    right:15px;
+    bottom:15px;
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    background:#28a745;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 3px 10px rgba(0,0,0,0.4);
+    transition:0.2s;
+}
+#addFundsBtn:hover { background:#1e7e34; }
+
 header {
     padding:15px;
     display:flex;
@@ -18,6 +68,7 @@ header {
     align-items:center;
     gap:10px;
 }
+
 .navLinks {
     display:flex;
     flex-direction:column;
@@ -49,21 +100,6 @@ header {
     text-align:center;
 }
 
-#addFundsBtn {
-    position:fixed;
-    right:15px;
-    bottom:15px;
-    padding:10px 20px;
-    border:none;
-    border-radius:10px;
-    background:#28a745;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-    box-shadow:0 3px 10px rgba(0,0,0,0.4);
-    transition:0.2s;
-}
-#addFundsBtn:hover { background:#1e7e34; }
 .container {
     max-width:700px;
     margin:80px auto 30px auto;
@@ -73,6 +109,7 @@ header {
     box-shadow:0 5px 15px rgba(0,0,0,0.6);
     text-align:center;
 }
+
 input, button {
     font-size:1em;
     padding:10px;
@@ -80,6 +117,7 @@ input, button {
     border:none;
     margin:5px;
 }
+
 button {
     cursor:pointer;
     background:#555;
@@ -89,11 +127,13 @@ button {
     box-shadow:0 3px 10px rgba(0,0,0,0.4);
 }
 button:hover { background:#777; }
+
 #rouletteWinText {
     margin-top:10px;
     font-size:1.2em;
     font-weight:bold;
 }
+
 .rouletteHistoryStrip {
     display:flex;
     justify-content:center;
@@ -101,6 +141,7 @@ button:hover { background:#777; }
     gap:8px;
     margin-top:20px;
 }
+
 .historyCard {
     width:50px;
     height:50px;
@@ -114,27 +155,12 @@ button:hover { background:#777; }
     box-shadow:0 3px 8px rgba(0,0,0,0.5);
     transition:0.2s;
 }
+
 .red { background:#e53935; }
 .black { background:#222; }
 .green { background:#28a745; }
 .yellow { background: #f1c40f !important; color:black; }
 
-@media screen and (max-width:768px){
-    .container { width:90%; padding:15px; }
-    .historyCard { width:45px; height:45px; font-size:16px; }
-    input, button { font-size:0.9em; padding:8px; }
-    .balanceDisplay { font-size:1em; padding:5px 10px; }
-    .navLinks a { padding:5px 10px; font-size:0.85em; }
-    .welcome { font-size:1.5em; }
-}
-@media screen and (max-width:480px){
-    .historyCard { width:40px; height:40px; font-size:14px; }
-    input, button { font-size:0.8em; padding:6px; }
-    header { font-size:1.5em; }
-    .balanceDisplay { font-size:0.9em; padding:4px 8px; }
-    .navLinks a { padding:4px 8px; font-size:0.8em; }
-    .welcome { font-size:1.2em; }
-}
 .welcome {
     text-align:center;
     font-size:48px;
@@ -146,6 +172,7 @@ button:hover { background:#777; }
     color:#ffb347;
     text-shadow: 2px 2px 20px rgba(255,179,71,0.5);
 }
+
 .navBalanceWrapper {
     display:flex;
     width:100%;
@@ -153,9 +180,74 @@ button:hover { background:#777; }
     align-items:flex-start;
     flex-wrap:wrap;
 }
+
+/* Модальное окно статистики — как в покере */
+.profileModal {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.8);
+    justify-content:center;
+    align-items:center;
+    z-index:2000;
+}
+
+.profileContent {
+    background:#1f2833;
+    padding:30px;
+    border-radius:15px;
+    color:white;
+    width:340px;
+    max-width:90%;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.7);
+    position:relative;
+}
+
+.profileContent h2 { margin-bottom:20px; }
+.profileContent p { margin:8px 0; }
+
+.profileContent button {
+    margin-top:20px;
+    padding:12px 30px;
+    background:#28a745;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.closeProfile {
+    position:absolute;
+    top:12px;
+    right:18px;
+    font-size:28px;
+    color:#ff4b2b;
+    cursor:pointer;
+}
+
+/* Адаптивность */
+@media screen and (max-width:768px){
+    .container { width:90%; padding:15px; margin-top:100px; }
+    .historyCard { width:45px; height:45px; font-size:16px; }
+    input, button { font-size:0.9em; padding:8px; }
+    .welcome { font-size:36px; }
+}
+
+@media screen and (max-width:480px){
+    .historyCard { width:40px; height:40px; font-size:14px; }
+    .welcome { font-size:28px; }
+}
 </style>
 </head>
 <body>
+
+<div class="topBar">
+    <div class="balanceDisplay">Баланс: <span id="rouletteBalance">10000</span></div>
+    <div class="profileTab" onclick="toggleProfile()">Профиль 📊</div>
+</div>
+
 <header>
     <div class="welcome">Reaper<span> Casino</span></div>
     <div class="navBalanceWrapper">
@@ -164,15 +256,10 @@ button:hover { background:#777; }
             <a href="poker.html">🃏 Покер</a>
             <a href="index.html">🏠 Главная</a>
         </div>
-        <div class="balanceDisplay">Баланс: <span id="rouletteBalance">10000</span></div>
     </div>
 </header>
 
 <div class="container">
-    <div class="balanceDisplay" style="position: relative; top: -60px;">
-    Ваш баланс: <span id="rouletteBalanceTop">10000</span>
-</div>
-
     <input type="number" id="rouletteNumber" placeholder="Число 0-36">
     <input type="number" id="rouletteBet" placeholder="Ставка">
     <button onclick="playRoulette()">Крутить</button>
@@ -183,28 +270,67 @@ button:hover { background:#777; }
 
 <button id="addFundsBtn">+10000</button>
 
+<!-- Модальное окно статистики -->
+<div id="profileModal" class="profileModal">
+    <div class="profileContent">
+        <span class="closeProfile" onclick="toggleProfile()">✖</span>
+        <h2>Статистика в Рулетке</h2>
+        <p>Всего спинов: <span id="statGames">0</span></p>
+        <p>Выигрышей: <span id="statWins">0</span></p>
+        <p>Проигрышей: <span id="statLosses">0</span></p>
+        <p>Сумма выигрышей: <span id="statTotalWin">0</span></p>
+        <p>Сумма проигрышей: <span id="statTotalLoss">0</span></p>
+        <button onclick="resetStats()">Сбросить статистику</button>
+    </div>
+</div>
+
 <script>
-let balance = 10000;
-let lastNumbers = [];
+// Общий баланс
+let balance = localStorage.getItem("casinoBalance") 
+    ? parseInt(localStorage.getItem("casinoBalance")) 
+    : 10000;
 
-const balanceDisplay = document.getElementById("rouletteBalance");
-const rouletteHistory = document.getElementById("rouletteHistory");
-const rouletteWinText = document.getElementById("rouletteWinText");
-const rouletteNumberInput = document.getElementById("rouletteNumber");
-const rouletteBetInput = document.getElementById("rouletteBet");
-const balanceDisplayTop = document.getElementById("rouletteBalanceTop");
+function updateBalance() {
+    document.getElementById("rouletteBalance").innerText = balance;
+    localStorage.setItem("casinoBalance", balance);
+}
 
+// Статистика рулетки
+let rouletteStats = localStorage.getItem("rouletteStats") 
+    ? JSON.parse(localStorage.getItem("rouletteStats")) 
+    : {games:0, wins:0, losses:0, totalWin:0, totalLoss:0};
 
+function toggleProfile() {
+    const modal = document.getElementById("profileModal");
+    modal.style.display = modal.style.display === "flex" ? "none" : "flex";
+    if (modal.style.display === "flex") {
+        document.getElementById("statGames").innerText = rouletteStats.games;
+        document.getElementById("statWins").innerText = rouletteStats.wins;
+        document.getElementById("statLosses").innerText = rouletteStats.losses;
+        document.getElementById("statTotalWin").innerText = rouletteStats.totalWin;
+        document.getElementById("statTotalLoss").innerText = rouletteStats.totalLoss;
+    }
+}
+
+function resetStats() {
+    if (!confirm("Сбросить статистику рулетки?")) return;
+    rouletteStats = {games:0, wins:0, losses:0, totalWin:0, totalLoss:0};
+    localStorage.setItem("rouletteStats", JSON.stringify(rouletteStats));
+    toggleProfile();
+}
+
+// Кнопка +10000
 document.getElementById("addFundsBtn").onclick = () => { 
     balance += 10000; 
     updateBalance(); 
 };
 
-function updateBalance(){ 
-    balanceDisplay.innerText = balance; 
-    balanceDisplayTop.innerText = balance; 
-}
+let lastNumbers = [];
 
+const rouletteHistory = document.getElementById("rouletteHistory");
+const rouletteWinText = document.getElementById("rouletteWinText");
+const rouletteNumberInput = document.getElementById("rouletteNumber");
+const rouletteBetInput = document.getElementById("rouletteBet");
 
 function getColor(num){ 
     if(num===0) return "green"; 
@@ -231,26 +357,37 @@ function playRoulette(){
     rouletteWinText.innerText="";
 
     if(isNaN(num) || num<0 || num>36){ alert("Введите число 0-36"); return; }
-    if(isNaN(bet) || bet<=0 || bet>balance){ alert("Недостаточно средств"); return; }
+    if(isNaN(bet) || bet<=0){ alert("Введите корректную ставку"); return; }
+    if(bet > balance){ alert("Недостаточно средств"); return; }
 
     balance -= bet;
+    rouletteStats.totalLoss += bet;
+    rouletteStats.games += 1;
+    updateBalance();
 
     const result = Math.floor(Math.random()*37);
     lastNumbers.push(result);
 
-    updateBalance();
     updateRouletteHistory(num);
 
     if(result === num){
-        const win = bet*36; // стандартная выплата рулетки x36
+        const win = bet * 36;
         balance += win;
+        rouletteStats.wins += 1;
+        rouletteStats.totalWin += win;
         updateBalance();
         rouletteWinText.innerText = `🎉 Вы выиграли: ${win}`;
+        rouletteWinText.style.color = "#28a745";
     } else {
+        rouletteStats.losses += 1;
         rouletteWinText.innerText = `💀 Вы проиграли: ${bet}`;
+        rouletteWinText.style.color = "#e53935";
     }
+
+    localStorage.setItem("rouletteStats", JSON.stringify(rouletteStats));
 }
 
+// Инициализация
 updateBalance();
 updateRouletteHistory();
 </script>
