@@ -379,6 +379,148 @@ button:hover { background: #e03e20; }
     .sidebar { width: 100%; text-align: center; }
     .sidebar a { display: inline-block; width: auto; margin: 0 8px 12px; }
 }
+
+/* Дополнительные медиа-запросы и улучшения */
+
+/* Очень маленькие экраны (≤ 480px) — большинство мобильных */
+@media (max-width: 480px) {
+    header {
+        padding: 60px 10px 15px;
+    }
+    .welcome {
+        font-size: 36px;
+    }
+
+    .betRow {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+
+    input[type="number"] {
+        width: 180px;
+        font-size: 1.2em;
+        padding: 12px;
+    }
+
+    button {
+        width: 180px;
+        padding: 14px;
+        font-size: 1.2em;
+    }
+
+    .cardsContainer {
+        gap: 10px;
+        margin: 10px 0;
+    }
+
+    .card, .card-container {
+        width: 80px;
+        height: 115px;
+        font-size: 2rem;
+    }
+
+    .card-flip .front,
+    .card-flip .back {
+        font-size: 2rem;
+    }
+
+    .bonusTable {
+        font-size: 0.85em;
+        padding: 12px;
+    }
+
+    .bonusTable th, .bonusTable td {
+        padding: 8px 6px;
+    }
+
+    #bjGameResult {
+        font-size: 1.3em;
+        margin: 15px 0;
+    }
+
+    .bottomBalance {
+        font-size: 1.2em;
+        padding: 10px;
+    }
+}
+
+/* Экраны 480–650 px (маленькие планшеты, большие телефоны) */
+@media (max-width: 650px) {
+    .main-container {
+        padding: 0 10px;
+    }
+    .game-wrapper {
+        padding: 15px;
+    }
+    .topBar {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 0.95em;
+    }
+}
+
+/* Для модального окна профиля */
+@media (max-width: 400px) {
+    .profileContent {
+        width: 90%;
+        padding: 20px;
+    }
+    .profileContent p {
+        font-size: 1em;
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/* Улучшение читаемости таблицы на мобильных */
+@media (max-width: 520px) {
+    .bonusTable table,
+    .bonusTable thead,
+    .bonusTable tbody,
+    .bonusTable th,
+    .bonusTable td,
+    .bonusTable tr {
+        display: block;
+    }
+    
+    .bonusTable thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    .bonusTable tr {
+        margin-bottom: 12px;
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 8px;
+    }
+    
+    .bonusTable td {
+        border: none;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+    }
+    
+    .bonusTable td:before {
+        position: absolute;
+        top: 9px;
+        left: 12px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        content: attr(data-label);
+        text-align: left;
+        font-weight: bold;
+        color: #ffb347;
+    }
+    
+    .bonusTable td:nth-child(1):before { content: "Комбинация"; }
+    .bonusTable td:nth-child(2):before { content: "Выплата"; }
+}
 </style>
 </head>
 <body>
@@ -432,14 +574,16 @@ button:hover { background: #e03e20; }
         <div class="bonusTable">
             <h3>Ultimate Bonus</h3>
             <table>
-                <tr><th>Комбинация</th><th>Выплата</th></tr>
-                <tr><td>7♦ 7♦ + 7♦ у дилера</td><td>1000x</td></tr>
-                <tr><td>K♠ K♠ + BJ дилера</td><td>1000x</td></tr>
-                <tr><td>K♠ K♠</td><td>100x</td></tr>
-                <tr><td>♠7 ♣7 ♦7 (разные масти)</td><td>50x</td></tr>
-                <tr><td>KK одномастные</td><td>30x</td></tr>
-                <tr><td>QQ одномастные</td><td>25x</td></tr>
-                <tr><td>JJ одномастные</td><td>25x</td></tr>
+                <tr><th>Комбинация</th><th>Выплата</th></tr><tr>
+    <td data-label="Комбинация">7♦ 7♦ + 7♦ у дилера</td>
+    <td data-label="Выплата">1000x</td>
+</tr>
+                <tr><td data-label="Выплата">K♠ K♠ + BJ дилера</td><td>1000x</td></tr>
+                <tr><td data-label="Выплата">K♠ K♠</td><td>100x</td></tr>
+                <tr><td data-label="Выплата">♠7 ♣7 ♦7 (разные масти)</td><td>50x</td></tr>
+                <tr><td data-label="Выплата">KK одномастные</td><td>30x</td></tr>
+                <tr><td data-label="Выплата">QQ одномастные</td><td>25x</td></tr>
+                <tr><td data-label="Выплата">JJ одномастные</td><td>25x</td></tr>
             </table>
         </div>
     </div>
@@ -455,7 +599,6 @@ button:hover { background: #e03e20; }
         <p>Ничьих: <span class="value" id="statDraws">0</span></p>
         <p>Blackjack: <span class="value" id="statBlackjack">0</span></p>
         <p>Макс. выплата: <span class="value" id="statMaxWin">0</span></p>
-        <p>Лучшая комбинация: <span class="value" id="statBestCombo">-</span></p>
         <button class="resetStatsBtn" onclick="resetStats()">Сбросить статистику</button>
     </div>
 </div>
@@ -463,8 +606,8 @@ button:hover { background: #e03e20; }
 <button id="addFundsBtn">+10000</button>
 
 <script>
-let casinoBalance = localStorage.getItem("casinoBalance") 
-    ? parseInt(localStorage.getItem("casinoBalance")) 
+let casinoBalance = localStorage.getItem("casinoBalance")
+    ? parseInt(localStorage.getItem("casinoBalance"))
     : 10000;
 
 let bjDeck = [];
@@ -476,12 +619,9 @@ let dealerRevealed = false;
 const suits = ["♠", "♥", "♦", "♣"];
 const ranks = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
 
-let stats = localStorage.getItem("stats") 
-    ? JSON.parse(localStorage.getItem("stats")) 
-    : {
-        all: {games:0, wins:0, losses:0, maxWin:0, bestCombo:"-", plus10k:0},
-        blackjack: {games:0, wins:0, losses:0, maxWin:0, bestCombo:"-"}
-    };
+let stats = localStorage.getItem("blackjackStats")
+    ? JSON.parse(localStorage.getItem("blackjackStats"))
+    : {games:0, wins:0, losses:0, draws:0, blackjack:0, maxWin:0, totalWin:0};
 
 function updateCasinoBalance() {
     document.getElementById("casinoBalance").innerText = casinoBalance;
@@ -562,9 +702,10 @@ async function dealCardToPlayer() {
     bjHands[0].cards.push(card);
     const el = createCardElement(card);
     document.getElementById("bjPlayerCards").appendChild(el);
-    await new Promise(r => setTimeout(r, 80));
+    await new Promise(r => setTimeout(r, 120));
     el.classList.add("show");
     updateTotals();
+    return card;
 }
 
 async function dealCardToDealer(hidden = false) {
@@ -574,10 +715,12 @@ async function dealCardToDealer(hidden = false) {
     const el = createCardElement(card, hidden);
     document.getElementById("bjDealerCards").appendChild(el);
 
-    await new Promise(r => setTimeout(r, 100));
+    await new Promise(r => setTimeout(r, 140));
     el.classList.add("show");
 
-    updateTotals();
+    if (!hidden) {
+        updateTotals();
+    }
     return card;
 }
 
@@ -611,8 +754,6 @@ async function hit() {
         gameOver = true;
         await revealDealerCards();
         finishRound();
-    } else if (total === 21) {
-        await stand();
     }
 }
 
@@ -623,7 +764,7 @@ async function stand() {
     await revealDealerCards();
     while (getTotal(bjDealer) < 17) {
         await dealCardToDealer(false);
-        await new Promise(r => setTimeout(r, 900));
+        await new Promise(r => setTimeout(r, 1000));
         updateTotals();
     }
     finishRound();
@@ -632,7 +773,7 @@ async function stand() {
 async function doubleBet() {
     const hand = bjHands[0];
     if (hand.doubled || gameOver || casinoBalance < hand.bet) {
-        if (casinoBalance < hand.bet) alert("Недостаточно средств");
+        if (casinoBalance < hand.bet) alert("Недостаточно средств для удвоения");
         return;
     }
     casinoBalance -= hand.bet;
@@ -654,74 +795,128 @@ async function revealDealerCards() {
     for (let i = 0; i < bjDealer.length; i++) {
         const card = bjDealer[i];
         if (card.flipElement) {
-            await new Promise(r => setTimeout(r, 300 + i * 450));
+            await new Promise(r => setTimeout(r, 400 + i * 500));
             card.flipElement.classList.add("flipped");
         }
     }
-    await new Promise(r => setTimeout(r, 600));
+    await new Promise(r => setTimeout(r, 800));
     dealerRevealed = true;
     updateTotals();
+}
+
+function calculateUltimateBonus(playerCards, ultimateBet) {
+    if (ultimateBet <= 0 || playerCards.length < 2) return 0;
+
+    const rankCount = {};
+    const suitCount = {};
+    playerCards.forEach(c => {
+        rankCount[c.rank] = (rankCount[c.rank] || 0) + 1;
+        suitCount[c.suit] = (suitCount[c.suit] || 0) + 1;
+    });
+
+    // K♠ K♠ — 100x
+    if (rankCount["K"] >= 2) {
+        const kingSuits = playerCards.filter(c => c.rank === "K").map(c => c.suit);
+        if (kingSuits.includes("♠") && kingSuits.includes("♠")) {
+            return ultimateBet * 100;
+        }
+        // любые KK одномастные — 30x
+        const suitGroups = {};
+        kingSuits.forEach(s => suitGroups[s] = (suitGroups[s] || 0) + 1);
+        if (Math.max(...Object.values(suitGroups)) >= 2) {
+            return ultimateBet * 30;
+        }
+    }
+
+    // QQ одномастные — 25x
+    if (rankCount["Q"] >= 2) {
+        const queenSuits = playerCards.filter(c => c.rank === "Q").map(c => c.suit);
+        const suitGroups = {};
+        queenSuits.forEach(s => suitGroups[s] = (suitGroups[s] || 0) + 1);
+        if (Math.max(...Object.values(suitGroups)) >= 2) {
+            return ultimateBet * 25;
+        }
+    }
+
+    // JJ одномастные — 25x
+    if (rankCount["J"] >= 2) {
+        const jackSuits = playerCards.filter(c => c.rank === "J").map(c => c.suit);
+        const suitGroups = {};
+        jackSuits.forEach(s => suitGroups[s] = (suitGroups[s] || 0) + 1);
+        if (Math.max(...Object.values(suitGroups)) >= 2) {
+            return ultimateBet * 25;
+        }
+    }
+
+    // 7-7-7 разных мастей — 50x (упрощённо — любые три 7)
+    if (rankCount["7"] >= 3) {
+        const sevenSuits = new Set(playerCards.filter(c => c.rank === "7").map(c => c.suit));
+        if (sevenSuits.size >= 3) {
+            return ultimateBet * 50;
+        }
+    }
+
+    return 0;
 }
 
 function finishRound() {
     const hand = bjHands[0];
     const playerTotal = getTotal(hand.cards);
     const dealerTotal = getTotal(bjDealer);
-    let win = 0;
+    let mainWin = 0;
     let resultText = "";
-    let outcome = "";
-    let combo = "-";
+    let outcome = "loss";
 
     const isBlackjack = hand.cards.length === 2 && playerTotal === 21;
+    const dealerBlackjack = bjDealer.length === 2 && dealerTotal === 21;
 
     if (playerTotal > 21) {
         resultText = "Перебор — проигрыш";
-        outcome = "loss";
+    } else if (dealerBlackjack && isBlackjack) {
+        mainWin = hand.bet; // push
+        resultText = "Ничья — оба блэкджека";
+        outcome = "draw";
+    } else if (dealerBlackjack) {
+        resultText = "Блэкджек у дилера — проигрыш";
+    } else if (isBlackjack) {
+        mainWin = hand.bet * 2.5;
+        resultText = "BLACKJACK! +2.5×";
+        outcome = "blackjack";
     } else if (dealerTotal > 21 || playerTotal > dealerTotal) {
-        win = hand.bet * (isBlackjack ? 2.5 : 2);
-        casinoBalance += win;
-        resultText = isBlackjack ? "BLACKJACK! +2.5×" : `Выиграно ${win}`;
-        outcome = isBlackjack ? "blackjack" : "win";
-        combo = isBlackjack ? "Blackjack" : "-";
+        mainWin = hand.bet * 2;
+        resultText = `Выиграно ${mainWin}`;
+        outcome = "win";
     } else if (playerTotal === dealerTotal) {
-        win = hand.bet;
-        casinoBalance += win;
+        mainWin = hand.bet;
         resultText = "Ничья — возврат ставки";
         outcome = "draw";
     } else {
         resultText = "Проигрыш";
-        outcome = "loss";
     }
 
-    let bonus = 0;
-    if (hand.ultimateBet > 0 && hand.cards.length === 2) {
-        const c1 = hand.cards[0], c2 = hand.cards[1];
-        if (c1.rank === "K" && c2.rank === "K" && c1.suit === "♠" && c2.suit === "♠") {
-            bonus = hand.ultimateBet * 100;
-            combo = "K♠ K♠";
-        }
-    }
-    if (bonus > 0) {
-        casinoBalance += bonus;
-        resultText += ` + Bonus ${bonus}`;
-        win += bonus;
+    let bonus = calculateUltimateBonus(hand.cards, hand.ultimateBet);
+    let totalPayout = mainWin + bonus;
+
+    if (totalPayout > 0) {
+        casinoBalance += totalPayout;
+        if (bonus > 0) resultText += ` + Ultimate Bonus ${bonus}`;
     }
 
+    // Обновление максимальной выплаты
+    if (totalPayout > stats.maxWin) {
+        stats.maxWin = totalPayout;
+    }
+
+    // Статистика
+    stats.games += 1;
+    stats.totalWin += totalPayout;
+    if (outcome === "win" || outcome === "blackjack") stats.wins += 1;
+    else if (outcome === "loss") stats.losses += 1;
+    else stats.draws += 1;
+    if (outcome === "blackjack") stats.blackjack += 1;
+
+    localStorage.setItem("blackjackStats", JSON.stringify(stats));
     updateCasinoBalance();
-
-    stats.totalGames++;
-    if (outcome === "win" || outcome === "blackjack") stats.wins++;
-    else if (outcome === "loss") stats.losses++;
-    else stats.draws++;
-    if (isBlackjack) stats.blackjack++;
-    stats.totalWin += win;
-
-    // Запись в общую статистику главной страницы
-    if (window.recordGame) {
-        window.recordGame("blackjack", outcome, win, combo);
-    }
-
-    localStorage.setItem("stats", JSON.stringify(stats));
 
     document.getElementById("bjGameResult").innerText = resultText;
     document.getElementById("bjActionButtons").innerHTML = `<button onclick="startBJ()">Новая игра</button>`;
@@ -732,11 +927,11 @@ async function startBJ() {
     const ubet = parseInt(document.getElementById("bjUltimateBet").value) || 0;
 
     if (bet < 1 || bet > casinoBalance) {
-        alert("Введите корректную основную ставку");
+        alert("Введите корректную основную ставку (минимум 1)");
         return;
     }
     if (ubet < 0 || (bet + ubet) > casinoBalance) {
-        alert("Некорректный Ultimate Bet");
+        alert("Некорректный Ultimate Bet — недостаточно средств");
         return;
     }
 
@@ -753,11 +948,14 @@ async function startBJ() {
     clearBoard();
 
     await dealCardToPlayer();           await new Promise(r => setTimeout(r, 400));
-    await dealCardToDealer(false);      await new Promise(r => setTimeout(r, 400));
+    const dealerUp = await dealCardToDealer(false);     await new Promise(r => setTimeout(r, 400));
     await dealCardToPlayer();           await new Promise(r => setTimeout(r, 400));
     await dealCardToDealer(true);       await new Promise(r => setTimeout(r, 400));
 
-    if (getTotal(bjHands[0].cards) === 21 && bjHands[0].cards.length === 2) {
+    const playerTotal = getTotal(bjHands[0].cards);
+    const dealerHasBlackjack = bjDealer.length === 2 && getTotal(bjDealer) === 21;
+
+    if (playerTotal === 21 && bjHands[0].cards.length === 2) {
         await revealDealerCards();
         gameOver = true;
         finishRound();
@@ -771,20 +969,19 @@ function toggleProfile() {
     const modal = document.getElementById("profileModal");
     modal.style.display = modal.style.display === "flex" ? "none" : "flex";
     if (modal.style.display === "flex") {
-        document.getElementById("statGames").innerText = stats.totalGames;
+        document.getElementById("statGames").innerText = stats.games;
         document.getElementById("statWins").innerText = stats.wins;
         document.getElementById("statLosses").innerText = stats.losses;
         document.getElementById("statDraws").innerText = stats.draws;
         document.getElementById("statBlackjack").innerText = stats.blackjack;
-        document.getElementById("statMaxWin").innerText = stats.totalWin;
-        document.getElementById("statBestCombo").innerText = stats.bestCombo || "-";
+        document.getElementById("statMaxWin").innerText = stats.maxWin || 0;
     }
 }
 
 function resetStats() {
     if (!confirm("Сбросить статистику Blackjack?")) return;
-    stats = {totalGames:0, wins:0, losses:0, draws:0, blackjack:0, totalWin:0, bestCombo:"-"};
-    localStorage.setItem("stats", JSON.stringify(stats));
+    stats = {games:0, wins:0, losses:0, draws:0, blackjack:0, maxWin:0, totalWin:0};
+    localStorage.setItem("blackjackStats", JSON.stringify(stats));
     toggleProfile();
 }
 
@@ -796,6 +993,7 @@ document.getElementById("addFundsBtn").onclick = () => {
 // Инициализация
 bjDeck = createDeck();
 updateCasinoBalance();
+
 </script>
 </body>
 </html>
