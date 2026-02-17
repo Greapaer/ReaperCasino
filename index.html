@@ -173,29 +173,30 @@ header {
 
 .gameStatsButtons {
     display: flex;
-    flex-direction: column;
-    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 20px;
     margin: 25px 0 35px;
 }
 
 .gameStatsButtons button {
-    padding: 16px;
-    font-size: 1.15em;
-    font-weight: bold;
-    border: none;
-    border-radius: 12px;
+    padding: 10px 24px;
+    font-size: 1em;
+    font-weight: 500;
+    background: transparent;
+    border: 1px solid #555;
+    border-radius: 8px;
+    color: #ddd;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    min-width: 110px;
 }
 
-.poker-btn { background: #4a0000; color: #ff9999; }
-.poker-btn:hover { background: #660000; }
-
-.blackjack-btn { background: #1a0000; color: #ffcccc; }
-.blackjack-btn:hover { background: #330000; }
-
-.roulette-btn { background: #003300; color: #99ff99; }
-.roulette-btn:hover { background: #004d00; }
+.gameStatsButtons button:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: #888;
+    color: white;
+}
 
 .statsDetails {
     margin-top: 20px;
@@ -206,11 +207,19 @@ header {
 .statsDetails h3 {
     color: #ffb347;
     margin-bottom: 18px;
+    font-size: 1.4em;
 }
 
 .statsDetails p {
-    font-size: 1.1em;
-    margin: 10px 0;
+    font-size: 1.15em;
+    margin: 12px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.statsDetails .value {
+    font-weight: bold;
+    color: #fff;
 }
 
 .closeProfile {
@@ -245,6 +254,7 @@ header {
     .welcome { font-size: 48px; }
     .gamesContainer { padding: 0 15px; }
     .profileContent { padding: 25px; width: 90%; }
+    .gameStatsButtons button { min-width: 90px; padding: 8px 18px; }
 }
 </style>
 </head>
@@ -292,19 +302,20 @@ header {
         <h2>Статистика игрока</h2>
         
         <div class="gameStatsButtons">
-            <button class="poker-btn" onclick="showGameStats('poker')">Покер</button>
-            <button class="blackjack-btn" onclick="showGameStats('blackjack')">Blackjack</button>
-            <button class="roulette-btn" onclick="showGameStats('roulette')">Рулетка</button>
+            <button onclick="showGameStats('poker')">Покер</button>
+            <button onclick="showGameStats('blackjack')">Blackjack</button>
+            <button onclick="showGameStats('roulette')">Рулетка</button>
         </div>
 
         <div id="statsDetails" class="statsDetails" style="display:none;">
-            <h3 id="statsTitle"></h3>
-            <p>Всего игр: <span id="statGames">0</span></p>
-            <p>Выигрышей: <span id="statWins">0</span></p>
-            <p>Проигрышей: <span id="statLosses">0</span></p>
-            <p id="statExtra1"></p>
-            <p id="statExtra2"></p>
-        </div>
+    <h3 id="statsTitle"></h3>
+    <p>Всего игр <span id="statGames">0</span></p>
+    <p>Выигрышей <span id="statWins">0</span></p>
+    <p>Проигрышей <span id="statLosses">0</span></p>
+    <p id="statExtra1"></p>
+    <p id="statExtra2"></p>
+    <p id="statExtra3"></p>
+</div>
 
         <button class="resetAllBtn" onclick="resetAllStats()">Сбросить всю статистику</button>
     </div>
@@ -336,25 +347,28 @@ function showGameStats(game) {
     const details = document.getElementById("statsDetails");
     details.style.display = "block";
     
-    let stats, title, extra1 = "", extra2 = "";
+    let stats, title, extra1 = "", extra2 = "", extra3 = "";
     
     if (game === "poker") {
         stats = JSON.parse(localStorage.getItem("pokerStats") || "{}");
         title = "Покер";
-        extra1 = `Макс. выплата: ${stats.maxWin || 0}`;
-        extra2 = `Лучшая комбинация: ${stats.bestCombo || "-"}`;
+        extra1 = `Максимальная выплата ${stats.maxWin || 0}`;
+        extra2 = `Лучшая комбинация ${stats.bestCombo || "-"}`;
+        extra3 = ""; // для покера третий пункт не нужен
     } 
     else if (game === "blackjack") {
         stats = JSON.parse(localStorage.getItem("blackjackStats") || "{}");
         title = "Blackjack";
-        extra1 = `Сумма выигрышей: ${stats.totalWin || 0}`;
-        extra2 = `Сумма проигрышей: ${stats.totalLoss || 0}`;
+        extra1 = `Ничьих ${stats.draws || 0}`;
+        extra2 = `Blackjack ${stats.blackjack || 0}`;
+        extra3 = `Макс. выигрыш ${stats.maxWin || 0}`;
     } 
     else if (game === "roulette") {
         stats = JSON.parse(localStorage.getItem("rouletteStats") || "{}");
         title = "Рулетка";
-        extra1 = `Сумма выигрышей: ${stats.totalWin || 0}`;
-        extra2 = `Сумма проигрышей: ${stats.totalLoss || 0}`;
+        extra1 = `Сумма выигрышей ${stats.totalWin || 0}`;
+        extra2 = `Сумма проигрышей ${stats.totalLoss || 0}`;
+        extra3 = ""; // для рулетки третий пункт не нужен
     }
 
     document.getElementById("statsTitle").innerText = title;
@@ -363,6 +377,7 @@ function showGameStats(game) {
     document.getElementById("statLosses").innerText = stats.losses || 0;
     document.getElementById("statExtra1").innerText = extra1;
     document.getElementById("statExtra2").innerText = extra2;
+    document.getElementById("statExtra3").innerText = extra3;
 }
 
 // Сброс всей статистики
