@@ -3,402 +3,1056 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reaper Casino</title>
+<title>Reaper Casino — Royal Hall</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-body {
-    margin:0;
-    font-family:"Segoe UI",Arial,sans-serif;
-    background: linear-gradient(135deg,#0b0c10,#1f2833);
-    color:white;
-    min-height:100vh;
-}
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8d08a;
+    --gold-dark: #8b6914;
+    --green: #0a3d2e;
+    --green-felt: #0d4d38;
+    --dark: #0a0a0a;
+    --darker: #050505;
+    --text: #e8e0d0;
+    --red: #c0392b;
+  }
 
-.topBar {
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cormorant Garamond', serif;
+    background: var(--darker);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain */
+  body::before {
+    content: '';
     position: fixed;
-    top: 15px;
-    right: 15px;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ===================== TOP BAR ===================== */
+  .top-bar {
     display: flex;
-    gap: 15px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 28px;
     background: rgba(0,0,0,0.5);
-    padding: 8px 12px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    z-index: 2000;
-}
+    border-bottom: 1px solid rgba(201,168,76,0.12);
+    position: sticky;
+    top: 0;
+    z-index: 500;
+    backdrop-filter: blur(8px);
+  }
 
-.balanceDisplay {
-    padding:6px 12px;
-    border-radius:10px;
-    background: rgba(255,255,255,0.15);
-    color:white;
-    font-weight:bold;
-    font-size:1.1em;
-}
+  .top-bar-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
 
-.profileTab {
-    padding:6px 12px;
-    border-radius:10px;
-    background: rgba(255,255,255,0.15);
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.2s;
-}
-.profileTab:hover { background: rgba(255,255,255,0.3); }
+  .top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
 
-#addFundsBtn {
-    position:fixed;
-    right:15px;
-    bottom:15px;
-    padding:12px 24px;
-    border:none;
-    border-radius:12px;
-    background:#28a745;
-    color:white;
-    font-weight:bold;
-    font-size:1.1em;
-    cursor:pointer;
-    box-shadow:0 4px 12px rgba(0,0,0,0.5);
-    transition:0.2s;
-}
-#addFundsBtn:hover { background:#1e7e34; transform: translateY(-2px); }
+  .balance-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.25);
+    padding: 7px 16px;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    color: var(--gold-light);
+  }
 
-header {
-    padding:100px 15px 40px;
-    text-align:center;
-}
+  .balance-chip .bal-label {
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.5);
+  }
 
-.welcome {
-    font-size:64px;
-    font-weight:900;
-    color:#ff4b2b;
-    text-shadow: 0 0 30px rgba(255,75,43,0.7);
-    margin-bottom:10px;
-}
-.welcome span { color:#ffb347; }
+  .balance-chip .bal-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--gold);
+  }
 
-.subtitle {
-    font-size:24px;
-    color:#ccc;
-    margin-bottom:40px;
-}
+  .profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1px solid rgba(201,168,76,0.3);
+    color: rgba(201,168,76,0.7);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-/* Карточки игр на главной */
-.gamesContainer {
+  .profile-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.07);
+  }
+
+  @media (max-width: 500px) {
+    .top-bar { padding: 10px 14px; gap: 8px; }
+    .top-bar-logo { font-size: 0.8rem; letter-spacing: 2px; }
+    .top-bar-right { gap: 8px; }
+    .balance-chip { padding: 6px 9px; gap: 5px; }
+    .balance-chip .bal-label { display: none; }
+    .balance-chip .bal-amount { font-size: 0.95rem; }
+    .profile-btn { padding: 7px 10px; letter-spacing: 1px; font-size: 0.78rem; gap: 5px; }
+    .profile-btn svg { display: none; }
+  }
+
+  @media (max-width: 360px) {
+    .top-bar-logo { display: none; }
+    .top-bar { justify-content: flex-end; }
+  }
+
+  /* ===================== HEADER ===================== */
+  header {
+    text-align: center;
+    padding: clamp(48px, 8vw, 96px) 20px clamp(32px, 5vw, 60px);
+    position: relative;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .header-ornament {
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-shadow: 0 0 60px rgba(201,168,76,0.25), 0 0 120px rgba(201,168,76,0.1);
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  h1 .subtitle-line {
+    font-style: italic;
+    font-size: 0.38em;
+    display: block;
+    color: rgba(201,168,76,0.5);
+    letter-spacing: clamp(0.1em, 2vw, 0.5em);
+    margin-top: 10px;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+  }
+
+  .gold-line {
+    width: 160px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 28px auto 0;
+  }
+
+  /* ===================== GAMES GRID ===================== */
+  .games-section {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 0 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 30px;
-}
+    padding: clamp(40px, 6vw, 72px) clamp(16px, 4vw, 32px);
+  }
 
-.gameCard {
-    background: linear-gradient(145deg, #1f2833, #0b0c10);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    transition: all 0.3s ease;
+  .section-label {
     text-align: center;
-    position: relative;
-}
+    font-size: 0.7rem;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.35);
+    margin-bottom: 36px;
+  }
 
-.gameCard:hover {
-    transform: translateY(-12px);
-    box-shadow: 0 20px 50px rgba(255,75,43,0.25);
-}
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
 
-.gameIcon {
-    font-size: 80px;
-    margin: 30px 0 15px;
-    line-height: 1;
-}
+  @media (max-width: 540px) {
+    .games-grid { grid-template-columns: 1fr; }
+  }
 
-.gameCard h2 {
-    font-size: 28px;
-    margin: 0 0 12px;
-    color: #ffb347;
-}
-
-.gameCard p {
-    font-size: 16px;
-    color: #bbb;
-    padding: 0 20px 25px;
-    margin: 0;
-}
-
-.gameCard a {
+  .game-card {
     display: block;
-    padding: 16px 0;
-    background: #444;
-    color: white;
     text-decoration: none;
-    font-weight: bold;
-    font-size: 18px;
-    transition: 0.3s;
-}
+    position: relative;
+    border: 1px solid rgba(201,168,76,0.15);
+    background: linear-gradient(160deg, rgba(201,168,76,0.04) 0%, rgba(0,0,0,0.3) 100%);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-.gameCard a:hover {
-    background: #666;
-}
+  .game-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: scaleX(0);
+    transition: transform 0.35s;
+  }
 
-/* Модальное окно профиля */
-.profileModal {
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.85);
-    justify-content:center;
-    align-items:center;
-    z-index:2000;
-}
+  .game-card:hover {
+    border-color: rgba(201,168,76,0.4);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(201,168,76,0.08);
+  }
 
-.profileContent {
-    background:#1f2833;
-    padding:35px;
-    border-radius:16px;
-    color:white;
-    width:420px;
-    max-width:92%;
-    text-align:center;
-    box-shadow:0 15px 40px rgba(0,0,0,0.8);
-    position:relative;
-}
+  .game-card:hover::before { transform: scaleX(1); }
 
-.profileContent h2 {
-    margin:0 0 30px;
-    color:#ffb347;
-    font-size:28px;
-}
+  .card-inner {
+    padding: clamp(20px, 5vw, 36px) clamp(16px, 4vw, 28px) clamp(16px, 4vw, 28px);
+  }
 
-.gameStatsButtons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px 20px;
-    margin: 25px 0 35px;
-}
-
-.gameStatsButtons button {
-    padding: 10px 24px;
-    font-size: 1em;
-    font-weight: 500;
-    background: transparent;
-    border: 1px solid #555;
-    border-radius: 8px;
-    color: #ddd;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    min-width: 110px;
-}
-
-.gameStatsButtons button:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: #888;
-    color: white;
-}
-
-.statsDetails {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #444;
-}
-
-.statsDetails h3 {
-    color: #ffb347;
+  .card-icon {
+    font-size: 3rem;
+    line-height: 1;
     margin-bottom: 18px;
-    font-size: 1.4em;
-}
+    display: block;
+    opacity: 0.85;
+  }
 
-.statsDetails p {
-    font-size: 1.15em;
-    margin: 12px 0;
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .card-desc {
+    font-size: 0.95rem;
+    color: rgba(232,224,208,0.55);
+    line-height: 1.7;
+    font-weight: 300;
+    display: block;
+    margin-bottom: 24px;
+  }
+
+  .card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.6);
+    transition: color 0.2s, gap 0.2s;
+  }
+
+  .game-card:hover .card-cta {
+    color: var(--gold);
+    gap: 12px;
+  }
+
+  .card-cta svg { transition: transform 0.2s; }
+  .game-card:hover .card-cta svg { transform: translateX(3px); }
+
+  /* Currently active badge */
+  .card-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    background: rgba(201,168,76,0.12);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 3px 9px;
+  }
+
+  /* ===================== ADD FUNDS BTN ===================== */
+  .add-funds-btn {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    background: linear-gradient(135deg, #1a5c30, #27ae60);
+    color: #fff;
+    border: none;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px 20px;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+    transition: all 0.2s;
+    z-index: 400;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    min-height: 44px;
+  }
+
+  .add-funds-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 32px rgba(39,174,96,0.3);
+  }
+
+  @media (max-width: 400px) {
+    .add-funds-btn { font-size: 0.8rem; letter-spacing: 1px; padding: 10px 14px; right: 10px; bottom: 10px; }
+  }
+
+  /* ===================== PROFILE MODAL ===================== */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--dark);
+    border: 1px solid rgba(201,168,76,0.2);
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(201,168,76,0.2) transparent;
+  }
+
+  .modal::-webkit-scrollbar { width: 4px; }
+  .modal::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 2px; }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.93) translateY(16px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* Modal top stripe */
+  .modal-stripe {
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .modal-body {
+    padding: 32px 32px 28px;
+  }
+
+  @media (max-width: 480px) { .modal-body { padding: 24px 18px 20px; } }
+
+  .modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--gold);
+    letter-spacing: 3px;
+  }
+
+  .modal-title span {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.6rem;
+    letter-spacing: 5px;
+    color: rgba(201,168,76,0.4);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: rgba(201,168,76,0.4);
+    cursor: pointer;
+    font-size: 1.4rem;
+    line-height: 1;
+    padding: 4px;
+    transition: color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .modal-close:hover { color: var(--gold); }
+
+  /* ---- Balance overview in modal ---- */
+  .modal-balance {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(201,168,76,0.05);
+    border: 1px solid rgba(201,168,76,0.15);
+    padding: 16px 20px;
+    margin-bottom: 28px;
+  }
+
+  .modal-balance-label {
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.45);
+  }
+
+  .modal-balance-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--gold);
+    text-shadow: 0 0 20px rgba(201,168,76,0.3);
+  }
+
+  /* ---- Game selector tabs ---- */
+  .game-tabs-label {
+    font-size: 0.62rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.35);
+    margin-bottom: 12px;
+  }
+
+  .game-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+
+  @media (max-width: 460px) {
+    .game-tabs { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  }
+
+  .gtab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 12px 8px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(201,168,76,0.12);
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    color: rgba(201,168,76,0.45);
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .gtab-icon { font-size: 1.5rem; line-height: 1; }
+
+  .gtab-name {
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .gtab:hover {
+    border-color: rgba(201,168,76,0.35);
+    background: rgba(201,168,76,0.06);
+    color: rgba(201,168,76,0.75);
+  }
+
+  .gtab.active {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.1);
+    color: var(--gold);
+    box-shadow: 0 0 16px rgba(201,168,76,0.1);
+  }
+
+  /* ---- Stats panel ---- */
+  .stats-panel {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .stats-panel.visible { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .stats-panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .stats-panel-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(201,168,76,0.3), transparent);
+  }
+
+  .stats-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-row {
     display: flex;
     justify-content: space-between;
-}
+    align-items: center;
+    padding: 11px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.95rem;
+  }
 
-.statsDetails .value {
-    font-weight: bold;
-    color: #fff;
-}
+  .stat-row:nth-child(even) { background: rgba(255,255,255,0.02); }
 
-.closeProfile {
-    position:absolute;
-    top:15px;
-    right:20px;
-    font-size:32px;
-    color:#ff4b2b;
-    cursor:pointer;
-}
+  .stat-row-label {
+    color: rgba(232,224,208,0.55);
+    letter-spacing: 1px;
+  }
 
-.resetAllBtn {
-    margin-top: 30px;
-    padding: 14px 40px;
-    background: #c62828;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 1.1em;
-    font-weight: bold;
+  .stat-row-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--gold-light);
+  }
+
+  .stat-row-value.positive { color: #2ecc71; }
+  .stat-row-value.negative { color: #e74c3c; }
+
+  .no-stats {
+    text-align: center;
+    padding: 32px;
+    color: rgba(201,168,76,0.25);
+    font-style: italic;
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+
+  /* Progress bar inside stats */
+  .stat-bar-wrap { margin: 18px 0 4px; }
+
+  .stat-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: rgba(201,168,76,0.4);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .stat-bar-track {
+    height: 5px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .bar-win  { background: #2ecc71; transition: width 0.6s; }
+  .bar-loss { background: #e74c3c; transition: width 0.6s; }
+  .bar-tie  { background: var(--gold-dark); transition: width 0.6s; }
+
+  /* ---- Modal footer ---- */
+  .modal-footer {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(201,168,76,0.1);
+    display: flex;
+    justify-content: center;
+  }
+
+  .reset-btn {
+    background: none;
+    border: 1px solid rgba(192,57,43,0.3);
+    color: rgba(192,57,43,0.55);
+    font-family: 'Cormorant Garamond', serif;
+    letter-spacing: 3px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    padding: 9px 28px;
     cursor: pointer;
-    transition: 0.2s;
-}
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-.resetAllBtn:hover {
-    background: #b71c1c;
-    transform: translateY(-2px);
-}
+  .reset-btn:hover { border-color: #c0392b; color: #c0392b; }
 
-/* Адаптивность */
-@media (max-width: 768px) {
-    .welcome { font-size: 48px; }
-    .gamesContainer { padding: 0 15px; }
-    .profileContent { padding: 25px; width: 90%; }
-    .gameStatsButtons button { min-width: 90px; padding: 8px 18px; }
-}
+  /* ===================== FOOTER ===================== */
+  .page-footer {
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.18);
+    border-top: 1px solid rgba(201,168,76,0.08);
+    margin-top: 40px;
+  }
+
+  /* ===================== TOAST ===================== */
+  .toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(10,10,10,0.96);
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    padding: 12px 28px;
+    z-index: 9999;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    white-space: normal;
+    max-width: calc(100vw - 40px);
+    text-align: center;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 
-<div class="topBar">
-    <div class="balanceDisplay">Баланс: <span id="casinoBalance">10000</span></div>
-    <div class="profileTab" onclick="openProfile()">Профиль 📊</div>
+<!-- ===== TOP BAR ===== -->
+<div class="top-bar">
+  <div class="top-bar-logo">✦ Reaper Casino</div>
+  <div class="top-bar-right">
+    <div class="balance-chip">
+      <span class="bal-label">Баланс</span>
+      <span class="bal-amount" id="balanceDisplay">₽ 10,000</span>
+    </div>
+    <button class="profile-btn" onclick="openProfile()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
+      Профиль
+    </button>
+  </div>
 </div>
 
+<!-- ===== HEADER ===== -->
 <header>
-    <div class="welcome">Reaper<span> Casino</span></div>
-    <p class="subtitle">Добро пожаловать в мир азарта</p>
+  <div class="header-ornament">✦ &nbsp; Royal Hall &nbsp; ✦</div>
+  <h1>
+    Reaper<em> Casino</em>
+    <span class="subtitle-line">Добро пожаловать в мир азарта</span>
+  </h1>
+  <div class="gold-line"></div>
 </header>
 
-<div class="gamesContainer">
-    <div class="gameCard">
-        <div class="gameIcon">🂡</div>
-        <h2>Blackjack</h2>
-        <p>Классика казино. Обыграй дилера, не превысив 21. Есть Ultimate Bonus!</p>
-        <a href="blackjack.html">Играть</a>
-    </div>
+<!-- ===== GAMES ===== -->
+<main class="games-section">
+  <div class="section-label">Выберите игру</div>
 
-    <div class="gameCard">
-        <div class="gameIcon">🃏</div>
-        <h2>Ultimate Texas Hold'em</h2>
-        <p>Покер против дилера. Делай ставки на префлопе, флопе, терне. Бонусы за комбинации!</p>
-        <a href="poker.html">Играть</a>
-    </div>
+  <div class="games-grid">
 
-    <div class="gameCard">
-        <div class="gameIcon">🎡</div>
-        <h2>Рулетка</h2>
-        <p>Европейская рулетка. Ставь на число — получи x36. История последних чисел и яркие выигрыши!</p>
-        <a href="roulette.html">Играть</a>
-    </div>
-</div>
+    <a href="blackjack.html" class="game-card">
+      <div class="card-inner">
+        <span class="card-icon">🂡</span>
+        <span class="card-title">Blackjack</span>
+        <span class="card-desc">Классика казино. Обыграй дилера, не превысив 21. Есть Ultimate Bonus!</span>
+        <span class="card-cta">
+          Играть
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </div>
+    </a>
 
-<button id="addFundsBtn">+10000</button>
+    <a href="poker.html" class="game-card">
+      <div class="card-inner">
+        <span class="card-icon">🃏</span>
+        <span class="card-title">Poker</span>
+        <span class="card-desc">Ultimate Texas Hold'em против дилера. Ставки на префлопе, флопе, терне. Бонусы!</span>
+        <span class="card-cta">
+          Играть
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </div>
+    </a>
 
-<!-- Модальное окно профиля -->
-<div id="profileModal" class="profileModal">
-    <div class="profileContent">
-        <span class="closeProfile" onclick="closeProfile()">✖</span>
-        <h2>Статистика игрока</h2>
-        
-        <div class="gameStatsButtons">
-            <button onclick="showGameStats('poker')">Покер</button>
-            <button onclick="showGameStats('blackjack')">Blackjack</button>
-            <button onclick="showGameStats('roulette')">Рулетка</button>
+    <a href="roulette.html" class="game-card">
+      <div class="card-inner">
+        <span class="card-icon">🎡</span>
+        <span class="card-title">Roulette</span>
+        <span class="card-desc">Европейская рулетка. Ставь на число — получи ×36. История чисел и яркие выигрыши!</span>
+        <span class="card-cta">
+          Играть
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </div>
+    </a>
+
+    <a href="baccarat.html" class="game-card">
+      <div class="card-badge">Новинка</div>
+      <div class="card-inner">
+        <span class="card-icon">🎴</span>
+        <span class="card-title">Baccarat</span>
+        <span class="card-desc">Royal Table. Ставь на Игрока, Банкира или Ничью. Статистика и дорожка результатов!</span>
+        <span class="card-cta">
+          Играть
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </div>
+    </a>
+
+  </div>
+</main>
+
+<!-- ===== ADD FUNDS ===== -->
+<button class="add-funds-btn" onclick="addFunds()">+ 10 000</button>
+
+<!-- ===== PROFILE MODAL ===== -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+    <div class="modal-stripe"></div>
+    <div class="modal-body">
+
+      <div class="modal-header">
+        <div class="modal-title">
+          Профиль
+          <span>Статистика игрока</span>
         </div>
+        <button class="modal-close" onclick="closeProfile()">✕</button>
+      </div>
 
-        <div id="statsDetails" class="statsDetails" style="display:none;">
-    <h3 id="statsTitle"></h3>
-    <p>Всего игр <span id="statGames">0</span></p>
-    <p>Выигрышей <span id="statWins">0</span></p>
-    <p>Проигрышей <span id="statLosses">0</span></p>
-    <p id="statExtra1"></p>
-    <p id="statExtra2"></p>
-    <p id="statExtra3"></p>
-</div>
+      <!-- Balance in modal -->
+      <div class="modal-balance">
+        <div>
+          <div class="modal-balance-label">Текущий баланс</div>
+        </div>
+        <div class="modal-balance-amount" id="modalBalance">₽ 10,000</div>
+      </div>
 
-        <button class="resetAllBtn" onclick="resetAllStats()">Сбросить всю статистику</button>
+      <!-- Game selector -->
+      <div class="game-tabs-label">Статистика по игре</div>
+      <div class="game-tabs">
+        <button class="gtab" onclick="showStats('blackjack')" id="gtab-blackjack">
+          <span class="gtab-icon">🂡</span>
+          <span class="gtab-name">Blackjack</span>
+        </button>
+        <button class="gtab" onclick="showStats('poker')" id="gtab-poker">
+          <span class="gtab-icon">🃏</span>
+          <span class="gtab-name">Poker</span>
+        </button>
+        <button class="gtab" onclick="showStats('roulette')" id="gtab-roulette">
+          <span class="gtab-icon">🎡</span>
+          <span class="gtab-name">Roulette</span>
+        </button>
+        <button class="gtab" onclick="showStats('baccarat')" id="gtab-baccarat">
+          <span class="gtab-icon">🎴</span>
+          <span class="gtab-name">Baccarat</span>
+        </button>
+      </div>
+
+      <!-- Stats panels — one per game -->
+
+      <!-- BLACKJACK -->
+      <div class="stats-panel" id="panel-blackjack">
+        <div class="stats-panel-title">Blackjack</div>
+        <div class="stats-rows" id="rows-blackjack"></div>
+      </div>
+
+      <!-- POKER -->
+      <div class="stats-panel" id="panel-poker">
+        <div class="stats-panel-title">Poker</div>
+        <div class="stats-rows" id="rows-poker"></div>
+      </div>
+
+      <!-- ROULETTE -->
+      <div class="stats-panel" id="panel-roulette">
+        <div class="stats-panel-title">Roulette</div>
+        <div class="stats-rows" id="rows-roulette"></div>
+      </div>
+
+      <!-- BACCARAT -->
+      <div class="stats-panel" id="panel-baccarat">
+        <div class="stats-panel-title">Baccarat</div>
+        <div class="stats-rows" id="rows-baccarat"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="reset-btn" onclick="resetAll()">⚠ Сбросить всю статистику</button>
+      </div>
+
     </div>
+  </div>
 </div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<footer class="page-footer">✦ &nbsp; Reaper Casino &nbsp; ✦ &nbsp; Royal Hall</footer>
 
 <script>
-// Общий баланс
-let balance = localStorage.getItem("casinoBalance") 
-    ? parseInt(localStorage.getItem("casinoBalance")) 
-    : 10000;
+// ========== BALANCE ==========
+const BAL_KEY = 'casinoBalance';
 
-function updateBalance() {
-    document.getElementById("casinoBalance").innerText = balance;
-    localStorage.setItem("casinoBalance", balance);
+let balance = parseInt(localStorage.getItem(BAL_KEY) || '10000');
+
+function fmtMoney(n) {
+  return '₽ ' + Number(n).toLocaleString('ru-RU');
 }
 
-// Открытие/закрытие профиля
+function updateBalanceUI() {
+  document.getElementById('balanceDisplay').textContent = fmtMoney(balance);
+  document.getElementById('modalBalance').textContent = fmtMoney(balance);
+}
+
+function saveBalance() {
+  localStorage.setItem(BAL_KEY, balance);
+}
+
+function addFunds() {
+  balance += 10000;
+  saveBalance();
+  updateBalanceUI();
+  showToast('+ 10 000 добавлено');
+}
+
+// Sync balance if user returns from a game page
+window.addEventListener('focus', () => {
+  const stored = parseInt(localStorage.getItem(BAL_KEY) || balance);
+  if (stored !== balance) {
+    balance = stored;
+    updateBalanceUI();
+  }
+});
+
+// Also sync when tab becomes visible (mobile)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    const stored = parseInt(localStorage.getItem(BAL_KEY) || balance);
+    if (stored !== balance) {
+      balance = stored;
+      updateBalanceUI();
+    }
+  }
+});
+
+// ========== MODAL ==========
 function openProfile() {
-    document.getElementById("profileModal").style.display = "flex";
-    document.getElementById("statsDetails").style.display = "none";
+  // always pull latest balance from storage (may have changed in game pages)
+  balance = parseInt(localStorage.getItem(BAL_KEY) || balance);
+  updateBalanceUI();
+  document.getElementById('modalOverlay').classList.add('open');
+  document.querySelectorAll('.gtab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.stats-panel').forEach(p => p.classList.remove('visible'));
 }
 
 function closeProfile() {
-    document.getElementById("profileModal").style.display = "none";
+  document.getElementById('modalOverlay').classList.remove('open');
 }
 
-// Показ статистики игры
-function showGameStats(game) {
-    const details = document.getElementById("statsDetails");
-    details.style.display = "block";
-    
-    let stats, title, extra1 = "", extra2 = "", extra3 = "";
-    
-    if (game === "poker") {
-        stats = JSON.parse(localStorage.getItem("pokerStats") || "{}");
-        title = "Покер";
-        extra1 = `Максимальная выплата ${stats.maxWin || 0}`;
-        extra2 = `Лучшая комбинация ${stats.bestCombo || "-"}`;
-        extra3 = ""; // для покера третий пункт не нужен
-    } 
-    else if (game === "blackjack") {
-        stats = JSON.parse(localStorage.getItem("blackjackStats") || "{}");
-        title = "Blackjack";
-        extra1 = `Ничьих ${stats.draws || 0}`;
-        extra2 = `Blackjack ${stats.blackjack || 0}`;
-        extra3 = `Макс. выигрыш ${stats.maxWin || 0}`;
-    } 
-    else if (game === "roulette") {
-        stats = JSON.parse(localStorage.getItem("rouletteStats") || "{}");
-        title = "Рулетка";
-        extra1 = `Сумма выигрышей ${stats.totalWin || 0}`;
-        extra2 = `Сумма проигрышей ${stats.totalLoss || 0}`;
-        extra3 = ""; // для рулетки третий пункт не нужен
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeProfile();
+}
+
+// ========== STATS ==========
+function showStats(game) {
+  // tabs
+  document.querySelectorAll('.gtab').forEach(b => b.classList.remove('active'));
+  document.getElementById('gtab-' + game).classList.add('active');
+
+  // panels
+  document.querySelectorAll('.stats-panel').forEach(p => p.classList.remove('visible'));
+  document.getElementById('panel-' + game).classList.add('visible');
+
+  // render rows
+  renderStats(game);
+}
+
+function makeRow(label, value, colorClass) {
+  return `
+    <div class="stat-row">
+      <span class="stat-row-label">${label}</span>
+      <span class="stat-row-value ${colorClass || ''}">${value}</span>
+    </div>`;
+}
+
+function winrateBar(wins, losses, ties) {
+  const total = wins + losses + (ties || 0);
+  if (total === 0) return '';
+  const wPct = Math.round(wins / total * 100);
+  const lPct = Math.round(losses / total * 100);
+  const tPct = 100 - wPct - lPct;
+  return `
+    <div class="stat-bar-wrap">
+      <div class="stat-bar-labels">
+        <span>Победы ${wPct}%</span>
+        ${ties !== undefined ? `<span>Ничьи ${tPct}%</span>` : ''}
+        <span>Пор. ${lPct}%</span>
+      </div>
+      <div class="stat-bar-track">
+        <div class="bar-win" style="width:${wPct}%"></div>
+        ${ties !== undefined ? `<div class="bar-tie" style="width:${tPct}%"></div>` : ''}
+        <div class="bar-loss" style="width:${lPct}%"></div>
+      </div>
+    </div>`;
+}
+
+function renderStats(game) {
+  const container = document.getElementById('rows-' + game);
+
+  if (game === 'baccarat') {
+    // Baccarat uses key 'baccarat_stats_v1'
+    let s = {};
+    try { s = JSON.parse(localStorage.getItem('baccarat_stats_v1') || '{}'); } catch(e) {}
+
+    if (!s.games) {
+      container.innerHTML = '<div class="no-stats">Нет данных — сыграйте первую партию в Baccarat!</div>';
+      return;
     }
 
-    document.getElementById("statsTitle").innerText = title;
-    document.getElementById("statGames").innerText = stats.games || 0;
-    document.getElementById("statWins").innerText = stats.wins || 0;
-    document.getElementById("statLosses").innerText = stats.losses || 0;
-    document.getElementById("statExtra1").innerText = extra1;
-    document.getElementById("statExtra2").innerText = extra2;
-    document.getElementById("statExtra3").innerText = extra3;
+    const winrate = s.games > 0 ? Math.round(s.wins / s.games * 100) : 0;
+    const pnl = s.pnl || 0;
+    const pnlClass = pnl >= 0 ? 'positive' : 'negative';
+    const pnlStr = (pnl >= 0 ? '+' : '') + fmtMoney(pnl);
+
+    // outcome breakdown from history
+    const hist = s.outcomeHistory || [];
+    const pCount = hist.filter(x => x === 'P').length;
+    const bCount = hist.filter(x => x === 'B').length;
+    const tCount = hist.filter(x => x === 'T').length;
+
+    container.innerHTML =
+      makeRow('Игр сыграно', s.games || 0) +
+      makeRow('Побед', s.wins || 0, 'positive') +
+      makeRow('Поражений', s.losses || 0, 'negative') +
+      makeRow('Ничьих', s.ties || 0) +
+      makeRow('Процент побед', winrate + '%') +
+      makeRow('Чистый P&L', pnlStr, pnlClass) +
+      makeRow('Побед Игрока', pCount) +
+      makeRow('Побед Банкира', bCount) +
+      makeRow('Ничьих на столе', tCount) +
+      winrateBar(s.wins || 0, s.losses || 0, s.ties || 0);
+
+  } else if (game === 'blackjack') {
+    let s = {};
+    try { s = JSON.parse(localStorage.getItem('blackjackStats') || '{}'); } catch(e) {}
+
+    if (!s.games) {
+      container.innerHTML = '<div class="no-stats">Нет данных — сыграйте первую партию в Blackjack!</div>';
+      return;
+    }
+
+    const pnl = (s.maxWin || 0);
+    container.innerHTML =
+      makeRow('Игр сыграно', s.games || 0) +
+      makeRow('Побед', s.wins || 0, 'positive') +
+      makeRow('Поражений', s.losses || 0, 'negative') +
+      makeRow('Ничьих', s.draws || 0) +
+      makeRow('Blackjack', s.blackjack || 0) +
+      makeRow('Макс. выигрыш', fmtMoney(s.maxWin || 0), 'positive') +
+      winrateBar(s.wins || 0, s.losses || 0, s.draws || 0);
+
+  } else if (game === 'poker') {
+    let s = {};
+    try { s = JSON.parse(localStorage.getItem('pokerStats') || '{}'); } catch(e) {}
+
+    if (!s.games) {
+      container.innerHTML = '<div class="no-stats">Нет данных — сыграйте первую партию в Poker!</div>';
+      return;
+    }
+
+    container.innerHTML =
+      makeRow('Игр сыграно', s.games || 0) +
+      makeRow('Побед', s.wins || 0, 'positive') +
+      makeRow('Поражений', s.losses || 0, 'negative') +
+      makeRow('Макс. выплата', fmtMoney(s.maxWin || 0), 'positive') +
+      makeRow('Лучшая комбинация', s.bestCombo || '—') +
+      winrateBar(s.wins || 0, s.losses || 0);
+
+  } else if (game === 'roulette') {
+    let s = {};
+    try { s = JSON.parse(localStorage.getItem('rouletteStats') || '{}'); } catch(e) {}
+
+    if (!s.games) {
+      container.innerHTML = '<div class="no-stats">Нет данных — сыграйте первую партию в Roulette!</div>';
+      return;
+    }
+
+    const netPnl = (s.totalWin || 0) - (s.totalLoss || 0);
+    const netClass = netPnl >= 0 ? 'positive' : 'negative';
+
+    container.innerHTML =
+      makeRow('Игр сыграно', s.games || 0) +
+      makeRow('Побед', s.wins || 0, 'positive') +
+      makeRow('Поражений', s.losses || 0, 'negative') +
+      makeRow('Сумма выигрышей', fmtMoney(s.totalWin || 0), 'positive') +
+      makeRow('Сумма проигрышей', fmtMoney(s.totalLoss || 0), 'negative') +
+      makeRow('Чистый P&L', (netPnl >= 0 ? '+' : '') + fmtMoney(netPnl), netClass) +
+      winrateBar(s.wins || 0, s.losses || 0);
+  }
 }
 
-// Сброс всей статистики
-function resetAllStats() {
-    if (!confirm("Сбросить статистику ВСЕХ игр? Это действие нельзя отменить.")) return;
-    localStorage.removeItem("pokerStats");
-    localStorage.removeItem("blackjackStats");
-    localStorage.removeItem("rouletteStats");
-    closeProfile();
-    alert("Вся статистика сброшена!");
+// ========== RESET ==========
+function resetAll() {
+  if (!confirm('Сбросить статистику ВСЕХ игр? Это нельзя отменить.')) return;
+  localStorage.removeItem('blackjackStats');
+  localStorage.removeItem('pokerStats');
+  localStorage.removeItem('rouletteStats');
+  localStorage.removeItem('baccarat_stats_v1');
+  // re-render active panel if visible
+  const active = document.querySelector('.gtab.active');
+  if (active) {
+    const game = active.id.replace('gtab-', '');
+    renderStats(game);
+  }
+  showToast('Вся статистика сброшена');
 }
 
-// Кнопка +10000
-document.getElementById("addFundsBtn").onclick = () => { 
-    balance += 10000; 
-    updateBalance(); 
-};
+// ========== TOAST ==========
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
 
-// Инициализация
-updateBalance();
+// ========== INIT ==========
+updateBalanceUI();
 </script>
-
 </body>
 </html>
