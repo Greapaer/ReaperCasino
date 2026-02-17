@@ -57,10 +57,130 @@ body {
     color:white;
     font-weight:bold;
     cursor:pointer;
-    box-shadow:0 3px 10px rgba(0,0,0,0.4);
-    transition:0.2s;
 }
-#addFundsBtn:hover { background:#1e7e34; }
+
+.profileModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.player-combo, .dealer-combo {
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
+    font-weight: bold;
+    margin-top: 12px;
+    min-height: 1.5em;
+    color: white;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+}
+
+.player-combo.better { color: #34d399; }
+.player-combo.worse  { color: #f87171; }
+.player-combo.tie    { color: #fbbf24; }
+
+button {
+    font-size: clamp(0.95rem, 3.5vw, 1.1em);
+    padding: clamp(10px, 3vw, 12px) clamp(18px, 5vw, 24px);
+    border-radius: 10px;
+    margin: 6px;
+    cursor: pointer;
+    background: #ff4b2b;
+    color: white;
+    font-weight: bold;
+    touch-action: manipulation;
+}
+
+input[type="number"] {
+    font-size: clamp(1rem, 3.5vw, 1.1em);
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid #444;
+    background: #1a1a1a;
+    color: white;
+    text-align: center;
+    width: clamp(110px, 30vw, 140px);
+    margin: 6px;
+}
+
+#actionButtons { 
+    text-align: center; 
+    margin: 20px 0; 
+    min-height: 70px; 
+}
+
+#playerWinText { 
+    font-size: clamp(1.2rem, 4vw, 1.4em); 
+    margin: 15px 0; 
+    text-align: center; 
+    font-weight: bold; 
+}
+
+#totalStakeDisplay {
+    text-align: center;
+    font-size: clamp(1.1rem, 3.8vw, 1.3em);
+    margin: 12px 0 4px;
+    color: #fbbf24;
+    font-weight: bold;
+}
+
+.profileContent {
+    background: #1f2833;
+    padding: 30px;
+    border-radius: 15px;
+    width: 340px;
+    max-width: 90%;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+}
+
+.profileContent h2 { color: #ffb347; margin-bottom: 24px; }
+
+.profileContent p {
+    margin: 14px 0;
+    font-size: 1.1em;
+    display: flex;
+    justify-content: space-between;
+}
+
+.profileContent .value { font-weight: bold; color: #e0e0e0; }
+
+.closeProfile {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    font-size: 28px;
+    color: #ff4b2b;
+    cursor: pointer;
+}
+
+.resetStatsBtn {
+    margin-top: 24px;
+    padding: 12px 30px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+header {
+    padding: 80px 15px 20px;
+    text-align: center;
+}
+
+.welcome {
+    font-size: 48px;
+    font-weight: bold;
+    color: #ff4b2b;
+    text-shadow: 2px 2px 15px rgba(255,75,43,0.6);
+}
+.welcome span { color: #ffb347; }
 
 .main-container {
     display: flex;
@@ -86,184 +206,60 @@ body {
     color: white;
     text-decoration: none;
     font-weight: bold;
-    font-size: 1.1em;
     text-align: center;
-    transition: 0.2s;
-}
-
-.sidebar a:hover {
-    background: #666;
-    transform: translateX(4px);
-}
-
-header {
-    padding:80px 15px 20px;
-    text-align:center;
-}
-
-.welcome {
-    font-size:48px;
-    font-weight:bold;
-    color:#ff4b2b;
-    text-shadow: 2px 2px 15px rgba(255,75,43,0.6);
-}
-.welcome span { color:#ffb347; }
-
-.topWrapper {
-  display:flex;
-  gap:20px;
-  justify-content:flex-start;
-  align-items:flex-start;
-  flex-wrap:nowrap;
-  width:100%;
 }
 
 .gameWrapper {
-  flex:1 1 500px;
-  background: rgba(0,0,0,0.5);
-  padding: 15px;
-  border-radius:15px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.6);
+    flex: 1 1 500px;
+    background: rgba(0,0,0,0.5);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.6);
 }
 
-.bonusWrapper {
-  flex:0 0 300px;
-  display:flex;
-  flex-direction:column;
-  gap:15px;
+.cardsSection {
+    margin: 25px 0;
+    text-align: center;
 }
 
-.rulesWrapper {
-  margin-top:20px;
-  background: rgba(255,255,255,0.05);
-  padding: 15px 20px;
-  border-radius:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.4);
-}
-
-.rulesWrapper h2 { color: #ffb347; margin-bottom:10px; }
-.rulesWrapper ul { list-style: disc; padding-left:20px; }
-.rulesWrapper li { color:white; margin-bottom:6px; }
-
-.bonusTable {
-    flex:1;
-    min-width:220px;
-    background: rgba(255,255,255,0.05);
-    border-radius:12px;
-    padding:10px;
-    margin:10px 0;
-    box-shadow:0 4px 10px rgba(0,0,0,0.3);
-}
-
-.bonusTable h3 {
-    text-align:center;
-    margin-bottom:10px;
-    font-size:1.2em;
-    color:#ffb347;
-    text-shadow:1px 1px 5px rgba(255,179,71,0.5);
-}
-
-.bonusTable table {
-    width:100%;
-    border-collapse:collapse;
-}
-
-.bonusTable th,
-.bonusTable td {
-    border:1px solid rgba(255,255,255,0.2);
-    padding:8px;
-    text-align:center;
-    font-weight:bold;
-    color:white;
-}
-
-.bonusTable th {
-    background: rgba(255,255,255,0.1);
-}
-
-@media screen and (max-width:1024px) {
-    .topWrapper { flex-direction:column; }
-    .bonusWrapper { max-width:100%; margin-top:20px; }
-    .sidebar {
-        width:100%;
-        display:flex;
-        flex-wrap:wrap;
-        justify-content:center;
-        gap:10px;
-        margin: 20px 0;
-    }
-    .sidebar a { margin-bottom:0; width:auto; padding:10px 20px; }
-}
-
-@media screen and (max-width:600px) {
-    .card { width:55px; height:82px; }
-    .card .corner { font-size:12px; padding:3px; }
-    .card .center { font-size:28px; }
-    input[type="number"] { width:100px; font-size:0.85em; padding:8px; }
-}
-
-/* Кнопки — оригинальный простой дизайн */
-button {
-    font-size:1em;
-    padding:10px;
-    border-radius:10px;
-    border:none;
-    margin:5px;
-    cursor:pointer;
-    background:#555;
-    color:white;
-    font-weight:bold;
-    transition:0.2s;
-}
-button:hover { background:#777; }
-
-/* Карты — без скролла */
 .cardsContainer {
     display: flex;
-    flex-direction: row;
     justify-content: center;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: nowrap;
-    overflow-x: hidden;
-    padding: 10px 0;
-    max-width: 100%;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 15px 0;
 }
 
+/* НОВЫЙ ДИЗАЙН КАРТ — белые лицевые стороны */
 .card {
-    width: 80px;
-    height: 120px;
+    width: 90px;
+    height: 130px;
     border-radius: 12px;
-    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.5), inset 0 2px 6px rgba(255,255,255,0.7);
+    background: white; /* белый фон */
+    color: #000;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.8), inset 0 1px 6px rgba(0,0,0,0.1);
     position: relative;
     overflow: hidden;
-    transition: all 0.4s ease;
     opacity: 0;
-    transform: translateY(30px) rotate(-5deg);
-    flex-shrink: 1;
+    transform: translateY(30px) scale(0.94);
+    transition: all 0.5s ease;
 }
 
 .card.show {
     opacity: 1;
-    transform: translateY(0) rotate(0deg);
-}
-
-.card:hover {
-    transform: translateY(-10px) scale(1.05);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.7), 0 0 25px rgba(255,215,0,0.5);
+    transform: translateY(0) scale(1);
 }
 
 .card .corner {
     position: absolute;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
+    padding: 8px;
     line-height: 1;
-    padding: 6px;
 }
 
-.card .top-left { top: 4px; left: 4px; }
-.card .bottom-right { bottom: 4px; right: 4px; transform: rotate(180deg); }
+.card .top-left { top: 6px; left: 6px; }
+.card .bottom-right { bottom: 6px; right: 6px; transform: rotate(180deg); }
 
 .card .center {
     position: absolute;
@@ -271,60 +267,119 @@ button:hover { background:#777; }
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 48px;
+    font-size: 54px;
     font-weight: bold;
 }
 
-.card.red { color: #c62828; }
-.card.black { color: #111; }
+/* Красные масти */
+.card.red { color: #c00; }
 
+/* Новая рубашка карт */
 .card.back {
-    background: linear-gradient(135deg, #1f2833 0%, #0b0c10 100%);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.7), inset 0 2px 8px rgba(255,75,43,0.15);
+    background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #0d1b2a 100%);
+    border: 2px solid #415a77;
+    color: #e0e1dd;
+    position: relative;
+    overflow: hidden;
 }
 
 .card.back::before {
-    content: "";
+    content: "REAPER CASINO";
     position: absolute;
-    inset: 10px;
-    border: 2px solid rgba(255,75,43,0.3);
-    border-radius: 8px;
-    background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,75,43,0.05) 10px, rgba(255,75,43,0.05) 20px);
-}
-
-/* Комбинации под картами */
-#playerComboText, #botComboText {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-35deg);
+    font-size: 20px;
     font-weight: bold;
-    font-size: 1.5em;
-    text-align: center;
-    margin-top: 10px;
-    min-height: 30px;
+    color: rgba(229, 225, 221, 0.15);
+    letter-spacing: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.card.back::after {
+    content: "♠ ♥ ♦ ♣";
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
+    color: rgba(229, 225, 221, 0.25);
+    letter-spacing: 8px;
+}
+
+/* Остальные стили (player-combo, actionButtons и т.д.) остаются без изменений */
+.player-combo, .dealer-combo {
+    font-size: 1.8em;
+    font-weight: bold;
+    margin-top: 14px;
+    min-height: 1.5em;
+    letter-spacing: 0.5px;
     color: white;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.7);
 }
 
-.win { color: #28a745 !important; }
-.lose { color: #e53935 !important; }
-.tie { color: #f39c12 !important; }
-
-.bottomBalance {
-    margin-top: 20px;
-    font-size: 1.3em;
-    background: linear-gradient(145deg,#1f2833,#0b0c10);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+.player-combo.better { color: #34d399; text-shadow: 0 0 12px #34d39980; }
+.player-combo.worse  { color: #f87171; text-shadow: 0 0 12px #f8717180; }
+.player-combo.tie    { color: #fbbf24; text-shadow: 0 0 12px #fbbf2480; }
+button {
+    font-size:1.1em;
+    padding:12px 24px;
+    border-radius:10px;
+    border:none;
+    margin:8px;
+    cursor:pointer;
+    background:#ff4b2b;
+    color:white;
+    font-weight:bold;
+    transition: background 0.2s;
 }
+
+button:hover { background: #e03e20; }
 
 input[type="number"] {
     font-size:1em;
-    padding:12px 15px;
+    padding:12px;
     border-radius:12px;
-    border:2px solid #555;
-    background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+    border:2px solid #444;
+    background:#1a1a1a;
     color:white;
     text-align:center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.05);
-    transition: 0.3s;
-    outline:none;
     width: 140px;
+    margin: 8px;
+}
+
+#actionButtons { text-align:center; margin:25px 0; min-height:80px; }
+
+#playerWinText { font-size:1.4em; margin:20px 0; text-align:center; font-weight:bold; }
+
+#totalStakeDisplay {
+    text-align: center;
+    font-size: 1.3em;
+    margin: 15px 0 5px;
+    color: #fbbf24;
+    font-weight: bold;
+}
+.bonus-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.bonus-table-wrapper table {
+    width: 100%;
+    min-width: 240px;
+    font-size: clamp(0.85rem, 3vw, 0.95em);
+}
+@media (max-width: 600px) {
+    .gameWrapper { padding: 15px; }
+    .cardsContainer { gap: 6px; }
+    .card { width: 68px; height: 102px; }
+    .card .center { font-size: 38px; }
+    .player-combo, .dealer-combo { font-size: 1.3rem; }
+    button { padding: 10px 16px; font-size: 0.95rem; }
+    input[type="number"] { width: 110px; font-size: 0.95rem; }
+    header { padding-top: 60px; }
+    .welcome { font-size: 2.8rem; }
 }
 </style>
 </head>
@@ -334,135 +389,130 @@ input[type="number"] {
     <div class="balanceDisplay">Баланс: <span id="casinoBalance">10000</span></div>
     <div class="profileTab" onclick="toggleProfile()">Профиль 📊</div>
 </div>
-
 <header>
     <div class="welcome">Reaper<span> Casino</span></div>
 </header>
 
 <div class="main-container">
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <a href="blackjack.html">🂡 Blackjack</a>
         <a href="roulette.html">🎡 Рулетка</a>
         <a href="index.html">🏠 Главная</a>
     </div>
 
-    <div class="topWrapper">
-        <div class="gameWrapper">
-            <div>
-                <input type="number" id="bbBet" placeholder="BB Ставка" oninput="updateTotalBetDisplay()">
-                <input type="number" id="anteBet" placeholder="Ante Ставка" oninput="updateTotalBetDisplay()">
-                <input type="number" id="tripsBet" placeholder="TRIPS Ставка" oninput="updateTotalBetDisplay()">
-                <input type="number" id="ultimateBet" placeholder="Ultimate Ставка" oninput="updateTotalBetDisplay()">
-                <button id="startBtn">Начать игру</button>
-            </div>
-
-            <div class="cardsSection">
-                <h3>Ваши карты</h3>
-                <div class="cardsContainer" id="playerCards"></div>
-                <p id="playerComboText"></p>
-            </div>
-
-            <div class="cardsSection">
-                <h3>Карты бота</h3>
-                <div class="cardsContainer" id="botCards"></div>
-                <p id="botComboText"></p>
-            </div>
-
-            <div class="cardsSection">
-                <h3>Карты на столе</h3>
-                <div class="cardsContainer" id="tableCards"></div>
-            </div>
-
-            <div id="actionButtons"></div>
-            <p id="playerWinText"></p>
-            <p id="totalBetDisplay">Общая ставка: 0</p>
-
-            <div class="balanceDisplay bottomBalance">
-                Баланс: <span id="casinoBalanceBottom">10000</span>
-            </div>
+    <div class="gameWrapper">
+        <div style="text-align:center; margin-bottom:20px;">
+            <input type="number" id="bbBet" placeholder="BB / Ante" min="1">
+            <input type="number" id="tripsBet" placeholder="Trips" min="0">
+            <input type="number" id="ultimateBet" placeholder="Ultimate" min="0">
+            <button id="startBtn">Начать игру</button>
         </div>
 
-        <div class="bonusWrapper">
-            <div class="bonusTable">
-                <h3>BB / TRIPS Bonus</h3>
-                <table>
-                    <tr><th>Комбинация</th><th>BB</th><th>TRIPS</th></tr>
-                    <tr><td>Ниже</td><td>Push</td><td>3x</td></tr>
-                    <tr><td>Стрит</td><td>1x</td><td>5x</td></tr>
-                    <tr><td>Флеш</td><td>1.5x</td><td>7x</td></tr>
-                    <tr><td>Фулл-хаус</td><td>3x</td><td>10x</td></tr>
-                    <tr><td>Каре</td><td>10x</td><td>25x</td></tr>
-                    <tr><td>Стрит-флеш</td><td>50x</td><td>40x</td></tr>
-                    <tr><td>Роял-флеш</td><td>500x</td><td>70x</td></tr>
-                </table>
-            </div>
+        <div class="cardsSection">
+            <h3>Ваши карты</h3>
+            <div class="cardsContainer" id="playerCards"></div>
+            <div id="playerCombo" class="player-combo"></div>
+        </div>
 
-            <div class="bonusTable">
-                <h3>Ultimate Bonus</h3>
-                <table>
-                    <tr><th>Комбинация</th><th>Выплата</th></tr>
-                    <tr><td>AA</td><td>30x</td></tr>
-                    <tr><td>AK одномастные</td><td>25x</td></tr>
-                    <tr><td>AQ одномастные</td><td>20x</td></tr>
-                    <tr><td>AJ одномастные</td><td>15x</td></tr>
-                    <tr><td>KK или QQ или JJ</td><td>15x</td></tr>
-                    <tr><td>AK разномастные</td><td>10x</td></tr>
-                    <tr><td>AQ разномастные</td><td>5x</td></tr>
-                    <tr><td>AJ разномастные</td><td>2x</td></tr>
-                </table>
-            </div>
+        <div class="cardsSection">
+            <h3>Карты дилера</h3>
+            <div class="cardsContainer" id="botCards"></div>
+            <div id="dealerCombo" class="dealer-combo"></div>
+        </div>
+
+        <div class="cardsSection">
+            <h3>Стол</h3>
+            <div class="cardsContainer" id="tableCards"></div>
+        </div>
+
+        <div id="actionButtons"></div>
+        <p id="playerWinText"></p>
+
+        <p id="totalStakeDisplay">Общая ставка: 0</p>
+
+        <div style="text-align:center; font-size:1.2em; margin-top:15px;">
+            Баланс: <span id="casinoBalanceBottom">10000</span>
+        </div>
+    </div>
+
+    <div style="flex: 0 0 300px; display:flex; flex-direction:column; gap:20px;">
+        <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:15px;">
+            <h3 style="text-align:center; color:#ffb347; margin-bottom:12px;">Trips Bonus</h3>
+            <table style="width:100%; border-collapse:collapse; font-size:0.95em;">
+                <tr><th>Комбинация</th><th>Выплата</th></tr>
+                <tr><td>Сет</td><td>3:1</td></tr>
+                <tr><td>Стрит</td><td>5:1</td></tr>
+                <tr><td>Флеш</td><td>7:1</td></tr>
+                <tr><td>Фулл-хаус</td><td>10:1</td></tr>
+                <tr><td>Каре</td><td>25:1</td></tr>
+                <tr><td>Стрит-флеш</td><td>40:1</td></tr>
+                <tr><td>Роял-флеш</td><td>70:1</td></tr>
+            </table>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:15px;">
+            <h3 style="text-align:center; color:#ffb347; margin-bottom:12px;">Ultimate Bonus</h3>
+            <table style="width:100%; border-collapse:collapse; font-size:0.95em;">
+                <tr><th>Комбинация</th><th>Выплата</th></tr>
+                <tr><td>AA</td><td>30x</td></tr>
+                <tr><td>AK suited</td><td>25x</td></tr>
+                <tr><td>AQ suited</td><td>20x</td></tr>
+                <tr><td>AJ suited</td><td>15x</td></tr>
+                <tr><td>KK / QQ / JJ</td><td>15x</td></tr>
+                <tr><td>AK off-suited</td><td>10x</td></tr>
+                <tr><td>AQ off-suited</td><td>5x</td></tr>
+                <tr><td>AJ off-suited</td><td>2x</td></tr>
+            </table>
         </div>
     </div>
 </div>
 
-<div class="rulesWrapper">
-  <h2>Правила Ultimate Texas Hold'em</h2>
-  <ul>
-    <li>Ставки BB и Ante должны быть равны.</li>
-    <li>На префлопе можно ставить 4x или чек.</li>
-    <li>На флопе можно ставить 2x или чек.</li>
-    <li>На терне и ривере можно ставить 1x или скинуть карты.</li>
-    <li>Выигрывает игрок с лучшей комбинацией по покерным правилам.</li>
-    <li>Если комбинации равны, учитывается старшая карта (кикер).</li>
-    <li>Каждая игра имеет обязательную ставку 50, если на флопе у вас Фулл-хаус, то за это вам платят 300, за каре 500, за Стрит-флеш 3000, за Роял-флеш 15000</li>
-  </ul>
+<div id="profileModal" class="profileModal">
+    <div class="profileContent">
+        <span class="closeProfile" onclick="toggleProfile()">✖</span>
+        <h2>Статистика в Ultimate Texas Hold'em</h2>
+        <p>Всего игр: <span class="value" id="statGames">0</span></p>
+        <p>Выигрышей: <span class="value" id="statWins">0</span></p>
+        <p>Проигрышей: <span class="value" id="statLosses">0</span></p>
+        <p>Макс. выплата: <span class="value" id="statMaxWin">0</span></p>
+        <p>Лучшая комбинация: <span class="value" id="statBestCombo">-</span></p>
+        <button class="resetStatsBtn" onclick="resetStats()">Сбросить статистику</button>
+    </div>
 </div>
 
 <button id="addFundsBtn">+10000</button>
 
-<!-- Модальное окно профиля -->
-<div id="profileModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:2000; justify-content:center; align-items:center;">
-    <div style="background:#1f2833; padding:30px; border-radius:15px; color:white; width:340px; max-width:90%; text-align:center; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.7);">
-        <span onclick="toggleProfile()" style="position:absolute; top:12px; right:18px; font-size:28px; color:#ff4b2b; cursor:pointer;">✖</span>
-        <h2>Статистика игрока в Покере</h2>
-        <p>Всего игр: <span id="statGames">0</span></p>
-        <p>Выигрышей: <span id="statWins">0</span></p>
-        <p>Проигрышей: <span id="statLosses">0</span></p>
-        <p>Максимальная выплата: <span id="statMaxWin">0</span></p>
-        <p>Лучшая комбинация: <span id="statBestCombo">-</span></p>
-        <button onclick="resetStats()" style="margin-top:20px; padding:12px 30px; background:#28a745; color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Сбросить статистику</button>
-    </div>
-</div>
-
 <script>
-// Общий баланс
+// Загружаем баланс сразу при открытии страницы
 let casinoBalance = localStorage.getItem("casinoBalance") 
     ? parseInt(localStorage.getItem("casinoBalance")) 
     : 10000;
 
+// Обновляем отображение сразу
+updateCasinoBalance();
+
+// Слушаем изменения из других вкладок/игр
+window.addEventListener('storage', (e) => {
+    if (e.key === "casinoBalance") {
+        casinoBalance = e.newValue ? parseInt(e.newValue) : 10000;
+        updateCasinoBalance();
+    }
+});
+
+// Функция обновления баланса (и в topBar, и внизу)
 function updateCasinoBalance() {
-    document.getElementById("casinoBalance").innerText = casinoBalance;
-    document.getElementById("casinoBalanceBottom").innerText = casinoBalance;
+    const balStr = casinoBalance.toLocaleString('ru-RU');
+    document.getElementById("casinoBalance").innerText = balStr;
+    document.getElementById("casinoBalanceBottom").innerText = balStr;
     localStorage.setItem("casinoBalance", casinoBalance);
 }
 
-// Кнопка +10000
+// Кнопка +10000 (синхронизация через localStorage)
 document.getElementById("addFundsBtn").onclick = () => {
     casinoBalance += 10000;
     updateCasinoBalance();
 };
 
-// Локальная статистика покера
 let pokerStats = localStorage.getItem("pokerStats") 
     ? JSON.parse(localStorage.getItem("pokerStats")) 
     : {games:0, wins:0, losses:0, maxWin:0, bestCombo:"-"};
@@ -471,353 +521,411 @@ function toggleProfile() {
     const modal = document.getElementById("profileModal");
     modal.style.display = modal.style.display === "flex" ? "none" : "flex";
     if (modal.style.display === "flex") {
-        document.getElementById("statGames").innerText = pokerStats.games;
-        document.getElementById("statWins").innerText = pokerStats.wins;
-        document.getElementById("statLosses").innerText = pokerStats.losses;
-        document.getElementById("statMaxWin").innerText = pokerStats.maxWin;
+        document.getElementById("statGames").innerText = pokerStats.games || 0;
+        document.getElementById("statWins").innerText = pokerStats.wins || 0;
+        document.getElementById("statLosses").innerText = pokerStats.losses || 0;
+        document.getElementById("statMaxWin").innerText = pokerStats.maxWin || 0;
         document.getElementById("statBestCombo").innerText = pokerStats.bestCombo || "-";
     }
 }
 
 function resetStats() {
-    if (!confirm("Сбросить статистику покера?")) return;
+    if (!confirm("Сбросить статистику?")) return;
     pokerStats = {games:0, wins:0, losses:0, maxWin:0, bestCombo:"-"};
     localStorage.setItem("pokerStats", JSON.stringify(pokerStats));
     toggleProfile();
 }
 
-// Обновление общей ставки
-function updateTotalBetDisplay() {
-    const bb = parseInt(document.getElementById("bbBet").value) || 0;
-    const ante = parseInt(document.getElementById("anteBet").value) || 0;
-    const trips = parseInt(document.getElementById("tripsBet").value) || 0;
-    const ultimate = parseInt(document.getElementById("ultimateBet").value) || 0;
-    const total = bb + ante + trips + ultimate + flopBonusBet + currentPlayBet;
-    document.getElementById("totalBetDisplay").innerText = `Общая ставка: ${total}`;
-}
-
-document.querySelectorAll('input[type="number"]').forEach(input => {
-    input.addEventListener('input', updateTotalBetDisplay);
-});
-
-// Цвета комбинаций — только в шоудаун
-function updateComboColors(playerWins, tie) {
-    const playerCombo = document.getElementById("playerComboText");
-    const botCombo = document.getElementById("botComboText");
-    playerCombo.className = "";
-    botCombo.className = "";
-    if (tie) {
-        playerCombo.classList.add("tie");
-        botCombo.classList.add("tie");
-    } else if (playerWins) {
-        playerCombo.classList.add("win");
-        botCombo.classList.add("lose");
-    } else {
-        playerCombo.classList.add("lose");
-        botCombo.classList.add("win");
-    }
-}
-
-// Остальной код игры (без изменений)
-window.onload = () => {
-    updateCasinoBalance();
-    updateTotalBetDisplay();
-};
-
-let deck = [], player = [], bot = [], table = [];
+let deck = [], player = [], bot = [], flop = [], turn = [], river = [];
 let bbBet = 0, anteBet = 0, tripsBet = 0, ultimateBet = 0;
 let stage = "", currentPlayBet = 0;
-const pokerSuits = ["♠","♥","♦","♣"];
-const pokerRanks = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
-const flopBonusBet = 50;
+
+const suits = ["♠","♥","♦","♣"];
+const ranks = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
 
 document.getElementById("startBtn").onclick = startPoker;
 
 function createDeck(){
     let d = []; 
-    for(let s of pokerSuits) for(let r of pokerRanks) d.push(r+s); 
+    for(let s of suits) for(let r of ranks) d.push(r+s); 
     return d.sort(()=>Math.random()-0.5);
 }
+
 function deal(n){ return deck.splice(0,n); }
 
-function displayCards(id, cards, highlightIndices=[]){
-    const container = document.getElementById(id); container.innerHTML = "";
-    cards.forEach((card,index)=>{
-        const div = document.createElement("div"); div.classList.add("card");
+function displayCards(id, cards){
+    const container = document.getElementById(id); 
+    container.innerHTML = "";
+    cards.forEach((card, i) => {
+        const div = document.createElement("div");
+        div.classList.add("card");
         if(card==="🂠"){ 
             div.classList.add("back"); 
-            container.appendChild(div); 
-            setTimeout(() => div.classList.add("show"), 100 + index * 150);
-            return; 
+        } else {
+            const rank = card.slice(0,-1), suit = card.slice(-1);
+            if(suit==="♥"||suit==="♦") div.classList.add("red"); else div.classList.add("black");
+            div.innerHTML = `
+                <div class="corner top-left">${rank}<br>${suit}</div>
+                <div class="center">${suit}</div>
+                <div class="corner bottom-right">${rank}<br>${suit}</div>
+            `;
         }
-        const rank = card.slice(0,-1), suit = card.slice(-1);
-        if(suit==="♥"||suit==="♦") div.classList.add("red"); else div.classList.add("black");
-        div.innerHTML = `
-            <div class="corner top-left">${rank}<br>${suit}</div>
-            <div class="center">${suit}</div>
-            <div class="corner bottom-right">${rank}<br>${suit}</div>
-        `;
-        if(highlightIndices.includes(index)) div.classList.add("highlight");
         container.appendChild(div);
-        setTimeout(() => div.classList.add("show"), 100 + index * 150);
+        setTimeout(() => div.classList.add("show"), 100 + i * 120);
     });
 }
 
-function isDealerQualified(botCards, tableCards){
-    const dealerEval = evaluateHand(botCards.concat(tableCards));
-    return dealerEval.score >= 1;
-}
+function evaluateHand(cards) {
+    const values = cards.map(c => ranks.indexOf(c.slice(0,-1))).sort((a,b)=>b-a);
+    const suitsArr = cards.map(c => c.slice(-1));
+    const count = {};
+    values.forEach(v => count[v] = (count[v] || 0) + 1);
 
-function evaluateHand(cards){
-    const values = cards.map(c=>pokerRanks.indexOf(c.slice(0,-1))).sort((a,b)=>b-a);
-    const suits = cards.map(c=>c.slice(-1));
-    const counts = {};
-    values.forEach(v=>counts[v]=(counts[v]||0)+1);
-    const pairs = Object.keys(counts).filter(k=>counts[k]===2).map(Number).sort((a,b)=>b-a);
-    const three = Object.keys(counts).filter(k=>counts[k]===3).map(Number);
-    const four = Object.keys(counts).filter(k=>counts[k]===4).map(Number);
-    const flushSuit = suits.find(s=>suits.filter(x=>x===s).length>=5);
-    const flushCards = flushSuit?cards.filter(c=>c.slice(-1)===flushSuit):[];
-    const unique = [...new Set(values)].sort((a,b)=>b-a);
-    function getStraight(vals){
-        for(let i=0;i<=vals.length-5;i++){
-            if(vals[i]-vals[i+4]===4) return vals[i];
+    const flushSuit = suitsArr.find(s => suitsArr.filter(x=>x===s).length >= 5);
+    const flushCards = flushSuit ? cards.filter(c=>c.slice(-1)===flushSuit) : [];
+    const flushValues = flushCards.map(c=>ranks.indexOf(c.slice(0,-1))).sort((a,b)=>b-a);
+
+    const pairs = Object.keys(count).filter(k=>count[k]===2).map(Number).sort((a,b)=>b-a);
+    const three = Object.keys(count).filter(k=>count[k]===3).map(Number);
+    const four = Object.keys(count).filter(k=>count[k]===4).map(Number);
+
+    function getStraight(vals) {
+        vals = [...new Set(vals)].sort((a,b)=>b-a);
+        for (let i = 0; i <= vals.length - 5; i++) {
+            if (vals[i] - vals[i+4] === 4) return vals[i];
         }
-        if(vals.includes(12)&&vals.includes(3)&&vals.includes(2)&&vals.includes(1)&&vals.includes(0)) return 3;
+        if (vals.includes(12) && vals.includes(3) && vals.includes(2) && vals.includes(1) && vals.includes(0)) return 3;
         return null;
     }
-    const straightHigh = getStraight(unique);
-    let straightFlushHigh = null;
-    if(flushSuit){
-        const flushValues = [...new Set(flushCards.map(c=>pokerRanks.indexOf(c.slice(0,-1))))].sort((a,b)=>b-a);
-        straightFlushHigh = getStraight(flushValues);
-    }
-    if(straightFlushHigh===12) return {score:9,name:"Роял-флеш",ranks:[12]};
-    if(straightFlushHigh!==null) return {score:8,name:"Стрит-флеш",ranks:[straightFlushHigh]};
-    if(four.length) return {score:7,name:"Каре",ranks:[four[0], ...values.filter(v=>v!==four[0])]};
-    if(three.length && pairs.length) return {score:6,name:"Фулл-хаус",ranks:[three[0], pairs[0]]};
-    if(flushSuit) return {score:5,name:"Флеш",ranks:flushValues};
-    if(straightHigh!==null) return {score:4,name:"Стрит",ranks:[straightHigh]};
-    if(three.length) return {score:3,name:"Сет",ranks:[three[0], ...values.filter(v=>v!==three[0])]};
-    if(pairs.length>=2) return {score:2,name:"Две пары",ranks:[pairs[0], pairs[1], ...values.filter(v=>v!==pairs[0]&&v!==pairs[1])]};
-    if(pairs.length===1) return {score:1,name:"Пара",ranks:[pairs[0], ...values.filter(v=>v!==pairs[0])]};
-    return {score:0,name:"Старшая карта",ranks:values};
+
+    const straightHigh = getStraight(values);
+    let sfHigh = null;
+    if (flushSuit) sfHigh = getStraight(flushValues);
+
+    let result = {score:0, name:"Старшая карта", ranks:values.slice(0,5)};
+
+    if (sfHigh === 12) result = {score:9, name:"Роял-флеш", ranks:flushValues.slice(0,5)};
+    else if (sfHigh !== null) result = {score:8, name:"Стрит-флеш", ranks:flushValues.slice(0,5)};
+    else if (four.length) result = {score:7, name:"Каре", ranks:[four[0], ...values.filter(v=>v!==four[0]).slice(0,4)]};
+    else if (three.length && pairs.length) result = {score:6, name:"Фулл-хаус", ranks:[three[0], pairs[0]]};
+    else if (flushSuit) result = {score:5, name:"Флеш", ranks:flushValues.slice(0,5)};
+    else if (straightHigh !== null) result = {score:4, name:"Стрит", ranks:values.slice(0,5)};
+    else if (three.length) result = {score:3, name:"Сет", ranks:[three[0], ...values.filter(v=>v!==three[0]).slice(0,4)]};
+    else if (pairs.length >= 2) result = {score:2, name:"Две пары", ranks:[pairs[0], pairs[1], ...values.filter(r => r !== pairs[0] && r !== pairs[1]).slice(0,3)]};
+    else if (pairs.length === 1) result = {score:1, name:"Пара", ranks:[pairs[0], ...values.filter(r => r !== pairs[0]).slice(0,4)]};
+    else result = {score:0, name:"Старшая карта", ranks:values.slice(0,5)};
+
+    return result;
 }
 
-function compareHands(playerEval, botEval){
-    if(playerEval.score>botEval.score) return 1;
-    if(playerEval.score<botEval.score) return -1;
-    for(let i=0;i<playerEval.ranks.length;i++){
-        if(playerEval.ranks[i]>botEval.ranks[i]) return 1;
-        if(playerEval.ranks[i]<botEval.ranks[i]) return -1;
+function compareHands(p, d){
+    if(p.score !== d.score) return p.score > d.score ? 1 : -1;
+    for(let i=0; i<Math.min(p.ranks.length, d.ranks.length); i++){
+        if(p.ranks[i] !== d.ranks[i]) return p.ranks[i] > d.ranks[i] ? 1 : -1;
     }
     return 0;
 }
 
-function showCurrentPlayerCombo(){
-    const visibleCards = [...player];
-    if(stage==="flop") visibleCards.push(...table.slice(0,3));
-    else if(stage==="turn"||stage==="river"||stage==="showdown") visibleCards.push(...table);
-    const currentEval = evaluateHand(visibleCards);
-    const playerComboEl = document.getElementById("playerComboText");
-    playerComboEl.innerText = currentEval.name;
-    playerComboEl.style.color = "white"; // всегда белый до шоудауна
+function updatePlayerCombo(show = false) {
+    const el = document.getElementById("playerCombo");
+    if (!show) {
+        el.textContent = "";
+        el.className = "player-combo";
+        return;
+    }
+
+    let currentCards = [...player];
+    if (flop.length) currentCards = currentCards.concat(flop);
+    if (turn.length) currentCards = currentCards.concat(turn);
+    if (river.length) currentCards = currentCards.concat(river);
+
+    const eval = evaluateHand(currentCards);
+    el.textContent = eval.name;
+    el.className = "player-combo"; // будет переопределено в finishPoker
+}
+
+function updateTotalStake() {
+    const total = (bbBet * 2) + tripsBet + ultimateBet + currentPlayBet;
+    document.getElementById("totalStakeDisplay").textContent = `Общая ставка: ${total}`;
 }
 
 function startPoker(){
+    document.getElementById("playerCombo").textContent = "";
+    document.getElementById("playerCombo").className = "player-combo";
+    document.getElementById("dealerCombo").textContent = "";
+    document.getElementById("dealerCombo").className = "dealer-combo";
+
     document.getElementById("playerWinText").innerText = "";
-    document.getElementById("playerComboText").innerText = "";
-    document.getElementById("botComboText").innerText = "";
     document.getElementById("actionButtons").innerHTML = "";
-   
-    bbBet = parseInt(document.getElementById("bbBet").value)||0;
-    anteBet = parseInt(document.getElementById("anteBet").value)||0;
-    tripsBet = parseInt(document.getElementById("tripsBet").value)||0;
-    ultimateBet = parseInt(document.getElementById("ultimateBet").value)||0;
-   
-    if(bbBet!==anteBet || bbBet<=0){ alert("BB и Ante должны быть равны и больше 0"); return; }
-    if(casinoBalance < (bbBet+anteBet+tripsBet+ultimateBet+flopBonusBet)){ alert("Недостаточно средств"); return; }
 
-    casinoBalance -= (bbBet+anteBet+tripsBet+ultimateBet+flopBonusBet);
+    bbBet = parseInt(document.getElementById("bbBet").value) || 0;
+    anteBet = bbBet;
+    tripsBet = parseInt(document.getElementById("tripsBet").value) || 0;
+    ultimateBet = parseInt(document.getElementById("ultimateBet").value) || 0;
+
+    lastBB = bbBet;
+    lastTrips = tripsBet;
+    lastUltimate = ultimateBet;
+
+    const totalCost = bbBet * 2 + tripsBet + ultimateBet;
+
+    if (bbBet < 1) {
+        alert("BB / Ante минимум 1");
+        return;
+    }
+    if (casinoBalance < totalCost) {
+        alert("Недостаточно средств");
+        return;
+    }
+
+    casinoBalance -= totalCost;
     updateCasinoBalance();
-    updateTotalBetDisplay();
+    updateTotalStake();
 
-    deck = createDeck(); player = deal(2); bot = deal(2); table = deal(5);
-    displayCards("playerCards", player); 
-    displayCards("botCards", ["🂠","🂠"]); 
+    deck = createDeck();
+    player = deal(2);
+    bot = deal(2);
+    flop = []; turn = []; river = [];
+
+    displayCards("playerCards", player);
+    displayCards("botCards", ["🂠","🂠"]);
     displayCards("tableCards", []);
-    stage = "preflop"; currentPlayBet = 0;
 
-    showButtons("Префлоп: 4x или чек",4);
+    updatePlayerCombo(false); // ничего не показываем
+    updateTotalStake();
+
+    stage = "preflop";
+    currentPlayBet = 0;
+
+    showButtons("Префлоп: 4× или чек", 4, false, true);
 }
 
-function showButtons(text,mult,allowFold=false,showCheck=true){
+function showButtons(text, mult, allowFold = false, showCheck = true) {
     const div = document.getElementById("actionButtons");
-    div.innerHTML = `<p>${text}</p>`;
-    if(mult>0){
+    div.innerHTML = `<p style="margin:10px 0;">${text}</p>`;
+    
+    if (mult > 0) {
         const btn = document.createElement("button");
-        btn.innerText = `Ставка ${mult}x`;
-        btn.onclick = ()=>playerMove(mult);
+        btn.textContent = `Ставка ${mult}×`;
+        btn.onclick = () => playerMove(mult);
         div.appendChild(btn);
     }
-    if(showCheck){
+    
+    if (showCheck) {
         const btn = document.createElement("button");
-        btn.innerText = "Пропустить";
-        btn.onclick = ()=>playerMove(0);
+        btn.textContent = "Чек";
+        btn.onclick = () => playerMove(0);
         div.appendChild(btn);
     }
-    if(allowFold){
+    
+    if (allowFold) {
         const btn = document.createElement("button");
-        btn.innerText = "Скинуть карты";
-        btn.onclick = ()=>foldPoker();
+        btn.textContent = "Фолд";
+        btn.onclick = foldPoker;
         div.appendChild(btn);
     }
 }
 
-function playerMove(mult){
-    if(mult>0){
-        let stake = bbBet*mult;
-        if(stake>casinoBalance){alert("Недостаточно средств"); return;}
+function playerMove(mult) {
+    if (mult > 0) {
+        const stake = bbBet * mult;
+        if (stake > casinoBalance) {
+            alert("Недостаточно средств");
+            return;
+        }
         casinoBalance -= stake;
         updateCasinoBalance();
         currentPlayBet += stake;
-        updateTotalBetDisplay();
+        updateTotalStake();
     }
-   
-    if(stage==="preflop"){
-        if(mult===4){ stage="showdown"; displayCards("tableCards",table); finishPoker(); return; }
-        stage="flop";
-        displayCards("tableCards", table.slice(0,3));
-        showButtons("Флоп: ставка 2x или чек",2,false,true);
-        showCurrentPlayerCombo();
-    }
-    else if(stage==="flop"){
-        if(mult===2){ stage="showdown"; displayCards("tableCards",table); finishPoker(); return; }
-        stage="turn";
-        displayCards("tableCards",table);
-        showButtons("Терн и Ривер: ставка 1x или скинуть карты",1,true,false);
-        showCurrentPlayerCombo();
-    }
-    else if(stage==="turn"){
-        stage="showdown";
-        displayCards("tableCards",table);
-        showCurrentPlayerCombo();
+
+    if (stage === "preflop") {
+        if (mult === 4) {
+            deal(3); flop = deal(3);
+            deal(1); turn = deal(1);
+            deal(1); river = deal(1);
+            stage = "showdown";
+            displayCards("tableCards", flop.concat(turn, river));
+            updatePlayerCombo(true);
+            finishPoker();
+            return;
+        }
+        stage = "flop";
+        deal(3); flop = deal(3);
+        displayCards("tableCards", flop);
+        showButtons("Флоп: 2× или чек", 2, false, true);
+    } else if (stage === "flop") {
+        if (mult === 2) {
+            deal(1); turn = deal(1);
+            deal(1); river = deal(1);
+            stage = "showdown";
+            displayCards("tableCards", flop.concat(turn, river));
+            updatePlayerCombo(true);
+            finishPoker();
+            return;
+        }
+        stage = "turn_river";
+        deal(1); turn = deal(1);
+        deal(1); river = deal(1);
+        displayCards("tableCards", flop.concat(turn, river));
+        showButtons("Терн/Ривер: 1× или фолд", 1, true, false);
+    } else if (stage === "turn_river") {
+        stage = "showdown";
+        updatePlayerCombo(true);
         finishPoker();
     }
 }
 
 function foldPoker() {
     displayCards("botCards", bot);
-    const winText = document.getElementById("playerWinText");
-    winText.style.color = "red";
-    winText.innerText = "😢 Вы скинули карты. Ставки потеряны.";
+
+    if (flop.length === 0) {
+        deal(3); flop = deal(3);
+    }
+    if (turn.length === 0) {
+        deal(1); turn = deal(1);
+        deal(1); river = deal(1);
+    }
+    displayCards("tableCards", flop.concat(turn, river));
+
+    const dealerHand = [...bot, ...flop, ...turn, ...river];
+    const dealerEval = evaluateHand(dealerHand);
+    document.getElementById("dealerCombo").textContent = dealerEval.name;
+    document.getElementById("dealerCombo").className = "dealer-combo better";
+
+    updatePlayerCombo(true);
+
+    document.getElementById("playerWinText").style.color = "#f87171";
+    document.getElementById("playerWinText").innerText = "Вы сбросили карты — потери: Ante + BB + Play";
+    document.getElementById("actionButtons").innerHTML = "";
     setTimeout(showRestartButton, 300);
 }
 
-function finishPoker() {
+function finishPoker(){
     displayCards("botCards", bot);
 
-    const playerEval = evaluateHand(player.concat(table));
-    const botEval = evaluateHand(bot.concat(table));
-    const cmp = compareHands(playerEval, botEval);
+    const playerHand = [...player, ...flop, ...turn, ...river];
+    const dealerHand = [...bot, ...flop, ...turn, ...river];
 
-    document.getElementById("playerComboText").innerText = playerEval.name;
-    document.getElementById("botComboText").innerText = botEval.name;
+    const playerEval = evaluateHand(playerHand);
+    const dealerEval = evaluateHand(dealerHand);
 
-    updateComboColors(cmp === 1, cmp === 0);
+    const cmp = compareHands(playerEval, dealerEval);
+    const playerWins = cmp > 0;
+    const tie = cmp === 0;
+    const dealerQualified = dealerEval.score >= 1;
+
+    const playerComboEl = document.getElementById("playerCombo");
+    const dealerComboEl = document.getElementById("dealerCombo");
+
+    playerComboEl.textContent = playerEval.name;
+    dealerComboEl.textContent = dealerEval.name;
+
+    playerComboEl.className = "player-combo";
+    dealerComboEl.className = "dealer-combo";
+
+    if (cmp > 0) {
+        playerComboEl.classList.add("better");
+        dealerComboEl.classList.add("worse");
+    } else if (cmp < 0) {
+        playerComboEl.classList.add("worse");
+        dealerComboEl.classList.add("better");
+    } else {
+        playerComboEl.classList.add("tie");
+        dealerComboEl.classList.add("tie");
+    }
 
     let totalWin = 0;
     let messages = [];
 
-    const playerWins = cmp === 1;
-    const tie = cmp === 0;
+    if (playerWins) {
+        totalWin += currentPlayBet;
+        messages.push("Play 1:1");
+    } else if (tie) {
+        totalWin += currentPlayBet;
+        messages.push("Play push");
+    }
+
+    if (tie || !dealerQualified) {
+        totalWin += anteBet;
+        messages.push("Ante push");
+    } else if (playerWins) {
+        totalWin += anteBet;
+        messages.push("Ante 1:1");
+    }
 
     if (tie) {
-        totalWin += bbBet + anteBet + currentPlayBet;
-        messages.push("ПУШ");
+        totalWin += bbBet;
+        messages.push("Blind push");
     } else if (playerWins) {
-        let playWin = currentPlayBet * 2;
-        totalWin += playWin;
-        messages.push(`PLAY 1:1: ${playWin}`);
-
-        let dealerQualified = isDealerQualified(bot, table);
-        if (dealerQualified) {
-            let anteWin = anteBet * 2;
-            totalWin += anteWin;
-            messages.push(`ANTE 1:1: ${anteWin}`);
-
-            let blindMult = {
-                "Стрит":1, "Флеш":1.5, "Фулл-хаус":3, "Каре":10,
-                "Стрит-флеш":50, "Роял-флеш":500
-            }[playerEval.name] || 0;
-            if (blindMult > 0) {
-                let blindWin = bbBet * (blindMult + 1);
-                totalWin += blindWin;
-                messages.push(`BLIND ${blindMult}: ${blindWin}`);
-            }
-        } else {
-            totalWin += bbBet + anteBet;
-            messages.push(`BLIND и ANTE пуш (дилер не квалифицирован)`);
-        }
-
-        let tripsMult = {
-            "Сет":3, "Стрит":5, "Флеш":7, "Фулл-хаус":10,
-            "Каре":25, "Стрит-флеш":40, "Роял-флеш":70
+        const blindMult = {
+            "Стрит":1, "Флеш":2, "Фулл-хаус":3, "Каре":10,
+            "Стрит-флеш":50, "Роял-флеш":500
         }[playerEval.name] || 0;
-        if (tripsBet > 0 && tripsMult > 0) {
-            let tripsWin = tripsBet * (tripsMult + 1);
-            totalWin += tripsWin;
-            messages.push(`TRIPS ${tripsMult}: ${tripsWin}`);
+        if (blindMult > 0) {
+            totalWin += bbBet * (blindMult + 1);
+            messages.push(`Blind ${blindMult+1}:1`);
+        } else {
+            totalWin += bbBet;
+            messages.push("Blind push");
         }
+    }
 
-        let ultMult = evaluateUltimate(player);
-        if (ultimateBet > 0 && ultMult > 0) {
-            let ultWin = ultimateBet * ultMult;
-            totalWin += ultWin;
-            messages.push(`ULTIMATE ${ultMult}: ${ultWin}`);
-        }
+    const tripsMult = {
+        "Сет":3, "Стрит":5, "Флеш":7, "Фулл-хаус":10,
+        "Каре":25, "Стрит-флеш":40, "Роял-флеш":70
+    }[playerEval.name] || 0;
+    if (tripsBet > 0 && tripsMult > 0) {
+        totalWin += tripsBet * (tripsMult + 1);
+        messages.push(`Trips ${tripsMult+1}:1`);
+    }
+
+    const ultMult = evaluateUltimate(player);
+    if (ultimateBet > 0 && ultMult > 0) {
+        totalWin += ultimateBet * ultMult;
+        messages.push(`Ultimate ${ultMult}x`);
     }
 
     casinoBalance += totalWin;
     updateCasinoBalance();
 
-    const el = document.getElementById("playerWinText");
-    el.style.transition = "color 0.5s ease";
-
-    if (tie) {
-        el.style.color = "#f39c12";
-        el.innerText = `🤝 Ничья | ${messages.join(" | ")}`;
-    } else if (totalWin > 0) {
-        el.style.color = "#28a745";
-        el.innerText = `🎉 Выплата: ${totalWin} | ${messages.join(" | ")}`;
+    const winEl = document.getElementById("playerWinText");
+    if (totalWin > 0) {
+        winEl.style.color = "#34d399";
+        winEl.innerText = `Выигрыш: ${totalWin} | ${messages.join(" | ")}`;
+    } else if (tie) {
+        winEl.style.color = "#fbbf24";
+        winEl.innerText = `Ничья | ${messages.join(" | ")}`;
     } else {
-        el.style.color = "#e53935";
-        el.innerText = `😢 Вы проиграли`;
+        winEl.style.color = "#f87171";
+        winEl.innerText = `Проигрыш`;
     }
 
     pokerStats.games += 1;
     if (playerWins) pokerStats.wins += 1;
     else if (!tie) pokerStats.losses += 1;
     if (totalWin > pokerStats.maxWin) pokerStats.maxWin = totalWin;
-    if (playerEval.name !== "Старшая карта") pokerStats.bestCombo = playerEval.name;
+    if (playerEval.score > 0 && playerEval.name !== pokerStats.bestCombo) {
+        pokerStats.bestCombo = playerEval.name;
+    }
     localStorage.setItem("pokerStats", JSON.stringify(pokerStats));
 
-    setTimeout(showRestartButton, 300);
+    setTimeout(showRestartButton, 800);
 }
 
-function evaluateUltimate(playerCards){
-    const [c1,c2]=playerCards;
-    const r1=c1.slice(0,-1), s1=c1.slice(-1);
-    const r2=c2.slice(0,-1), s2=c2.slice(-1);
+function evaluateUltimate(cards) {
+    const [c1, c2] = cards;
+    const r1 = c1.slice(0,-1), s1 = c1.slice(-1);
+    const r2 = c2.slice(0,-1), s2 = c2.slice(-1);
 
-    if(r1==="A"&&r2==="A") return 30;
-    if(r1===r2 && (r1==="K"||r1==="Q"||r1==="J")) return 15;
-    if(((r1==="A"&&r2==="K")||(r1==="K"&&r2==="A")) && s1===s2) return 25;
-    if(((r1==="A"&&r2==="Q")||(r1==="Q"&&r2==="A")) && s1===s2) return 20;
-    if(((r1==="A"&&r2==="J")||(r1==="J"&&r2==="A")) && s1===s2) return 15;
-    if((r1==="A"&&r2==="K")||(r1==="K"&&r2==="A")) return 10;
-    if((r1==="A"&&r2==="Q")||(r1==="Q"&&r2==="A")) return 5;
-    if((r1==="A"&&r2==="J")||(r1==="J"&&r2==="A")) return 2;
+    if (r1 === "A" && r2 === "A") return 30;
+    if (r1 === r2 && ["K","Q","J"].includes(r1)) return 15;
+    if ((r1==="A" && r2==="K" || r1==="K" && r2==="A") && s1===s2) return 25;
+    if ((r1==="A" && r2==="Q" || r1==="Q" && r2==="A") && s1===s2) return 20;
+    if ((r1==="A" && r2==="J" || r1==="J" && r2==="A") && s1===s2) return 15;
+    if ((r1==="A" && r2==="K" || r1==="K" && r2==="A")) return 10;
+    if ((r1==="A" && r2==="Q" || r1==="Q" && r2==="A")) return 5;
+    if ((r1==="A" && r2==="J" || r1==="J" && r2==="A")) return 2;
     return 0;
 }
 
@@ -825,14 +933,24 @@ function showRestartButton() {
     const div = document.getElementById("actionButtons");
     div.innerHTML = "";
     const btn = document.createElement("button");
-    btn.innerText = "Начать новую игру";
+    btn.textContent = "Новая игра";
     btn.onclick = () => {
+        document.getElementById("playerCombo").textContent = "";
+        document.getElementById("playerCombo").className = "player-combo";
+        document.getElementById("dealerCombo").textContent = "";
+        document.getElementById("dealerCombo").className = "dealer-combo";
+
         document.getElementById("playerWinText").innerText = "";
-        document.getElementById("playerComboText").innerText = "";
-        document.getElementById("botComboText").innerText = "";
         document.getElementById("playerCards").innerHTML = "";
         document.getElementById("botCards").innerHTML = "";
         document.getElementById("tableCards").innerHTML = "";
+        document.getElementById("actionButtons").innerHTML = "";
+
+        document.getElementById("bbBet").value = lastBB || "";
+        document.getElementById("tripsBet").value = lastTrips || "";
+        document.getElementById("ultimateBet").value = lastUltimate || "";
+
+        updateTotalStake();
         startPoker();
     };
     div.appendChild(btn);
