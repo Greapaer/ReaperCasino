@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baccarat — Royal Table</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8d08a;
+    --gold-dark: #8b6914;
+    --green: #0a3d2e;
+    --green-felt: #0d4d38;
+    --green-light: #1a6b52;
+    --dark: #0a0a0a;
+    --darker: #050505;
+    --card-bg: #faf8f0;
+    --text: #e8e0d0;
+    --red: #c0392b;
+    --black: #1a1a1a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cormorant Garamond', serif;
+    background: var(--darker);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* TOP BAR */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: rgba(0,0,0,0.5);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 500;
+    backdrop-filter: blur(8px);
+    gap: 10px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(201,168,76,0.6);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    font-family: 'Cormorant Garamond', serif;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+  }
+  .back-link:hover { color: var(--gold); }
+  .back-link svg { transition: transform 0.2s; flex-shrink: 0; }
+  .back-link:hover svg { transform: translateX(-3px); }
+
+  .top-bar-title {
+    font-size: 0.65rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.3);
+    white-space: nowrap;
+  }
+
+  .top-bar-balance {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(201,168,76,0.07);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 5px 12px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .top-bar-balance:hover { background: rgba(201,168,76,0.13); border-color: rgba(201,168,76,0.4); }
+  .top-bar-balance .tbl-label { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(201,168,76,0.45); }
+  .top-bar-balance .tbl-amount { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: var(--gold); }
+
+  @media (max-width: 520px) {
+    .top-bar { padding: 8px 12px; }
+    .top-bar-title { display: none; }
+    .back-link { font-size: 0.7rem; letter-spacing: 2px; }
+    .top-bar-balance .tbl-label { display: none; }
+    .top-bar-balance { padding: 5px 8px; }
+    .top-bar-balance .tbl-amount { font-size: 0.85rem; }
+  }
+  @media (max-width: 360px) { .back-link span { display: none; } }
+
+  /* BALANCE MODAL */
+  .balance-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 2000;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 64px 16px 0 0;
+    backdrop-filter: blur(4px);
+  }
+  .balance-modal-overlay.open { display: flex; }
+
+  .balance-modal {
+    background: #0d0d0d;
+    border: 1px solid rgba(201,168,76,0.3);
+    width: 340px;
+    max-width: calc(100vw - 24px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    animation: slideDown 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .balance-modal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .bm-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid rgba(201,168,76,0.12);
+  }
+  .bm-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold);
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+  }
+  .bm-close {
+    background: none;
+    border: none;
+    color: rgba(201,168,76,0.5);
+    font-size: 1.3rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+    transition: color 0.2s;
+  }
+  .bm-close:hover { color: var(--gold); }
+
+  .bm-amount {
+    text-align: center;
+    padding: 24px 20px 18px;
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+  }
+  .bm-amount-label { font-size: 0.62rem; letter-spacing: 5px; text-transform: uppercase; color: rgba(201,168,76,0.4); margin-bottom: 8px; }
+  .bm-amount-value { font-family: 'Playfair Display', serif; font-size: 2.4rem; color: var(--gold); text-shadow: 0 0 30px rgba(201,168,76,0.25); }
+
+  .bm-add {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    text-align: center;
+  }
+  .bm-add-hint { font-size: 0.62rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(201,168,76,0.35); margin-bottom: 10px; }
+  .btn-add-funds {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 11px 32px;
+    background: linear-gradient(135deg, #1a5c30, #27ae60);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+    transition: all 0.2s;
+    touch-action: manipulation;
+    min-height: 44px;
+  }
+  .btn-add-funds:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(39,174,96,0.3); }
+
+  .bm-tx-title { font-size: 0.62rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(201,168,76,0.4); padding: 14px 20px 8px; }
+  .bm-tx-list { max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(201,168,76,0.2) transparent; }
+  .bm-tx-list::-webkit-scrollbar { width: 4px; }
+  .bm-tx-list::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); }
+
+  .tx-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 0.88rem;
+  }
+  .tx-row:last-child { border-bottom: none; }
+  .tx-row:nth-child(even) { background: rgba(255,255,255,0.02); }
+  .tx-info-desc { color: rgba(232,224,208,0.65); }
+  .tx-info-time { font-size: 0.66rem; color: rgba(201,168,76,0.3); margin-top: 2px; }
+  .tx-amount { font-family: 'Playfair Display', serif; font-size: 0.95rem; }
+  .tx-amount.credit { color: #2ecc71; }
+  .tx-amount.debit  { color: #e74c3c; }
+  .bm-empty { text-align: center; padding: 24px; color: rgba(201,168,76,0.3); font-style: italic; font-size: 0.95rem; }
+
+  /* HEADER */
+  header {
+    text-align: center;
+    padding: clamp(24px, 6vw, 48px) 20px clamp(16px, 4vw, 32px);
+    position: relative;
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+  }
+  .header-ornament {
+    color: var(--gold);
+    font-size: 14px;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(201,168,76,0.3);
+  }
+  h1 span {
+    font-style: italic;
+    font-size: 0.6em;
+    display: block;
+    color: var(--gold-light);
+    letter-spacing: 0.3em;
+    margin-top: 6px;
+  }
+  .gold-line {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 20px auto;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    padding: 0 8px;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    color: rgba(232,208,138,0.5);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 16px 24px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+  @media (max-width: 480px) { .tab-btn { font-size: 0.85rem; letter-spacing: 2px; padding: 14px 16px; } }
+
+  .tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+  .tab-btn.active { color: var(--gold); }
+  .tab-btn.active::after { transform: scaleX(1); }
+
+  /* SECTIONS */
+  .section {
+    display: none;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: clamp(20px, 5vw, 40px) clamp(12px, 4vw, 20px);
+    animation: fadeIn 0.4s ease;
+  }
+  .section.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* GAME */
+  .game-wrapper { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+
+  /* Speed toggle */
+  .speed-toggle {
+    display: flex;
+    gap: 0;
+    border: 1px solid rgba(201,168,76,0.25);
+    overflow: hidden;
+    align-self: flex-end;
+  }
+  .speed-btn {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    background: none;
+    border: none;
+    color: rgba(201,168,76,0.45);
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 38px;
+  }
+  .speed-btn.active { background: rgba(201,168,76,0.12); color: var(--gold); }
+  .speed-btn + .speed-btn { border-left: 1px solid rgba(201,168,76,0.2); }
+
+  /* Bet input */
+  .bet-area {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: center;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(201,168,76,0.15);
+    padding: 16px 20px;
+    width: 100%;
+    max-width: 800px;
+  }
+  @media (max-width: 600px) {
+    .bet-area { grid-template-columns: 1fr 1fr; }
+    .bet-input-wrap { grid-column: 1 / -1; order: -1; }
+  }
+
+  .balance-display { text-align: center; }
+  .balance-label { font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(201,168,76,0.6); }
+  .balance-amount { font-family: 'Playfair Display', serif; font-size: clamp(1.2rem, 4vw, 1.8rem); color: var(--gold); text-shadow: 0 0 20px rgba(201,168,76,0.4); }
+
+  .bet-input-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .bet-input-label { font-size: 0.68rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(201,168,76,0.5); }
+  .bet-input-row { display: flex; align-items: center; gap: 6px; }
+  .bet-input {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 8px 14px;
+    width: 120px;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .bet-input:focus { border-color: var(--gold); }
+  .bet-input::placeholder { color: rgba(201,168,76,0.25); font-size: 1rem; }
+
+  /* Remove spinners */
+  .bet-input::-webkit-outer-spin-button,
+  .bet-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .bet-input[type=number] { -moz-appearance: textfield; }
+
+  .quick-bets { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; }
+  .quick-bet-btn {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.72rem;
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    background: rgba(201,168,76,0.07);
+    border: 1px solid rgba(201,168,76,0.2);
+    color: rgba(201,168,76,0.6);
+    cursor: pointer;
+    transition: all 0.15s;
+    min-height: 30px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .quick-bet-btn:hover { background: rgba(201,168,76,0.15); color: var(--gold); border-color: rgba(201,168,76,0.5); }
+
+  /* Bet zones */
+  .bet-zones {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 10px;
+    width: 100%;
+    max-width: 800px;
+    align-items: stretch;
+  }
+  @media (max-width: 500px) {
+    .bet-zones { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
+    .tie-zone { grid-column: 1 / -1; order: 3; }
+  }
+
+  .bet-zone {
+    padding: 16px;
+    border: 1px solid rgba(201,168,76,0.2);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(10,61,46,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  .bet-zone:hover { border-color: var(--gold); background: rgba(201,168,76,0.1); }
+  .bet-zone.selected { border-color: var(--gold); background: rgba(201,168,76,0.15); box-shadow: 0 0 20px rgba(201,168,76,0.2); }
+  .bet-zone-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gold); letter-spacing: 2px; }
+  .bet-zone-odds { font-size: 0.75rem; letter-spacing: 3px; color: rgba(201,168,76,0.6); text-transform: uppercase; margin-top: 4px; }
+  .bet-zone-amount { font-size: 1.3rem; color: var(--gold-light); margin-top: 8px; min-height: 1.5em; }
+
+  .tie-zone {
+    background: rgba(0,0,0,0.3);
+    padding: 12px 8px;
+    border: 1px dashed rgba(201,168,76,0.2);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tie-zone:hover, .tie-zone.selected { border-color: var(--gold); background: rgba(201,168,76,0.1); }
+
+  /* BONUS BETS */
+  .bonus-section {
+    width: 100%;
+    max-width: 800px;
+  }
+  .bonus-title {
+    font-size: 0.65rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.45);
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .bonus-bets {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+  }
+  .bonus-zone {
+    padding: 10px 8px;
+    border: 1px dashed rgba(201,168,76,0.18);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(0,0,0,0.25);
+    position: relative;
+  }
+  .bonus-zone:hover { border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.08); }
+  .bonus-zone.selected { border-color: #e8d08a; background: rgba(232,208,138,0.1); box-shadow: 0 0 12px rgba(232,208,138,0.15); }
+  .bonus-zone-name { font-family: 'Playfair Display', serif; font-size: 0.9rem; color: var(--gold-light); letter-spacing: 1px; }
+  .bonus-zone-desc { font-size: 0.65rem; letter-spacing: 2px; color: rgba(201,168,76,0.45); margin-top: 3px; text-transform: uppercase; }
+  .bonus-zone-amount { font-size: 1rem; color: var(--gold-light); margin-top: 5px; min-height: 1.2em; }
+
+  .bonus-info-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 6px;
+  }
+  .bonus-info-btn {
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.35);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .bonus-info-btn:hover { color: rgba(201,168,76,0.7); }
+
+  /* Bonus tooltip/modal */
+  .bonus-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 3000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .bonus-modal-overlay.open { display: flex; }
+  .bonus-modal {
+    background: #0e0e0e;
+    border: 1px solid rgba(201,168,76,0.3);
+    width: 100%;
+    max-width: 560px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+    animation: fadeIn 0.2s ease;
+    position: relative;
+  }
+  .bonus-modal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .bm2-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid rgba(201,168,76,0.12);
+    position: sticky;
+    top: 0;
+    background: #0e0e0e;
+    z-index: 1;
+  }
+  .bm2-title { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1.15rem; letter-spacing: 3px; }
+  .bm2-close {
+    background: none; border: none; color: rgba(201,168,76,0.5);
+    font-size: 1.4rem; cursor: pointer; padding: 4px; transition: color 0.2s;
+  }
+  .bm2-close:hover { color: var(--gold); }
+  .bonus-table { width: 100%; border-collapse: collapse; }
+  .bonus-table th {
+    color: rgba(201,168,76,0.55);
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+  }
+  .bonus-table td {
+    padding: 9px 16px;
+    color: rgba(232,224,208,0.75);
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top;
+  }
+  .bonus-table tr:last-child td { border-bottom: none; }
+  .bonus-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .bonus-hand { color: var(--gold-light); font-family: 'Playfair Display', serif; font-size: 0.95rem; }
+  .bonus-pay { color: #e8d08a; font-weight: 500; }
+
+  /* FELT TABLE */
+  .felt-table {
+    width: 100%;
+    max-width: 800px;
+    background: var(--green-felt);
+    border: 3px solid var(--gold-dark);
+    box-shadow: 0 0 60px rgba(0,0,0,0.8), inset 0 0 80px rgba(0,0,0,0.2);
+    padding: clamp(14px, 4vw, 28px);
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .felt-table::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(201,168,76,0.2);
+    pointer-events: none;
+  }
+
+  .hand-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .hand-area { flex: 1; text-align: center; min-width: 0; }
+  .hand-label {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(0.6rem, 2vw, 0.75rem);
+    letter-spacing: clamp(2px, 1vw, 5px);
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.7);
+    margin-bottom: 10px;
+  }
+  .cards-row {
+    display: flex;
+    gap: clamp(6px, 2vw, 10px);
+    justify-content: center;
+    min-height: clamp(76px, 18vw, 100px);
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow: visible;
+  }
+  .score-display {
+    margin-top: 10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--gold);
+  }
+
+  /* CARDS */
+  .playing-card {
+    width: clamp(52px, 12vw, 68px);
+    height: clamp(76px, 17vw, 100px);
+    background: var(--card-bg);
+    border-radius: 5px;
+    box-shadow: 2px 4px 12px rgba(0,0,0,0.5);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: clamp(0.75rem, 2.5vw, 1.1rem);
+    font-weight: 700;
+    animation: dealCard var(--deal-duration, 0.3s) ease;
+    transform-origin: bottom center;
+    flex-shrink: 0;
+  }
+  @keyframes dealCard {
+    from { opacity: 0; transform: scale(0.5) rotate(-5deg) translateY(-20px); }
+    to   { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); }
+  }
+  .card-corner-top { position: absolute; top: 4px; left: 5px; font-size: clamp(0.6rem, 1.8vw, 0.85rem); line-height: 1; }
+  .card-corner-bottom { position: absolute; bottom: 4px; right: 5px; font-size: clamp(0.6rem, 1.8vw, 0.85rem); line-height: 1; transform: rotate(180deg); }
+  .card-suit-center { font-size: clamp(1.2rem, 4vw, 1.8rem); }
+  .card-red { color: var(--red); }
+  .card-black { color: #1a1a1a; }
+
+  /* RESULT */
+  .result-msg {
+    text-align: center;
+    padding: 16px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(201,168,76,0.3);
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .result-text { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold); letter-spacing: 2px; animation: fadeIn 0.5s ease; }
+  .result-win { color: #2ecc71; text-shadow: 0 0 20px rgba(46,204,113,0.5); }
+  .result-loss { color: #e74c3c; }
+  .result-tie { color: var(--gold); }
+
+  /* ROAD MAP under table */
+  .road-under {
+    width: 100%;
+    max-width: 800px;
+  }
+  .road-under-label {
+    font-size: 0.62rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.4);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .road-map {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 12px 14px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(201,168,76,0.1);
+    min-height: 46px;
+  }
+  .road-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.62rem;
+    font-weight: 700;
+  }
+  .road-P { background: rgba(41,128,185,0.3); border: 2px solid #2980b9; color: #2980b9; }
+  .road-B { background: rgba(192,57,43,0.3); border: 2px solid #c0392b; color: #c0392b; }
+  .road-T { background: rgba(201,168,76,0.2); border: 2px solid var(--gold); color: var(--gold); }
+
+  /* ACTIONS */
+  .action-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 800px;
+  }
+
+  .btn-primary {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: var(--darker);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 48px;
+  }
+  .btn-secondary {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 14px 20px;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.4);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 400;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 48px;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,168,76,0.4); }
+  .btn-primary:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+  .btn-secondary:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); }
+  @media (max-width: 400px) { .btn-primary, .btn-secondary { letter-spacing: 2px; padding: 13px 16px; font-size: 0.9rem; } }
+
+  /* STATS */
+  .section-title { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 2rem; text-align: center; letter-spacing: 3px; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: linear-gradient(135deg, rgba(10,61,46,0.3), rgba(0,0,0,0.3));
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 24px 16px;
+    text-align: center;
+    position: relative;
+  }
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .stat-value { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--gold); display: block; }
+  .stat-label { font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(201,168,76,0.5); margin-top: 6px; display: block; }
+
+  .history-title { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1.3rem; letter-spacing: 3px; margin-bottom: 16px; text-align: center; }
+
+  .win-bar-wrap { margin-bottom: 32px; }
+  .win-bar-labels { display: flex; justify-content: space-between; font-size: 0.75rem; letter-spacing: 3px; color: rgba(201,168,76,0.5); text-transform: uppercase; margin-bottom: 8px; }
+  .win-bar-track { height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; display: flex; }
+  .win-bar-player { background: #2980b9; transition: width 0.5s; }
+  .win-bar-banker { background: #c0392b; transition: width 0.5s; }
+  .win-bar-tie { background: var(--gold-dark); transition: width 0.5s; }
+
+  .history-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid rgba(201,168,76,0.1); }
+  .history-table { width: 100%; min-width: 480px; border-collapse: collapse; font-size: 0.95rem; }
+  .history-table th { color: rgba(201,168,76,0.6); font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; padding: 10px 14px; border-bottom: 1px solid rgba(201,168,76,0.2); text-align: left; }
+  .history-table td { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(232,224,208,0.8); }
+  .history-table tr:hover td { background: rgba(201,168,76,0.04); }
+
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 2px; font-size: 0.8rem; letter-spacing: 1px; }
+  .pill-win { background: rgba(46,204,113,0.15); color: #2ecc71; }
+  .pill-loss { background: rgba(231,76,60,0.15); color: #e74c3c; }
+  .pill-tie { background: rgba(201,168,76,0.15); color: var(--gold); }
+
+  .empty-history { text-align: center; padding: 40px; color: rgba(201,168,76,0.3); font-style: italic; font-size: 1.1rem; }
+
+  .reset-btn {
+    display: block;
+    margin: 20px auto 0;
+    background: none;
+    border: 1px solid rgba(192,57,43,0.3);
+    color: rgba(192,57,43,0.6);
+    font-family: 'Cormorant Garamond', serif;
+    letter-spacing: 3px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    padding: 8px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .reset-btn:hover { border-color: #c0392b; color: #c0392b; }
+
+  /* RULES */
+  .rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 32px; }
+  @media (max-width: 700px) { .rules-grid { grid-template-columns: 1fr; } }
+  .rule-card { background: linear-gradient(135deg, rgba(201,168,76,0.05), rgba(10,61,46,0.2)); border: 1px solid rgba(201,168,76,0.2); padding: 28px; position: relative; overflow: hidden; }
+  .rule-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(180deg, var(--gold), transparent); }
+  .rule-card h3 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1.2rem; margin-bottom: 16px; letter-spacing: 2px; }
+  .rule-card p, .rule-card li { font-size: 1rem; line-height: 1.8; color: rgba(232,224,208,0.85); font-weight: 300; }
+  .rule-card ul { padding-left: 20px; }
+  .rule-card li { margin-bottom: 6px; }
+  .card-values-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+  .card-values-table th { color: var(--gold); font-family: 'Playfair Display', serif; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; padding: 10px 14px; border-bottom: 1px solid rgba(201,168,76,0.3); text-align: left; }
+  .card-values-table td { padding: 8px 14px; color: rgba(232,224,208,0.8); font-size: 0.95rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+  /* FOOTER */
+  .games-footer { margin-top: 60px; border-top: 1px solid rgba(201,168,76,0.15); padding: 36px 20px 48px; }
+  .games-footer-title { text-align: center; font-size: 0.7rem; letter-spacing: 6px; text-transform: uppercase; color: rgba(201,168,76,0.4); margin-bottom: 24px; }
+  .games-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 700px; margin: 0 auto; }
+  @media (max-width: 500px) { .games-grid { grid-template-columns: 1fr; max-width: 300px; } }
+
+  .game-card-link {
+    display: block;
+    text-decoration: none;
+    border: 1px solid rgba(201,168,76,0.15);
+    padding: 20px 12px;
+    text-align: center;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+    background: rgba(0,0,0,0.2);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .game-card-link::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(201,168,76,0.05), transparent); opacity: 0; transition: opacity 0.25s; }
+  .game-card-link:hover { border-color: rgba(201,168,76,0.5); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+  .game-card-link:hover::before { opacity: 1; }
+  .game-card-icon { font-size: 2rem; display: block; margin-bottom: 8px; line-height: 1; }
+  .game-card-name { font-family: 'Playfair Display', serif; font-size: 1rem; color: rgba(201,168,76,0.8); letter-spacing: 2px; display: block; }
+  .game-card-sub { font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(201,168,76,0.35); display: block; margin-top: 4px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(10,10,10,0.95);
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    padding: 14px 24px;
+    z-index: 9999;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    white-space: normal;
+    max-width: calc(100vw - 40px);
+    text-align: center;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- BALANCE MODAL -->
+<div class="balance-modal-overlay" id="balanceModalOverlay" onclick="closeBalanceModalOnBg(event)">
+  <div class="balance-modal">
+    <div class="bm-header">
+      <span class="bm-title">Баланс</span>
+      <button class="bm-close" onclick="closeBalanceModal()">✕</button>
+    </div>
+    <div class="bm-amount">
+      <div class="bm-amount-label">Текущий баланс</div>
+      <div class="bm-amount-value" id="bmAmount">₽ —</div>
+    </div>
+    <div class="bm-add">
+      <div class="bm-add-hint">Пополнение</div>
+      <button class="btn-add-funds" onclick="addFunds()">+ 10 000</button>
+    </div>
+    <div class="bm-tx-title">История операций</div>
+    <div class="bm-tx-list" id="bmTxList">
+      <div class="bm-empty">Нет операций</div>
+    </div>
+  </div>
+</div>
+
+<!-- BONUS INFO MODAL -->
+<div class="bonus-modal-overlay" id="bonusModalOverlay" onclick="closeBonusModalOnBg(event)">
+  <div class="bonus-modal">
+    <div class="bm2-header">
+      <span class="bm2-title">Бонусные ставки</span>
+      <button class="bm2-close" onclick="closeBonusModal()">✕</button>
+    </div>
+    <div style="padding: 20px;">
+      <p style="font-size:0.9rem; color:rgba(232,224,208,0.65); line-height:1.7; margin-bottom:20px;">Бонусные ставки — это дополнительные боковые ставки, которые используются в реальных казино. Они независимы от основного исхода и рассчитываются по особым правилам.</p>
+
+      <p style="font-family:'Playfair Display',serif; color:var(--gold); margin-bottom:10px; letter-spacing:2px;">🐼 Panda 8 (Dragon 7)</p>
+      <table class="bonus-table" style="margin-bottom:20px;">
+        <tr><th>Рука</th><th>Выплата</th></tr>
+        <tr><td class="bonus-hand">Банкир 3 карты = 8</td><td class="bonus-pay">25:1</td></tr>
+        <tr><td>Любой другой исход</td><td style="color:#e74c3c;">Проигрыш</td></tr>
+      </table>
+
+      <p style="font-family:'Playfair Display',serif; color:var(--gold); margin-bottom:10px; letter-spacing:2px;">🐉 Dragon Bonus</p>
+      <p style="font-size:0.85rem; color:rgba(232,224,208,0.5); margin-bottom:8px;">Ставка на Игрока или Банкира. Выплата зависит от разрыва в очках (натурал или победа с перевесом).</p>
+      <table class="bonus-table" style="margin-bottom:20px;">
+        <tr><th>Условие</th><th>Выплата</th></tr>
+        <tr><td class="bonus-hand">Натурал победитель</td><td class="bonus-pay">1:1</td></tr>
+        <tr><td class="bonus-hand">Натурал ничья</td><td class="bonus-pay">Возврат</td></tr>
+        <tr><td class="bonus-hand">Победа с перевесом 9</td><td class="bonus-pay">30:1</td></tr>
+        <tr><td class="bonus-hand">Победа с перевесом 8</td><td class="bonus-pay">10:1</td></tr>
+        <tr><td class="bonus-hand">Победа с перевесом 7</td><td class="bonus-pay">6:1</td></tr>
+        <tr><td class="bonus-hand">Победа с перевесом 6</td><td class="bonus-pay">4:1</td></tr>
+        <tr><td class="bonus-hand">Победа с перевесом 5</td><td class="bonus-pay">2:1</td></tr>
+        <tr><td class="bonus-hand">Победа с перевесом 4</td><td class="bonus-pay">1:1</td></tr>
+        <tr><td>Победа с перевесом 1–3 или поражение</td><td style="color:#e74c3c;">Проигрыш</td></tr>
+      </table>
+
+      <p style="font-family:'Playfair Display',serif; color:var(--gold); margin-bottom:10px; letter-spacing:2px;">👑 Either Pair</p>
+      <table class="bonus-table" style="margin-bottom:20px;">
+        <tr><th>Условие</th><th>Выплата</th></tr>
+        <tr><td class="bonus-hand">Любая пара в первых 2 картах</td><td class="bonus-pay">5:1</td></tr>
+      </table>
+
+      <p style="font-family:'Playfair Display',serif; color:var(--gold); margin-bottom:10px; letter-spacing:2px;">🃏 Perfect Pair</p>
+      <table class="bonus-table">
+        <tr><th>Условие</th><th>Выплата</th></tr>
+        <tr><td class="bonus-hand">Пара одной масти и ранга</td><td class="bonus-pay">25:1</td></tr>
+        <tr><td class="bonus-hand">Пара одного ранга (разные масти)</td><td class="bonus-pay">8:1</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="top-bar">
+  <a href="index.html" class="back-link">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+    <span>Главное меню</span>
+  </a>
+  <span class="top-bar-title">Royal Casino</span>
+  <div class="top-bar-balance" onclick="openBalanceModal()">
+    <span class="tbl-label">Баланс</span>
+    <span class="tbl-amount" id="topbar-balance">₽ —</span>
+  </div>
+</div>
+
+<header>
+  <div class="header-ornament">✦ &nbsp; Royal Casino &nbsp; ✦</div>
+  <h1>BACCARAT<span>Royal Table</span></h1>
+  <div class="gold-line"></div>
+</header>
+
+<nav>
+  <button class="tab-btn active" onclick="showTab('game', this)">Игра</button>
+  <button class="tab-btn" onclick="showTab('rules', this)">Правила</button>
+  <button class="tab-btn" onclick="showTab('stats', this)">Статистика</button>
+</nav>
+
+<!-- ========== GAME TAB ========== -->
+<div id="tab-game" class="section active">
+  <div class="game-wrapper">
+
+    <!-- Speed toggle -->
+    <div class="speed-toggle">
+      <button class="speed-btn" id="speed-slow" onclick="setSpeed('slow')">🕐 Медленно</button>
+      <button class="speed-btn active" id="speed-fast" onclick="setSpeed('fast')">⚡ Быстро</button>
+    </div>
+
+    <!-- Balance + Bet Input -->
+    <div class="bet-area">
+      <div class="balance-display">
+        <div class="balance-label">Баланс</div>
+        <div class="balance-amount" id="balance">₽ 10,000</div>
+      </div>
+
+      <div class="bet-input-wrap">
+        <div class="bet-input-label">Ваша ставка (₽)</div>
+        <div class="bet-input-row">
+          <input class="bet-input" type="number" id="betInput" min="10" max="100000" placeholder="0" />
+        </div>
+        <div class="quick-bets">
+          <button class="quick-bet-btn" onclick="setQuickBet(100)">100</button>
+          <button class="quick-bet-btn" onclick="setQuickBet(250)">250</button>
+          <button class="quick-bet-btn" onclick="setQuickBet(500)">500</button>
+          <button class="quick-bet-btn" onclick="setQuickBet(1000)">1K</button>
+          <button class="quick-bet-btn" onclick="setQuickBet(5000)">5K</button>
+          <button class="quick-bet-btn" onclick="setBetMax()">MAX</button>
+        </div>
+      </div>
+
+      <div class="balance-display">
+        <div class="balance-label">Мин / Макс</div>
+        <div class="balance-amount" style="font-size:1rem; opacity:0.7;">₽10 / ₽50K</div>
+      </div>
+    </div>
+
+    <!-- Main Bet Zones -->
+    <div class="bet-zones">
+      <div class="bet-zone" id="zone-player" onclick="selectZone('player')">
+        <div class="bet-zone-name">Игрок</div>
+        <div class="bet-zone-odds">1:1</div>
+        <div class="bet-zone-amount" id="bet-player">—</div>
+      </div>
+      <div class="tie-zone" id="zone-tie" onclick="selectZone('tie')">
+        <div class="bet-zone-name" style="font-size:0.9rem;">Ничья</div>
+        <div class="bet-zone-odds">8:1</div>
+        <div class="bet-zone-amount" id="bet-tie" style="font-size:1.1rem;">—</div>
+      </div>
+      <div class="bet-zone" id="zone-banker" onclick="selectZone('banker')">
+        <div class="bet-zone-name">Банкир</div>
+        <div class="bet-zone-odds">0.95:1</div>
+        <div class="bet-zone-amount" id="bet-banker">—</div>
+      </div>
+    </div>
+
+    <!-- Bonus Bets -->
+    <div class="bonus-section">
+      <div class="bonus-title">✦ Бонусные ставки ✦</div>
+      <div class="bonus-bets">
+        <div class="bonus-zone" id="bzone-panda" onclick="selectBonusZone('panda')">
+          <div class="bonus-zone-name">🐼 Panda 8</div>
+          <div class="bonus-zone-desc">Банкир 3 карты = 8</div>
+          <div class="bonus-zone-amount" id="bbet-panda">—</div>
+        </div>
+        <div class="bonus-zone" id="bzone-dragon-p" onclick="selectBonusZone('dragon-p')">
+          <div class="bonus-zone-name">🐉 Dragon — Игрок</div>
+          <div class="bonus-zone-desc">Победа с отрывом</div>
+          <div class="bonus-zone-amount" id="bbet-dragon-p">—</div>
+        </div>
+        <div class="bonus-zone" id="bzone-dragon-b" onclick="selectBonusZone('dragon-b')">
+          <div class="bonus-zone-name">🐉 Dragon — Банкир</div>
+          <div class="bonus-zone-desc">Победа с отрывом</div>
+          <div class="bonus-zone-amount" id="bbet-dragon-b">—</div>
+        </div>
+        <div class="bonus-zone" id="bzone-either-pair" onclick="selectBonusZone('either-pair')">
+          <div class="bonus-zone-name">👑 Either Pair</div>
+          <div class="bonus-zone-desc">Любая пара × 5</div>
+          <div class="bonus-zone-amount" id="bbet-either-pair">—</div>
+        </div>
+        <div class="bonus-zone" id="bzone-perfect-pair" onclick="selectBonusZone('perfect-pair')">
+          <div class="bonus-zone-name">🃏 Perfect Pair</div>
+          <div class="bonus-zone-desc">Идеальная пара × 25</div>
+          <div class="bonus-zone-amount" id="bbet-perfect-pair">—</div>
+        </div>
+      </div>
+      <div class="bonus-info-row">
+        <button class="bonus-info-btn" onclick="openBonusModal()">ℹ Как работают бонусные ставки?</button>
+      </div>
+    </div>
+
+    <!-- Felt Table -->
+    <div class="felt-table">
+      <div class="hand-row">
+        <div class="hand-area">
+          <div class="hand-label">Игрок</div>
+          <div class="cards-row" id="player-cards"></div>
+          <div class="score-display" id="player-score"></div>
+        </div>
+        <div style="width:1px;background:rgba(201,168,76,0.15);"></div>
+        <div class="hand-area">
+          <div class="hand-label">Банкир</div>
+          <div class="cards-row" id="banker-cards"></div>
+          <div class="score-display" id="banker-score"></div>
+        </div>
+      </div>
+      <div class="result-msg" id="result-msg">
+        <span class="result-text" style="color:rgba(201,168,76,0.4); font-style:italic;">Выберите ставку и нажмите «Раздать»</span>
+      </div>
+    </div>
+
+    <!-- Road map under table -->
+    <div class="road-under">
+      <div class="road-under-label">Дорожка результатов</div>
+      <div class="road-map" id="road-map-game"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-row">
+      <button class="btn-secondary" onclick="clearBet()">Сброс</button>
+      <button class="btn-primary" id="deal-btn" onclick="deal()">Раздать карты</button>
+      <button class="btn-secondary" id="rebet-btn" onclick="rebet()" disabled>Повторить</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== RULES TAB ========== -->
+<div id="tab-rules" class="section">
+  <div class="section-title">Правила Баккара</div>
+  <div class="gold-line"></div>
+  <div class="rules-grid">
+    <div class="rule-card" style="grid-column: 1 / -1;">
+      <h3>Цель игры</h3>
+      <p>Баккара — карточная игра, где вы делаете ставку на то, чья рука окажется ближе к очкам <strong style="color:var(--gold)">9</strong>: рука Игрока, рука Банкира или Ничья. Вы не управляете картами — вы только предсказываете исход.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Стоимость карт</h3>
+      <table class="card-values-table">
+        <tr><th>Карта</th><th>Очки</th></tr>
+        <tr><td>2 — 9</td><td>Номинал карты</td></tr>
+        <tr><td>10, J, Q, K</td><td>0 очков</td></tr>
+        <tr><td>Туз (A)</td><td>1 очко</td></tr>
+      </table>
+      <p style="margin-top:12px; font-size:0.9rem; color:rgba(232,224,208,0.6);">Если сумма очков ≥ 10, от неё отнимают 10. Например: 7+8=15 → 5 очков.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Ставки и выплаты</h3>
+      <ul>
+        <li><strong style="color:#2980b9">Игрок</strong> — выплата 1:1</li>
+        <li><strong style="color:#c0392b">Банкир</strong> — выплата 0.95:1 (5% комиссия)</li>
+        <li><strong style="color:var(--gold)">Ничья</strong> — выплата 8:1</li>
+      </ul>
+      <p style="margin-top:12px; font-size:0.9rem; color:rgba(232,224,208,0.6);">Ставка на Банкира статистически выгоднее из-за правил добора карт.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Натурал (Natural)</h3>
+      <p>Если после первых двух карт сумма очков Игрока или Банкира равна <strong style="color:var(--gold)">8 или 9</strong> — это «натурал». Раунд немедленно завершается, третья карта не раздаётся.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Добор карты — Игрок</h3>
+      <ul>
+        <li>Сумма <strong>0–5</strong>: Игрок берёт третью карту</li>
+        <li>Сумма <strong>6–7</strong>: Игрок стоит</li>
+        <li>Сумма <strong>8–9</strong>: Натурал — нет добора</li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <h3>Добор карты — Банкир</h3>
+      <ul>
+        <li>Сумма <strong>0–2</strong>: берёт карту всегда</li>
+        <li>Сумма <strong>3</strong>: берёт, если карта Игрока ≠ 8</li>
+        <li>Сумма <strong>4</strong>: берёт, если карта Игрока 2–7</li>
+        <li>Сумма <strong>5</strong>: берёт, если карта Игрока 4–7</li>
+        <li>Сумма <strong>6</strong>: берёт, если карта Игрока 6–7</li>
+        <li>Сумма <strong>7+</strong>: стоит</li>
+      </ul>
+    </div>
+    <div class="rule-card" style="grid-column: 1 / -1;">
+      <h3>Бонусные ставки в реальных казино</h3>
+      <ul>
+        <li><strong style="color:var(--gold)">Panda 8</strong> — ставка на то, что Банкир наберёт 8 очков 3 картами. Выплата 25:1.</li>
+        <li><strong style="color:var(--gold)">Dragon Bonus</strong> — ставка на победу выбранной стороны с большим перевесом. Чем больше разрыв, тем выше выплата (до 30:1).</li>
+        <li><strong style="color:var(--gold)">Either Pair</strong> — ставка на то, что хотя бы у одной стороны в первых двух картах будет пара. Выплата 5:1.</li>
+        <li><strong style="color:var(--gold)">Perfect Pair</strong> — идентичная пара одной масти. Выплата 25:1. Пара разных мастей — 8:1.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ========== STATS TAB ========== -->
+<div id="tab-stats" class="section">
+  <div class="section-title">Статистика</div>
+  <div class="gold-line"></div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><span class="stat-value" id="s-games">0</span><span class="stat-label">Игр сыграно</span></div>
+    <div class="stat-card"><span class="stat-value" id="s-wins">0</span><span class="stat-label">Побед</span></div>
+    <div class="stat-card"><span class="stat-value" id="s-losses">0</span><span class="stat-label">Поражений</span></div>
+    <div class="stat-card"><span class="stat-value" id="s-ties">0</span><span class="stat-label">Ничьих</span></div>
+    <div class="stat-card"><span class="stat-value" id="s-pnl" style="color:var(--gold)">₽ 0</span><span class="stat-label">Чистый P&L</span></div>
+    <div class="stat-card"><span class="stat-value" id="s-winrate">0%</span><span class="stat-label">Процент побед</span></div>
+  </div>
+
+  <!-- Win bar -->
+  <div class="win-bar-wrap">
+    <div class="win-bar-labels">
+      <span id="pct-player">Игрок 0%</span>
+      <span id="pct-tie">Ничья 0%</span>
+      <span id="pct-banker">Банкир 0%</span>
+    </div>
+    <div class="win-bar-track">
+      <div class="win-bar-player" id="bar-player" style="width:0%"></div>
+      <div class="win-bar-tie" id="bar-tie" style="width:0%"></div>
+      <div class="win-bar-banker" id="bar-banker" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Road Map in stats -->
+  <div class="history-title" style="font-size:1rem; letter-spacing:5px; margin-bottom:10px; color:rgba(201,168,76,0.6);">ДОРОЖКА РЕЗУЛЬТАТОВ</div>
+  <div class="road-map" id="road-map-stats" style="margin-bottom:28px;"></div>
+
+  <div class="history-title">История раундов</div>
+  <div id="history-container">
+    <div class="empty-history" id="empty-history">История пуста. Сыграйте первый раунд!</div>
+    <div class="history-table-wrap" id="history-table-wrap" style="display:none;">
+      <table class="history-table" id="history-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Ставка на</th><th>Ставка</th><th>Исход</th><th>P&L</th><th>Счёт</th>
+          </tr>
+        </thead>
+        <tbody id="history-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <button class="reset-btn" onclick="resetStats()">⚠ Сбросить всю статистику</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== CONSTANTS ====================
+const SUITS = ['♠','♥','♦','♣'];
+const RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const RED_SUITS = new Set(['♥','♦']);
+const BAL_KEY = 'casinoBalance';
+const STATS_KEY = 'baccarat_stats_v1';
+const TX_KEY = 'baccaratTxHistory';
+
+// ==================== STATE ====================
+let balance = parseInt(localStorage.getItem(BAL_KEY) || '10000');
+let selectedZone = null;
+let selectedBonusZone = null;
+let lastBets = null;
+let gameInProgress = false;
+let gameSpeed = 'fast'; // 'fast' | 'slow'
+
+// Current bets
+let bets = { player: 0, banker: 0, tie: 0 };
+let bonusBets = { 'panda': 0, 'dragon-p': 0, 'dragon-b': 0, 'either-pair': 0, 'perfect-pair': 0 };
+let lastBonusBets = null;
+
+let stats = loadStats();
+let txHistory = (() => { try { return JSON.parse(localStorage.getItem(TX_KEY) || '[]'); } catch(e) { return []; } })();
+
+// ==================== HELPERS ====================
+function cardValue(rank) {
+  if (rank === 'A') return 1;
+  if (['10','J','Q','K'].includes(rank)) return 0;
+  return parseInt(rank);
+}
+function handTotal(hand) { return hand.reduce((s,c) => s + cardValue(c.rank), 0) % 10; }
+
+function newDeck() {
+  const deck = [];
+  for (const s of SUITS) for (const r of RANKS) deck.push({ rank: r, suit: s });
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  return deck;
+}
+
+function renderCard(card, container, delayMs = 0) {
+  const isRed = RED_SUITS.has(card.suit);
+  const div = document.createElement('div');
+  div.className = 'playing-card';
+  const dur = gameSpeed === 'slow' ? '0.6s' : '0.25s';
+  div.style.setProperty('--deal-duration', dur);
+  if (delayMs) div.style.animationDelay = (delayMs/1000) + 's';
+  div.innerHTML = `
+    <div class="card-corner-top ${isRed ? 'card-red' : 'card-black'}">${card.rank}<br>${card.suit}</div>
+    <div class="card-suit-center ${isRed ? 'card-red' : 'card-black'}">${card.suit}</div>
+    <div class="card-corner-bottom ${isRed ? 'card-red' : 'card-black'}">${card.rank}<br>${card.suit}</div>
+  `;
+  container.appendChild(div);
+}
+
+function fmtMoney(n) { return '₽ ' + n.toLocaleString('ru-RU'); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Speed multiplier: slow = 4x, fast = 1x
+function t(ms) { return gameSpeed === 'slow' ? ms * 4 : ms; }
+
+// ==================== SPEED ====================
+function setSpeed(s) {
+  gameSpeed = s;
+  document.getElementById('speed-slow').classList.toggle('active', s === 'slow');
+  document.getElementById('speed-fast').classList.toggle('active', s === 'fast');
+}
+
+// ==================== BALANCE MODAL ====================
+function openBalanceModal() {
+  renderBalanceModal();
+  document.getElementById('balanceModalOverlay').classList.add('open');
+}
+function closeBalanceModal() {
+  document.getElementById('balanceModalOverlay').classList.remove('open');
+}
+function closeBalanceModalOnBg(e) {
+  if (e.target === document.getElementById('balanceModalOverlay')) closeBalanceModal();
+}
+
+function renderBalanceModal() {
+  document.getElementById('bmAmount').textContent = fmtMoney(balance);
+  const list = document.getElementById('bmTxList');
+  if (!txHistory.length) {
+    list.innerHTML = '<div class="bm-empty">Нет операций</div>';
+    return;
+  }
+  list.innerHTML = '';
+  txHistory.forEach(tx => {
+    const row = document.createElement('div');
+    row.className = 'tx-row';
+    const credit = tx.amount > 0;
+    const d = new Date(tx.ts);
+    const timeStr = d.toLocaleDateString('ru-RU', {day:'2-digit',month:'2-digit'}) + ' ' +
+                    d.toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'});
+    row.innerHTML = `
+      <div>
+        <div class="tx-info-desc">${tx.desc}</div>
+        <div class="tx-info-time">${timeStr}</div>
+      </div>
+      <div class="tx-amount ${credit ? 'credit' : 'debit'}">${credit ? '+' : ''}${fmtMoney(tx.amount)}</div>`;
+    list.appendChild(row);
+  });
+}
+
+function addFunds() {
+  balance += 10000;
+  recordTx('Пополнение баланса', 10000);
+  saveBalance();
+  updateUI();
+  renderBalanceModal();
+  showToast('+ 10 000 добавлено');
+}
+
+function recordTx(desc, amount) {
+  txHistory.unshift({ desc, amount, ts: Date.now() });
+  if (txHistory.length > 150) txHistory = txHistory.slice(0, 150);
+  localStorage.setItem(TX_KEY, JSON.stringify(txHistory));
+}
+
+function saveBalance() {
+  localStorage.setItem(BAL_KEY, balance);
+}
+
+// ==================== BONUS MODAL ====================
+function openBonusModal() {
+  document.getElementById('bonusModalOverlay').classList.add('open');
+}
+function closeBonusModal() {
+  document.getElementById('bonusModalOverlay').classList.remove('open');
+}
+function closeBonusModalOnBg(e) {
+  if (e.target === document.getElementById('bonusModalOverlay')) closeBonusModal();
+}
+
+// ==================== TABS ====================
+function showTab(name, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'stats') renderStats();
+}
+
+// ==================== BETTING ====================
+function selectZone(zone) {
+  if (gameInProgress) return;
+  selectedZone = zone;
+  document.querySelectorAll('.bet-zone, .tie-zone').forEach(z => z.classList.remove('selected'));
+  document.getElementById('zone-' + zone).classList.add('selected');
+}
+
+function selectBonusZone(zone) {
+  if (gameInProgress) return;
+  selectedBonusZone = zone;
+  document.querySelectorAll('.bonus-zone').forEach(z => z.classList.remove('selected'));
+  document.getElementById('bzone-' + zone).classList.add('selected');
+  document.getElementById('betInput').focus();
+}
+
+function getInputBet() {
+  const val = parseInt(document.getElementById('betInput').value);
+  return isNaN(val) || val <= 0 ? 0 : val;
+}
+
+function setQuickBet(val) {
+  document.getElementById('betInput').value = val;
+}
+function setBetMax() {
+  document.getElementById('betInput').value = Math.min(balance, 50000);
+}
+
+function placeBet() {
+  if (gameInProgress) return;
+  const betAmt = getInputBet();
+  if (!betAmt) { showToast('Введите сумму ставки'); return; }
+
+  // Determine if it's a bonus or main bet
+  if (selectedBonusZone) {
+    if (betAmt > balance) { showToast('Недостаточно средств'); return; }
+    bonusBets[selectedBonusZone] += betAmt;
+    balance -= betAmt;
+    document.getElementById('bbet-' + selectedBonusZone).textContent = fmtMoney(bonusBets[selectedBonusZone]);
+    updateUI();
+    return;
+  }
+  if (!selectedZone) { showToast('Выберите зону ставки (Игрок / Банкир / Ничья)'); return; }
+  if (betAmt > balance) { showToast('Недостаточно средств'); return; }
+  bets[selectedZone] += betAmt;
+  balance -= betAmt;
+  document.getElementById('bet-' + selectedZone).textContent = fmtMoney(bets[selectedZone]);
+  updateUI();
+}
+
+function clearBet() {
+  if (gameInProgress) return;
+  const total = Object.values(bets).reduce((a,b)=>a+b,0) +
+                Object.values(bonusBets).reduce((a,b)=>a+b,0);
+  balance += total;
+  bets = { player: 0, banker: 0, tie: 0 };
+  bonusBets = { 'panda': 0, 'dragon-p': 0, 'dragon-b': 0, 'either-pair': 0, 'perfect-pair': 0 };
+  selectedZone = null;
+  selectedBonusZone = null;
+  document.querySelectorAll('.bet-zone,.tie-zone').forEach(z => z.classList.remove('selected'));
+  document.querySelectorAll('.bonus-zone').forEach(z => z.classList.remove('selected'));
+  for (const z of ['player','banker','tie']) document.getElementById('bet-'+z).textContent = '—';
+  for (const z of Object.keys(bonusBets)) document.getElementById('bbet-'+z).textContent = '—';
+  updateUI();
+}
+
+function rebet() {
+  if (!lastBets || gameInProgress) return;
+  const totalMain = Object.values(lastBets).reduce((a,b)=>a+b,0);
+  const totalBonus = lastBonusBets ? Object.values(lastBonusBets).reduce((a,b)=>a+b,0) : 0;
+  const total = totalMain + totalBonus;
+  if (total > balance) { showToast('Недостаточно средств для повтора'); return; }
+  clearBet();
+  bets = { ...lastBets };
+  if (lastBonusBets) bonusBets = { ...lastBonusBets };
+  balance -= total;
+  for (const z of ['player','banker','tie']) {
+    document.getElementById('bet-'+z).textContent = bets[z] > 0 ? fmtMoney(bets[z]) : '—';
+  }
+  for (const z of Object.keys(bonusBets)) {
+    document.getElementById('bbet-'+z).textContent = bonusBets[z] > 0 ? fmtMoney(bonusBets[z]) : '—';
+  }
+  updateUI();
+}
+
+function updateUI() {
+  document.getElementById('balance').textContent = fmtMoney(balance);
+  document.getElementById('topbar-balance').textContent = fmtMoney(balance);
+  saveBalance();
+}
+
+// ==================== DEAL ====================
+async function deal() {
+  // Check that there's at least one bet placed
+  const mainTotal = Object.values(bets).reduce((a,b)=>a+b,0);
+  const bonusTotal = Object.values(bonusBets).reduce((a,b)=>a+b,0);
+
+  // If no bet placed yet, try to place one from input first
+  if (mainTotal === 0 && bonusTotal === 0) {
+    const betAmt = getInputBet();
+    if (betAmt > 0 && selectedZone) {
+      if (betAmt > balance) { showToast('Недостаточно средств'); return; }
+      bets[selectedZone] = betAmt;
+      balance -= betAmt;
+      document.getElementById('bet-' + selectedZone).textContent = fmtMoney(bets[selectedZone]);
+      updateUI();
+    } else if (betAmt > 0 && selectedBonusZone) {
+      if (betAmt > balance) { showToast('Недостаточно средств'); return; }
+      bonusBets[selectedBonusZone] = betAmt;
+      balance -= betAmt;
+      document.getElementById('bbet-' + selectedBonusZone).textContent = fmtMoney(bonusBets[selectedBonusZone]);
+      updateUI();
+    } else {
+      showToast('Введите ставку и выберите зону');
+      return;
+    }
+  }
+
+  const totalBet = Object.values(bets).reduce((a,b)=>a+b,0) + Object.values(bonusBets).reduce((a,b)=>a+b,0);
+  if (totalBet === 0) { showToast('Сделайте ставку'); return; }
+  if (gameInProgress) return;
+
+  gameInProgress = true;
+  document.getElementById('deal-btn').disabled = true;
+  document.getElementById('rebet-btn').disabled = true;
+
+  // Deduct bets (already done when placing)
+  const betZone = bets.player > 0 ? 'Игрок' : bets.banker > 0 ? 'Банкир' : bets.tie > 0 ? 'Ничья' : 'Бонус';
+  if (Object.values(bets).reduce((a,b)=>a+b,0) > 0)
+    recordTx(`Баккара — ставка на ${betZone}`, -Object.values(bets).reduce((a,b)=>a+b,0));
+  if (bonusTotal > 0)
+    recordTx('Баккара — бонусные ставки', -bonusTotal);
+
+  // Clear table
+  document.getElementById('player-cards').innerHTML = '';
+  document.getElementById('banker-cards').innerHTML = '';
+  document.getElementById('player-score').textContent = '';
+  document.getElementById('banker-score').textContent = '';
+  document.getElementById('result-msg').innerHTML = '<span class="result-text" style="color:rgba(201,168,76,0.3); font-style:italic;">Раздача...</span>';
+
+  const deck = newDeck();
+  let di = 0;
+  const draw = () => deck[di++];
+
+  const playerHand = [draw(), draw()];
+  const bankerHand = [draw(), draw()];
+
+  const pContainer = document.getElementById('player-cards');
+  const bContainer = document.getElementById('banker-cards');
+
+  renderCard(playerHand[0], pContainer);
+  await sleep(t(200));
+  renderCard(bankerHand[0], bContainer);
+  await sleep(t(200));
+  renderCard(playerHand[1], pContainer);
+  await sleep(t(200));
+  renderCard(bankerHand[1], bContainer);
+  await sleep(t(350));
+
+  let pTotal = handTotal(playerHand);
+  let bTotal = handTotal(bankerHand);
+
+  document.getElementById('player-score').textContent = pTotal;
+  document.getElementById('banker-score').textContent = bTotal;
+  await sleep(t(200));
+
+  const natural = pTotal >= 8 || bTotal >= 8;
+  let playerThird = null;
+  let bankerThird = null;
+
+  if (!natural) {
+    if (pTotal <= 5) {
+      playerThird = draw();
+      playerHand.push(playerThird);
+      renderCard(playerThird, pContainer);
+      await sleep(t(350));
+      pTotal = handTotal(playerHand);
+      document.getElementById('player-score').textContent = pTotal;
+      await sleep(t(150));
+    }
+
+    let bankerDraws = false;
+    if (playerThird === null) {
+      bankerDraws = bTotal <= 5;
+    } else {
+      const p3 = cardValue(playerThird.rank);
+      if (bTotal <= 2) bankerDraws = true;
+      else if (bTotal === 3) bankerDraws = p3 !== 8;
+      else if (bTotal === 4) bankerDraws = p3 >= 2 && p3 <= 7;
+      else if (bTotal === 5) bankerDraws = p3 >= 4 && p3 <= 7;
+      else if (bTotal === 6) bankerDraws = p3 === 6 || p3 === 7;
+    }
+
+    if (bankerDraws) {
+      bankerThird = draw();
+      bankerHand.push(bankerThird);
+      renderCard(bankerThird, bContainer);
+      await sleep(t(350));
+      bTotal = handTotal(bankerHand);
+      document.getElementById('banker-score').textContent = bTotal;
+      await sleep(t(150));
+    }
+  }
+
+  // Main outcome
+  let outcome;
+  if (pTotal > bTotal) outcome = 'player';
+  else if (bTotal > pTotal) outcome = 'banker';
+  else outcome = 'tie';
+
+  // ========= MAIN BET PAYOUT =========
+  let winAmount = 0;
+  if (outcome === 'player' && bets.player > 0) winAmount += bets.player * 2;
+  if (outcome === 'banker' && bets.banker > 0) winAmount += Math.floor(bets.banker * 1.95);
+  if (outcome === 'tie') {
+    if (bets.tie > 0) winAmount += bets.tie * 9;
+    if (bets.player > 0) winAmount += bets.player;
+    if (bets.banker > 0) winAmount += bets.banker;
+  }
+
+  // ========= BONUS BET PAYOUT =========
+  let bonusWin = 0;
+  const bonusResults = [];
+
+  // Panda 8: Banker wins with 3 cards totaling 8
+  if (bonusBets['panda'] > 0) {
+    if (outcome === 'banker' && bankerHand.length === 3 && bTotal === 8) {
+      bonusWin += bonusBets['panda'] * 26; // stake back + 25:1
+      bonusResults.push('🐼 Panda 8: +' + fmtMoney(bonusBets['panda'] * 25));
+    }
+  }
+
+  // Dragon Bonus — Player
+  if (bonusBets['dragon-p'] > 0) {
+    let dbPayout = calcDragonBonus('player', outcome, pTotal, bTotal, playerHand, natural);
+    if (dbPayout > 0) {
+      bonusWin += bonusBets['dragon-p'] * (dbPayout + 1);
+      bonusResults.push('🐉 Dragon Игрок: +' + fmtMoney(bonusBets['dragon-p'] * dbPayout));
+    } else if (dbPayout === 0) {
+      bonusWin += bonusBets['dragon-p']; // push
+      bonusResults.push('🐉 Dragon Игрок: возврат');
+    }
+  }
+
+  // Dragon Bonus — Banker
+  if (bonusBets['dragon-b'] > 0) {
+    let dbPayout = calcDragonBonus('banker', outcome, bTotal, pTotal, bankerHand, natural);
+    if (dbPayout > 0) {
+      bonusWin += bonusBets['dragon-b'] * (dbPayout + 1);
+      bonusResults.push('🐉 Dragon Банкир: +' + fmtMoney(bonusBets['dragon-b'] * dbPayout));
+    } else if (dbPayout === 0) {
+      bonusWin += bonusBets['dragon-b'];
+      bonusResults.push('🐉 Dragon Банкир: возврат');
+    }
+  }
+
+  // Either Pair: first 2 of player OR banker form a pair
+  if (bonusBets['either-pair'] > 0) {
+    const pPair = playerHand[0].rank === playerHand[1].rank;
+    const bPair = bankerHand[0].rank === bankerHand[1].rank;
+    if (pPair || bPair) {
+      bonusWin += bonusBets['either-pair'] * 6;
+      bonusResults.push('👑 Either Pair: +' + fmtMoney(bonusBets['either-pair'] * 5));
+    }
+  }
+
+  // Perfect Pair: player first two cards
+  if (bonusBets['perfect-pair'] > 0) {
+    const pp = playerHand[0].rank === playerHand[1].rank;
+    const pb = bankerHand[0].rank === bankerHand[1].rank;
+    if (pp || pb) {
+      const hand = pp ? playerHand : bankerHand;
+      const perfectSuit = hand[0].suit === hand[1].suit;
+      const mult = perfectSuit ? 26 : 9; // 25:1 or 8:1
+      bonusWin += bonusBets['perfect-pair'] * mult;
+      bonusResults.push('🃏 Perfect Pair (' + (perfectSuit ? '25:1' : '8:1') + '): +' + fmtMoney(bonusBets['perfect-pair'] * (mult-1)));
+    }
+  }
+
+  balance += winAmount + bonusWin;
+
+  const mainPnl = winAmount - Object.values(bets).reduce((a,b)=>a+b,0);
+  const totalPnl = mainPnl + bonusWin - Object.values(bonusBets).reduce((a,b)=>a+b,0);
+
+  if (winAmount > 0) {
+    const outcomeLabel = { player: 'победа Игрока', banker: 'победа Банкира', tie: 'ничья' }[outcome];
+    recordTx(`Баккара — ${outcomeLabel}`, winAmount);
+  }
+  if (bonusWin > 0) recordTx('Баккара — бонусные выплаты', bonusWin);
+
+  // Result message
+  const resultMap = {
+    player: { label: 'Победа Игрока!', cls: 'result-win' },
+    banker: { label: 'Победа Банкира!', cls: 'result-loss' },
+    tie:    { label: 'Ничья!', cls: 'result-tie' },
+  };
+  const r = resultMap[outcome];
+  const pnlStr = totalPnl >= 0 ? `+${fmtMoney(totalPnl)}` : fmtMoney(totalPnl);
+  const bonusLine = bonusResults.length ? `<div style="font-size:0.8rem; color:#e8d08a; margin-top:6px;">${bonusResults.join(' &nbsp;|&nbsp; ')}</div>` : '';
+
+  document.getElementById('result-msg').innerHTML = `
+    <div>
+      <div class="result-text ${r.cls}">${r.label}</div>
+      <div style="font-size:0.95rem; margin-top:5px; color:${totalPnl>=0?'#2ecc71':'#e74c3c'}">${pnlStr}</div>
+      ${bonusLine}
+    </div>
+  `;
+
+  updateUI();
+
+  lastBets = { ...bets };
+  lastBonusBets = { ...bonusBets };
+  recordGame(outcome, bets, totalPnl, pTotal, bTotal);
+
+  // Bankruptcy
+  if (balance <= 0) {
+    await sleep(t(600));
+    showToast('Баланс исчерпан! Пополняем до ₽ 10,000');
+    balance = 10000;
+    recordTx('Автопополнение баланса', 10000);
+    updateUI();
+  }
+
+  // Reset bets UI
+  bets = { player: 0, banker: 0, tie: 0 };
+  bonusBets = { 'panda': 0, 'dragon-p': 0, 'dragon-b': 0, 'either-pair': 0, 'perfect-pair': 0 };
+  for (const z of ['player','banker','tie']) document.getElementById('bet-'+z).textContent = '—';
+  for (const z of Object.keys(bonusBets)) document.getElementById('bbet-'+z).textContent = '—';
+
+  // Update road map under game
+  renderRoadMapGame();
+
+  gameInProgress = false;
+  document.getElementById('deal-btn').disabled = false;
+  document.getElementById('rebet-btn').disabled = false;
+}
+
+// Dragon Bonus payout multiplier (-1 = loss, 0 = push, n = multiplier)
+function calcDragonBonus(side, outcome, myTotal, oppTotal, myHand, natural) {
+  if (outcome === 'tie') return -1; // tie always loses dragon (no push here)
+  if (outcome !== side) return -1;
+  // Natural win
+  if (natural && myTotal >= 8) {
+    if (myTotal > oppTotal) return 1; // natural win 1:1
+    if (myTotal === oppTotal) return 0; // natural tie push
+  }
+  // Non-natural win: based on point difference
+  const diff = myTotal - oppTotal;
+  if (diff <= 0) return -1;
+  if (diff >= 9) return 30;
+  if (diff === 8) return 10;
+  if (diff === 7) return 6;
+  if (diff === 6) return 4;
+  if (diff === 5) return 2;
+  if (diff === 4) return 1;
+  return -1; // diff 1-3
+}
+
+// ==================== STATS ====================
+function loadStats() {
+  try {
+    const raw = localStorage.getItem(STATS_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { games: 0, wins: 0, losses: 0, ties: 0, pnl: 0, outcomeHistory: [], rounds: [] };
+}
+
+function saveStats() { localStorage.setItem(STATS_KEY, JSON.stringify(stats)); }
+
+function recordGame(outcome, bets, pnl, pScore, bScore) {
+  stats.games++;
+  const betWon = (outcome === 'player' && bets.player > 0) ||
+                 (outcome === 'banker' && bets.banker > 0) ||
+                 (outcome === 'tie' && bets.tie > 0);
+  if (outcome === 'tie') stats.ties++;
+  else if (betWon) stats.wins++;
+  else stats.losses++;
+  stats.pnl += pnl;
+  const outcomeChar = outcome === 'player' ? 'P' : outcome === 'banker' ? 'B' : 'T';
+  stats.outcomeHistory.push(outcomeChar);
+  const betOn = bets.player > 0 ? 'Игрок' : bets.banker > 0 ? 'Банкир' : 'Ничья';
+  const betAmt = bets.player || bets.banker || bets.tie;
+  stats.rounds.unshift({ n: stats.games, betOn, betAmt, outcome: outcomeChar, pnl, score: `${pScore} — ${bScore}`, betWon });
+  if (stats.rounds.length > 100) stats.rounds = stats.rounds.slice(0, 100);
+  if (stats.outcomeHistory.length > 80) stats.outcomeHistory = stats.outcomeHistory.slice(-80);
+  saveStats();
+}
+
+function renderRoadMapGame() {
+  const road = document.getElementById('road-map-game');
+  road.innerHTML = '';
+  const slice = stats.outcomeHistory.slice(-40);
+  slice.forEach(o => {
+    const dot = document.createElement('div');
+    dot.className = `road-dot road-${o}`;
+    dot.textContent = o;
+    road.appendChild(dot);
+  });
+}
+
+function renderStats() {
+  document.getElementById('s-games').textContent = stats.games;
+  document.getElementById('s-wins').textContent = stats.wins;
+  document.getElementById('s-losses').textContent = stats.losses;
+  document.getElementById('s-ties').textContent = stats.ties;
+  const pnlEl = document.getElementById('s-pnl');
+  pnlEl.textContent = (stats.pnl >= 0 ? '+' : '') + fmtMoney(stats.pnl);
+  pnlEl.style.color = stats.pnl >= 0 ? '#2ecc71' : '#e74c3c';
+  const winrate = stats.games > 0 ? Math.round(stats.wins / stats.games * 100) : 0;
+  document.getElementById('s-winrate').textContent = winrate + '%';
+
+  // Road stats
+  const road = document.getElementById('road-map-stats');
+  road.innerHTML = '';
+  stats.outcomeHistory.forEach(o => {
+    const dot = document.createElement('div');
+    dot.className = `road-dot road-${o}`;
+    dot.textContent = o;
+    road.appendChild(dot);
+  });
+
+  // Bars
+  const allOutcomes = stats.outcomeHistory.length;
+  const pOutcomes = stats.outcomeHistory.filter(o=>o==='P').length;
+  const bOutcomes = stats.outcomeHistory.filter(o=>o==='B').length;
+  const tOutcomes = stats.outcomeHistory.filter(o=>o==='T').length;
+  const pPct = allOutcomes > 0 ? Math.round(pOutcomes/allOutcomes*100) : 0;
+  const bPct = allOutcomes > 0 ? Math.round(bOutcomes/allOutcomes*100) : 0;
+  const tPct = allOutcomes > 0 ? Math.round(tOutcomes/allOutcomes*100) : 0;
+  document.getElementById('bar-player').style.width = pPct + '%';
+  document.getElementById('bar-banker').style.width = bPct + '%';
+  document.getElementById('bar-tie').style.width = tPct + '%';
+  document.getElementById('pct-player').textContent = `Игрок ${pPct}%`;
+  document.getElementById('pct-banker').textContent = `Банкир ${bPct}%`;
+  document.getElementById('pct-tie').textContent = `Ничья ${tPct}%`;
+
+  // History table
+  const empty = document.getElementById('empty-history');
+  const tbody = document.getElementById('history-body');
+  if (stats.rounds.length === 0) {
+    empty.style.display = 'block';
+    document.getElementById('history-table-wrap').style.display = 'none';
+  } else {
+    empty.style.display = 'none';
+    document.getElementById('history-table-wrap').style.display = 'block';
+    tbody.innerHTML = '';
+    stats.rounds.forEach(r => {
+      const pnlStr = (r.pnl >= 0 ? '+' : '') + fmtMoney(r.pnl);
+      const pnlColor = r.pnl > 0 ? '#2ecc71' : r.pnl < 0 ? '#e74c3c' : 'var(--gold)';
+      const outLabelMap = { P: 'Игрок', B: 'Банкир', T: 'Ничья' };
+      const pillClass = r.betWon ? 'pill-win' : r.outcome === 'T' ? 'pill-tie' : 'pill-loss';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="opacity:0.5">#${r.n}</td>
+        <td>${r.betOn}</td>
+        <td>${fmtMoney(r.betAmt)}</td>
+        <td><span class="pill ${pillClass}">${outLabelMap[r.outcome]}</span></td>
+        <td style="color:${pnlColor}">${pnlStr}</td>
+        <td style="font-family:'Playfair Display',serif; color:var(--gold)">${r.score}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+}
+
+function resetStats() {
+  if (!confirm('Сбросить всю статистику? Это действие необратимо.')) return;
+  stats = { games: 0, wins: 0, losses: 0, ties: 0, pnl: 0, outcomeHistory: [], rounds: [] };
+  saveStats();
+  renderStats();
+  renderRoadMapGame();
+  showToast('Статистика сброшена');
+}
+
+// ==================== TOAST ====================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ==================== INIT ====================
+// Input enter key = place bet or deal
+document.getElementById('betInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    // If zone selected, place bet; otherwise just deal
+    const betAmt = getInputBet();
+    if (betAmt > 0 && (selectedZone || selectedBonusZone)) {
+      placeBet();
+    } else {
+      deal();
+    }
+  }
+});
+
+updateUI();
+renderRoadMapGame();
+</script>
+
+<!-- GAMES FOOTER -->
+<footer class="games-footer">
+  <div class="games-footer-title">Другие игры</div>
+  <div class="games-grid">
+    <a href="poker.html" class="game-card-link">
+      <span class="game-card-icon">♠️</span>
+      <span class="game-card-name">Poker</span>
+      <span class="game-card-sub">Texas Hold'em</span>
+    </a>
+    <a href="roulette.html" class="game-card-link">
+      <span class="game-card-icon">🎰</span>
+      <span class="game-card-name">Roulette</span>
+      <span class="game-card-sub">European</span>
+    </a>
+    <a href="blackjack.html" class="game-card-link">
+      <span class="game-card-icon">♣️</span>
+      <span class="game-card-name">Blackjack</span>
+      <span class="game-card-sub">Classic 21</span>
+    </a>
+  </div>
+</footer>
+
+</body>
+</html>
