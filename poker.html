@@ -3,958 +3,1013 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reaper Casino - Ultimate Texas Hold'em</title>
+<title>Poker — Royal Table</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-body {
-    margin:0;
-    font-family:"Segoe UI",Arial,sans-serif;
-    background: linear-gradient(135deg,#0b0c10,#1f2833);
-    color:white;
-    min-height:100vh;
-}
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8d08a;
+    --gold-dark: #8b6914;
+    --green: #0a3d2e;
+    --green-felt: #0d4d38;
+    --dark: #0a0a0a;
+    --darker: #050505;
+    --card-bg: #faf8f0;
+    --text: #e8e0d0;
+    --red: #c0392b;
+  }
 
-.topBar {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    display: flex;
-    gap: 15px;
-    background: rgba(0,0,0,0.5);
-    padding: 8px 12px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    z-index: 2000;
-}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-.balanceDisplay {
-    padding:6px 12px;
-    border-radius:10px;
-    background: rgba(255,255,255,0.15);
-    color:white;
-    font-weight:bold;
-    font-size:1.1em;
-}
+  body {
+    font-family: 'Cormorant Garamond', serif;
+    background: var(--darker);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-.profileTab {
-    padding:6px 12px;
-    border-radius:10px;
-    background: rgba(255,255,255,0.15);
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.2s;
-}
-.profileTab:hover { background: rgba(255,255,255,0.3); }
-
-#addFundsBtn {
-    position:fixed;
-    right:15px;
-    bottom:15px;
-    padding:10px 20px;
-    border:none;
-    border-radius:10px;
-    background:#28a745;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.profileModal {
-    display: none;
+  body::before {
+    content: '';
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.8);
-    z-index: 2000;
-    justify-content: center;
-    align-items: center;
-}
-
-.player-combo, .dealer-combo {
-    font-size: clamp(1.3rem, 4vw, 1.8rem);
-    font-weight: bold;
-    margin-top: 12px;
-    min-height: 1.5em;
-    color: white;
-    text-shadow: 0 2px 6px rgba(0,0,0,0.7);
-}
-
-.player-combo.better { color: #34d399; }
-.player-combo.worse  { color: #f87171; }
-.player-combo.tie    { color: #fbbf24; }
-
-button {
-    font-size: clamp(0.95rem, 3.5vw, 1.1em);
-    padding: clamp(10px, 3vw, 12px) clamp(18px, 5vw, 24px);
-    border-radius: 10px;
-    margin: 6px;
-    cursor: pointer;
-    background: #ff4b2b;
-    color: white;
-    font-weight: bold;
-    touch-action: manipulation;
-}
-
-input[type="number"] {
-    font-size: clamp(1rem, 3.5vw, 1.1em);
-    padding: 10px;
-    border-radius: 10px;
-    border: 2px solid #444;
-    background: #1a1a1a;
-    color: white;
-    text-align: center;
-    width: clamp(110px, 30vw, 140px);
-    margin: 6px;
-}
-
-#actionButtons { 
-    text-align: center; 
-    margin: 20px 0; 
-    min-height: 70px; 
-}
-
-#playerWinText { 
-    font-size: clamp(1.2rem, 4vw, 1.4em); 
-    margin: 15px 0; 
-    text-align: center; 
-    font-weight: bold; 
-}
-
-#totalStakeDisplay {
-    text-align: center;
-    font-size: clamp(1.1rem, 3.8vw, 1.3em);
-    margin: 12px 0 4px;
-    color: #fbbf24;
-    font-weight: bold;
-}
-
-.profileContent {
-    background: #1f2833;
-    padding: 30px;
-    border-radius: 15px;
-    width: 340px;
-    max-width: 90%;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-}
-
-.profileContent h2 { color: #ffb347; margin-bottom: 24px; }
-
-.profileContent p {
-    margin: 14px 0;
-    font-size: 1.1em;
-    display: flex;
-    justify-content: space-between;
-}
-
-.profileContent .value { font-weight: bold; color: #e0e0e0; }
-
-.closeProfile {
-    position: absolute;
-    top: 12px;
-    right: 18px;
-    font-size: 28px;
-    color: #ff4b2b;
-    cursor: pointer;
-}
-
-.resetStatsBtn {
-    margin-top: 24px;
-    padding: 12px 30px;
-    background: #28a745;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-header {
-    padding: 80px 15px 20px;
-    text-align: center;
-}
-
-.welcome {
-    font-size: 48px;
-    font-weight: bold;
-    color: #ff4b2b;
-    text-shadow: 2px 2px 15px rgba(255,75,43,0.6);
-}
-.welcome span { color: #ffb347; }
-
-.main-container {
-    display: flex;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 15px;
-    gap: 25px;
-    flex-wrap: wrap;
-}
-
-.sidebar {
-    width: 180px;
-    flex-shrink: 0;
-    margin-top: 100px;
-}
-
-.sidebar a {
-    display: block;
-    padding: 12px 16px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    background: #444;
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    text-align: center;
-}
-
-.gameWrapper {
-    flex: 1 1 500px;
-    background: rgba(0,0,0,0.5);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.6);
-}
-
-.cardsSection {
-    margin: 25px 0;
-    text-align: center;
-}
-
-.cardsContainer {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin: 15px 0;
-}
-
-/* НОВЫЙ ДИЗАЙН КАРТ — белые лицевые стороны */
-.card {
-    width: 90px;
-    height: 130px;
-    border-radius: 12px;
-    background: white; /* белый фон */
-    color: #000;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.8), inset 0 1px 6px rgba(0,0,0,0.1);
-    position: relative;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(30px) scale(0.94);
-    transition: all 0.5s ease;
-}
-
-.card.show {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-}
-
-.card .corner {
-    position: absolute;
-    font-size: 20px;
-    font-weight: bold;
-    padding: 8px;
-    line-height: 1;
-}
-
-.card .top-left { top: 6px; left: 6px; }
-.card .bottom-right { bottom: 6px; right: 6px; transform: rotate(180deg); }
-
-.card .center {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 54px;
-    font-weight: bold;
-}
-
-/* Красные масти */
-.card.red { color: #c00; }
-
-/* Новая рубашка карт */
-.card.back {
-    background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #0d1b2a 100%);
-    border: 2px solid #415a77;
-    color: #e0e1dd;
-    position: relative;
-    overflow: hidden;
-}
-
-.card.back::before {
-    content: "REAPER CASINO";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-35deg);
-    font-size: 20px;
-    font-weight: bold;
-    color: rgba(229, 225, 221, 0.15);
-    letter-spacing: 4px;
-    white-space: nowrap;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
     pointer-events: none;
-}
+    z-index: 1000;
+    opacity: 0.4;
+  }
 
-.card.back::after {
-    content: "♠ ♥ ♦ ♣";
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 16px;
-    color: rgba(229, 225, 221, 0.25);
-    letter-spacing: 8px;
-}
+  /* ===== TOP BAR ===== */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: rgba(0,0,0,0.5);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 500;
+    backdrop-filter: blur(8px);
+    gap: 10px;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(201,168,76,0.6);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    font-family: 'Cormorant Garamond', serif;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+  }
+  .back-link:hover { color: var(--gold); }
+  .back-link svg { transition: transform 0.2s; flex-shrink: 0; }
+  .back-link:hover svg { transform: translateX(-3px); }
+  .top-bar-title { font-size: 0.65rem; letter-spacing: 5px; text-transform: uppercase; color: rgba(201,168,76,0.3); white-space: nowrap; }
+  .top-bar-balance {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(201,168,76,0.07);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 5px 12px; white-space: nowrap;
+    cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent;
+  }
+  .top-bar-balance:hover { background: rgba(201,168,76,0.13); border-color: rgba(201,168,76,0.4); }
+  .top-bar-balance .tbl-label { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(201,168,76,0.45); }
+  .top-bar-balance .tbl-amount { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: var(--gold); }
+  @media (max-width: 520px) {
+    .top-bar { padding: 8px 12px; }
+    .top-bar-title { display: none; }
+    .top-bar-balance .tbl-label { display: none; }
+    .top-bar-balance { padding: 5px 8px; }
+  }
+  @media (max-width: 360px) { .back-link span { display: none; } }
 
-/* Остальные стили (player-combo, actionButtons и т.д.) остаются без изменений */
-.player-combo, .dealer-combo {
-    font-size: 1.8em;
-    font-weight: bold;
-    margin-top: 14px;
-    min-height: 1.5em;
-    letter-spacing: 0.5px;
-    color: white;
-    text-shadow: 0 2px 6px rgba(0,0,0,0.7);
-}
+  /* ===== BALANCE MODAL ===== */
+  .balance-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75); z-index: 2000;
+    align-items: flex-start; justify-content: flex-end;
+    padding: 64px 16px 0 0; backdrop-filter: blur(4px);
+  }
+  .balance-modal-overlay.open { display: flex; }
+  .balance-modal {
+    background: #0d0d0d; border: 1px solid rgba(201,168,76,0.3);
+    width: 340px; max-width: calc(100vw - 24px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    animation: slideDown 0.25s ease; position: relative; overflow: hidden;
+  }
+  @keyframes slideDown { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:translateY(0); } }
+  .balance-modal::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+  .bm-header { display:flex; align-items:center; justify-content:space-between; padding:18px 20px 14px; border-bottom:1px solid rgba(201,168,76,0.12); }
+  .bm-title { font-family:'Playfair Display',serif; color:var(--gold); font-size:1.1rem; letter-spacing:3px; }
+  .bm-close { background:none; border:none; color:rgba(201,168,76,0.5); font-size:1.3rem; cursor:pointer; line-height:1; padding:4px; transition:color 0.2s; }
+  .bm-close:hover { color:var(--gold); }
+  .bm-amount { text-align:center; padding:24px 20px 18px; border-bottom:1px solid rgba(201,168,76,0.1); }
+  .bm-amount-label { font-size:0.62rem; letter-spacing:5px; text-transform:uppercase; color:rgba(201,168,76,0.4); margin-bottom:8px; }
+  .bm-amount-value { font-family:'Playfair Display',serif; font-size:2.4rem; color:var(--gold); text-shadow:0 0 30px rgba(201,168,76,0.25); }
+  .bm-add { padding:16px 20px; border-bottom:1px solid rgba(201,168,76,0.1); text-align:center; }
+  .bm-add-hint { font-size:0.62rem; letter-spacing:4px; text-transform:uppercase; color:rgba(201,168,76,0.35); margin-bottom:10px; }
+  .btn-add-funds {
+    font-family:'Cormorant Garamond',serif; font-size:0.95rem; letter-spacing:3px; text-transform:uppercase;
+    padding:11px 32px; background:linear-gradient(135deg,#1a5c30,#27ae60); color:#fff; border:none;
+    cursor:pointer; box-shadow:0 4px 18px rgba(0,0,0,0.4); transition:all 0.2s; min-height:44px;
+  }
+  .btn-add-funds:hover { transform:translateY(-1px); box-shadow:0 6px 22px rgba(39,174,96,0.3); }
+  .bm-tx-title { font-size:0.62rem; letter-spacing:4px; text-transform:uppercase; color:rgba(201,168,76,0.4); padding:14px 20px 8px; }
+  .bm-tx-list { max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:rgba(201,168,76,0.2) transparent; }
+  .bm-tx-list::-webkit-scrollbar { width:4px; }
+  .bm-tx-list::-webkit-scrollbar-thumb { background:rgba(201,168,76,0.2); }
+  .tx-row { display:flex; justify-content:space-between; align-items:center; padding:10px 20px; border-bottom:1px solid rgba(255,255,255,0.03); font-size:0.88rem; }
+  .tx-row:last-child { border-bottom:none; }
+  .tx-row:nth-child(even) { background:rgba(255,255,255,0.02); }
+  .tx-info-desc { color:rgba(232,224,208,0.65); }
+  .tx-info-time { font-size:0.66rem; color:rgba(201,168,76,0.3); margin-top:2px; }
+  .tx-amount { font-family:'Playfair Display',serif; font-size:0.95rem; }
+  .tx-amount.credit { color:#2ecc71; }
+  .tx-amount.debit { color:#e74c3c; }
+  .bm-empty { text-align:center; padding:24px; color:rgba(201,168,76,0.3); font-style:italic; font-size:0.95rem; }
 
-.player-combo.better { color: #34d399; text-shadow: 0 0 12px #34d39980; }
-.player-combo.worse  { color: #f87171; text-shadow: 0 0 12px #f8717180; }
-.player-combo.tie    { color: #fbbf24; text-shadow: 0 0 12px #fbbf2480; }
-button {
-    font-size:1.1em;
-    padding:12px 24px;
-    border-radius:10px;
-    border:none;
-    margin:8px;
-    cursor:pointer;
-    background:#ff4b2b;
-    color:white;
-    font-weight:bold;
-    transition: background 0.2s;
-}
+  /* ===== HEADER ===== */
+  header { text-align:center; padding:clamp(24px,6vw,48px) 20px clamp(16px,4vw,32px); border-bottom:1px solid rgba(201,168,76,0.3); }
+  .header-ornament { color:var(--gold); font-size:13px; letter-spacing:8px; text-transform:uppercase; opacity:0.6; margin-bottom:12px; }
+  h1 { font-family:'Playfair Display',serif; font-size:clamp(2.2rem,6vw,4.5rem); color:var(--gold); letter-spacing:0.1em; line-height:1; text-shadow:0 0 40px rgba(201,168,76,0.3); }
+  h1 span { font-style:italic; font-size:0.58em; display:block; color:var(--gold-light); letter-spacing:clamp(0.15em,2vw,0.35em); margin-top:6px; }
+  .gold-line { width:120px; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:18px auto 0; }
 
-button:hover { background: #e03e20; }
+  /* ===== NAV TABS ===== */
+  nav { display:flex; justify-content:center; gap:0; padding:0 8px; border-bottom:1px solid rgba(201,168,76,0.2); overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  nav::-webkit-scrollbar { display:none; }
+  .tab-btn { background:none; border:none; color:rgba(232,208,138,0.5); font-family:'Cormorant Garamond',serif; font-size:1rem; letter-spacing:4px; text-transform:uppercase; padding:16px 24px; cursor:pointer; position:relative; transition:color 0.3s; white-space:nowrap; -webkit-tap-highlight-color:transparent; }
+  .tab-btn::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:2px; background:var(--gold); transform:scaleX(0); transition:transform 0.3s; }
+  .tab-btn.active { color:var(--gold); }
+  .tab-btn.active::after { transform:scaleX(1); }
+  @media (max-width: 480px) { .tab-btn { font-size:0.85rem; letter-spacing:2px; padding:14px 16px; } }
 
-input[type="number"] {
-    font-size:1em;
-    padding:12px;
-    border-radius:12px;
-    border:2px solid #444;
-    background:#1a1a1a;
-    color:white;
-    text-align:center;
-    width: 140px;
-    margin: 8px;
-}
+  /* ===== SECTIONS ===== */
+  .section { display:none; max-width:1100px; margin:0 auto; padding:clamp(20px,5vw,40px) clamp(12px,4vw,20px); animation:fadeIn 0.4s ease; }
+  .section.active { display:block; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
-#actionButtons { text-align:center; margin:25px 0; min-height:80px; }
+  /* ===== GAME LAYOUT ===== */
+  .game-layout { display:grid; grid-template-columns:1fr minmax(0,780px) 260px; gap:24px; align-items:start; }
+  @media (max-width:1060px) { .game-layout { grid-template-columns:1fr; } .side-tables { order:3; } .game-col { order:1; } .side-left { display:none; } }
 
-#playerWinText { font-size:1.4em; margin:20px 0; text-align:center; font-weight:bold; }
+  /* ===== BET INPUTS ===== */
+  .bet-row {
+    display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+    padding:20px; background:rgba(0,0,0,0.3); border:1px solid rgba(201,168,76,0.15); margin-bottom:20px;
+  }
+  .bet-field { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .bet-field label { font-size:0.62rem; letter-spacing:4px; text-transform:uppercase; color:rgba(201,168,76,0.5); }
+  .bet-field input {
+    font-family:'Playfair Display',serif; font-size:1rem; padding:9px 12px;
+    background:rgba(0,0,0,0.4); border:1px solid rgba(201,168,76,0.25); color:var(--gold);
+    text-align:center; width:clamp(80px,20vw,110px); outline:none; transition:border-color 0.2s;
+  }
+  .bet-field input:focus { border-color:var(--gold); }
+  .bet-field input::placeholder { color:rgba(201,168,76,0.25); font-family:'Cormorant Garamond',serif; }
+  .bet-field input::-webkit-outer-spin-button, .bet-field input::-webkit-inner-spin-button { -webkit-appearance:none; }
+  .bet-field input[type=number] { -moz-appearance:textfield; }
 
-#totalStakeDisplay {
-    text-align: center;
-    font-size: 1.3em;
-    margin: 15px 0 5px;
-    color: #fbbf24;
-    font-weight: bold;
-}
-.bonus-table-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
+  /* ===== STAKE BAR ===== */
+  .stake-bar { display:flex; justify-content:space-between; align-items:center; padding:12px 18px; background:rgba(0,0,0,0.3); border:1px solid rgba(201,168,76,0.12); margin-bottom:16px; flex-wrap:wrap; gap:8px; }
+  .stake-item { text-align:center; }
+  .stake-label { font-size:0.58rem; letter-spacing:3px; text-transform:uppercase; color:rgba(201,168,76,0.45); display:block; }
+  .stake-value { font-family:'Playfair Display',serif; font-size:clamp(0.95rem,2.5vw,1.2rem); color:var(--gold); }
 
-.bonus-table-wrapper table {
-    width: 100%;
-    min-width: 240px;
-    font-size: clamp(0.85rem, 3vw, 0.95em);
-}
-@media (max-width: 600px) {
-    .gameWrapper { padding: 15px; }
-    .cardsContainer { gap: 6px; }
-    .card { width: 68px; height: 102px; }
-    .card .center { font-size: 38px; }
-    .player-combo, .dealer-combo { font-size: 1.3rem; }
-    button { padding: 10px 16px; font-size: 0.95rem; }
-    input[type="number"] { width: 110px; font-size: 0.95rem; }
-    header { padding-top: 60px; }
-    .welcome { font-size: 2.8rem; }
-}
+  /* ===== FELT TABLE ===== */
+  .felt-table {
+    background: var(--green-felt); border:3px solid var(--gold-dark);
+    box-shadow:0 0 60px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,0.2);
+    padding:clamp(14px,3vw,24px); position:relative; border-radius:4px; margin-bottom:20px;
+  }
+  .felt-table::before { content:''; position:absolute; inset:6px; border:1px solid rgba(201,168,76,0.15); pointer-events:none; border-radius:2px; }
+  .hand-section { margin-bottom:18px; }
+  .hand-label { font-family:'Playfair Display',serif; font-size:0.7rem; letter-spacing:5px; text-transform:uppercase; color:rgba(201,168,76,0.6); margin-bottom:10px; text-align:center; }
+
+  /* ===== CARDS ===== */
+  .cards-row { display:flex; justify-content:center; gap:clamp(6px,2vw,10px); flex-wrap:wrap; min-height:clamp(76px,16vw,110px); align-items:center; }
+
+  /* Card base — starts hidden, animates in */
+  .playing-card {
+    width:clamp(52px,11vw,72px); height:clamp(76px,16vw,106px);
+    background:var(--card-bg); border-radius:5px; box-shadow:2px 4px 14px rgba(0,0,0,0.6);
+    position:relative; display:flex; align-items:center; justify-content:center; flex-direction:column; flex-shrink:0;
+    opacity:0; transform:translateY(-40px) scale(0.7) rotate(var(--card-rot, -5deg));
+    transition:opacity 0.4s cubic-bezier(0.34,1.56,0.64,1), transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .playing-card.show {
+    opacity:1;
+    transform:translateY(0) scale(1) rotate(0deg);
+  }
+  /* Staggered deal delay set via JS */
+
+  .card-corner-top { position:absolute; top:4px; left:5px; font-size:clamp(0.58rem,1.6vw,0.78rem); line-height:1.15; font-weight:700; }
+  .card-corner-bottom { position:absolute; bottom:4px; right:5px; font-size:clamp(0.58rem,1.6vw,0.78rem); line-height:1.15; font-weight:700; transform:rotate(180deg); }
+  .card-suit-center { font-size:clamp(1.1rem,3.5vw,1.7rem); }
+  .card-red { color:var(--red); }
+  .card-black { color:#111; }
+
+  /* Card back */
+  .card-back { background:linear-gradient(135deg,#0d1b2a,#1a2f45,#0d1b2a); border:2px solid rgba(201,168,76,0.25); }
+  .card-back::before { content:'✦'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:clamp(1.2rem,4vw,2rem); color:rgba(201,168,76,0.2); }
+
+  /* flip animation for reveal */
+  @keyframes flipIn {
+    0%   { transform: perspective(600px) rotateY(90deg) scale(0.8); opacity:0; }
+    60%  { transform: perspective(600px) rotateY(-8deg) scale(1.05); opacity:1; }
+    100% { transform: perspective(600px) rotateY(0deg) scale(1); opacity:1; }
+  }
+  .card-flip { animation: flipIn 0.45s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+  /* Community cards fly-in from center */
+  @keyframes communityDeal {
+    0%   { opacity:0; transform:translateY(-60px) scale(0.5); }
+    70%  { transform:translateY(6px) scale(1.06); opacity:1; }
+    100% { transform:translateY(0) scale(1); opacity:1; }
+  }
+  .community-card { animation: communityDeal 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+  /* combo display */
+  .combo-display { text-align:center; margin-top:8px; min-height:1.8em; font-family:'Playfair Display',serif; font-size:clamp(1rem,3vw,1.35rem); letter-spacing:1px; transition:color 0.3s; }
+  .combo-display.better { color:#2ecc71; text-shadow:0 0 16px rgba(46,204,113,0.4); }
+  .combo-display.worse  { color:#e74c3c; }
+  .combo-display.tie    { color:var(--gold); }
+  .combo-display.neutral { color:rgba(201,168,76,0.6); }
+
+  /* ===== RESULT ===== */
+  .result-box { text-align:center; padding:14px; background:rgba(0,0,0,0.4); border:1px solid rgba(201,168,76,0.2); min-height:52px; display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+  .result-text { font-family:'Playfair Display',serif; font-size:clamp(1rem,3vw,1.25rem); letter-spacing:1px; }
+  .result-win  { color:#2ecc71; text-shadow:0 0 20px rgba(46,204,113,0.4); }
+  .result-loss { color:#e74c3c; }
+  .result-push { color:var(--gold); }
+
+  /* ===== ACTIONS ===== */
+  .action-area { text-align:center; min-height:90px; padding:8px 0; }
+  .action-hint { font-size:0.7rem; letter-spacing:4px; text-transform:uppercase; color:rgba(201,168,76,0.45); margin-bottom:14px; }
+  .action-btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+
+  .btn-primary { font-family:'Cormorant Garamond',serif; font-size:clamp(0.85rem,2.5vw,1rem); letter-spacing:clamp(2px,1vw,4px); text-transform:uppercase; padding:clamp(11px,2.5vw,14px) clamp(20px,5vw,36px); background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:var(--darker); border:none; cursor:pointer; font-weight:600; box-shadow:0 4px 20px rgba(201,168,76,0.25); transition:all 0.2s; touch-action:manipulation; -webkit-tap-highlight-color:transparent; min-height:44px; }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(201,168,76,0.35); }
+  .btn-primary:disabled { opacity:0.3; cursor:not-allowed; transform:none; }
+  .btn-secondary { font-family:'Cormorant Garamond',serif; font-size:clamp(0.85rem,2.5vw,1rem); letter-spacing:clamp(2px,1vw,4px); text-transform:uppercase; padding:clamp(11px,2.5vw,14px) clamp(16px,4vw,28px); background:transparent; color:var(--gold); border:1px solid rgba(201,168,76,0.4); cursor:pointer; transition:all 0.2s; touch-action:manipulation; min-height:44px; }
+  .btn-secondary:hover { background:rgba(201,168,76,0.08); border-color:var(--gold); }
+  .btn-danger { font-family:'Cormorant Garamond',serif; font-size:clamp(0.85rem,2.5vw,1rem); letter-spacing:clamp(2px,1vw,4px); text-transform:uppercase; padding:clamp(11px,2.5vw,14px) clamp(16px,4vw,28px); background:transparent; color:rgba(231,76,60,0.7); border:1px solid rgba(231,76,60,0.3); cursor:pointer; transition:all 0.2s; min-height:44px; }
+  .btn-danger:hover { background:rgba(231,76,60,0.08); border-color:#e74c3c; color:#e74c3c; }
+
+  /* ===== SIDE PAY TABLES ===== */
+  .side-tables { display:flex; flex-direction:column; gap:16px; }
+  @media (max-width:1060px) { .side-tables { flex-direction:row; flex-wrap:wrap; gap:12px; } .pay-table { flex:1 1 240px; } }
+  .pay-table { border:1px solid rgba(201,168,76,0.15); background:linear-gradient(160deg,rgba(201,168,76,0.04),rgba(0,0,0,0.3)); overflow:hidden; }
+  .pay-table-head { font-family:'Playfair Display',serif; font-size:0.85rem; letter-spacing:3px; text-transform:uppercase; color:var(--gold); padding:14px 16px 10px; border-bottom:1px solid rgba(201,168,76,0.15); text-align:center; }
+  .pay-table table { width:100%; border-collapse:collapse; font-size:clamp(0.78rem,2.2vw,0.88rem); }
+  .pay-table td { padding:7px 14px; border-bottom:1px solid rgba(255,255,255,0.04); color:rgba(232,224,208,0.75); }
+  .pay-table tr:last-child td { border-bottom:none; }
+  .pay-table td:last-child { text-align:right; font-family:'Playfair Display',serif; color:var(--gold-light); }
+  .pay-table tr:hover td { background:rgba(201,168,76,0.04); }
+
+  /* ===== STATS TAB ===== */
+  .section-title { font-family:'Playfair Display',serif; color:var(--gold); font-size:2rem; text-align:center; letter-spacing:3px; }
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin-bottom:32px; }
+  .stat-card { background:linear-gradient(135deg,rgba(10,61,46,0.3),rgba(0,0,0,0.3)); border:1px solid rgba(201,168,76,0.2); padding:24px 16px; text-align:center; position:relative; }
+  .stat-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+  .stat-value { font-family:'Playfair Display',serif; font-size:2.2rem; color:var(--gold); display:block; }
+  .stat-label { font-size:0.7rem; letter-spacing:4px; text-transform:uppercase; color:rgba(201,168,76,0.5); margin-top:6px; display:block; }
+
+  .win-bar-wrap { margin-bottom:32px; }
+  .win-bar-labels { display:flex; justify-content:space-between; font-size:0.75rem; letter-spacing:3px; color:rgba(201,168,76,0.5); text-transform:uppercase; margin-bottom:8px; }
+  .win-bar-track { height:8px; background:rgba(255,255,255,0.05); border-radius:4px; overflow:hidden; display:flex; }
+  .win-bar-win { background:#2ecc71; transition:width 0.5s; }
+  .win-bar-loss { background:#e74c3c; transition:width 0.5s; }
+
+  .history-title { font-family:'Playfair Display',serif; color:var(--gold); font-size:1.3rem; letter-spacing:3px; margin-bottom:16px; text-align:center; }
+  .history-table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid rgba(201,168,76,0.1); }
+  .history-table { width:100%; min-width:440px; border-collapse:collapse; font-size:0.95rem; }
+  .history-table th { color:rgba(201,168,76,0.6); font-size:0.7rem; letter-spacing:3px; text-transform:uppercase; padding:10px 14px; border-bottom:1px solid rgba(201,168,76,0.2); text-align:left; }
+  .history-table td { padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.04); color:rgba(232,224,208,0.8); }
+  .history-table tr:hover td { background:rgba(201,168,76,0.04); }
+  .pill { display:inline-block; padding:2px 10px; border-radius:2px; font-size:0.8rem; letter-spacing:1px; }
+  .pill-win { background:rgba(46,204,113,0.15); color:#2ecc71; }
+  .pill-loss { background:rgba(231,76,60,0.15); color:#e74c3c; }
+  .pill-push { background:rgba(201,168,76,0.15); color:var(--gold); }
+  .empty-history { text-align:center; padding:40px; color:rgba(201,168,76,0.3); font-style:italic; font-size:1.1rem; }
+  .reset-btn { display:block; margin:20px auto 0; background:none; border:1px solid rgba(192,57,43,0.3); color:rgba(192,57,43,0.6); font-family:'Cormorant Garamond',serif; letter-spacing:3px; font-size:0.8rem; text-transform:uppercase; padding:8px 24px; cursor:pointer; transition:all 0.2s; }
+  .reset-btn:hover { border-color:#c0392b; color:#c0392b; }
+
+  /* ===== HAND COMBOS LEGEND ===== */
+  .hand-legend { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:8px; margin-top:8px; }
+  .legend-item { display:flex; justify-content:space-between; padding:7px 12px; background:rgba(0,0,0,0.2); border:1px solid rgba(201,168,76,0.08); font-size:0.88rem; }
+  .legend-name { color:rgba(232,224,208,0.65); }
+  .legend-rank { font-family:'Playfair Display',serif; color:var(--gold-light); font-size:0.82rem; }
+
+  /* ===== FOOTER ===== */
+  .games-footer { margin-top:60px; border-top:1px solid rgba(201,168,76,0.15); padding:36px 20px 48px; }
+  .games-footer-title { text-align:center; font-size:0.7rem; letter-spacing:6px; text-transform:uppercase; color:rgba(201,168,76,0.4); margin-bottom:24px; }
+  .games-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; max-width:700px; margin:0 auto; }
+  @media (max-width:500px) { .games-grid { grid-template-columns:1fr; max-width:300px; } }
+  .game-card-link { display:block; text-decoration:none; border:1px solid rgba(201,168,76,0.15); padding:20px 12px; text-align:center; transition:all 0.25s; position:relative; overflow:hidden; background:rgba(0,0,0,0.2); -webkit-tap-highlight-color:transparent; }
+  .game-card-link::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(201,168,76,0.05),transparent); opacity:0; transition:opacity 0.25s; }
+  .game-card-link:hover { border-color:rgba(201,168,76,0.5); transform:translateY(-3px); box-shadow:0 8px 30px rgba(0,0,0,0.4); }
+  .game-card-link:hover::before { opacity:1; }
+  .game-card-icon { font-size:2rem; display:block; margin-bottom:8px; line-height:1; }
+  .game-card-name { font-family:'Playfair Display',serif; font-size:1rem; color:rgba(201,168,76,0.8); letter-spacing:2px; display:block; }
+  .game-card-sub { font-size:0.65rem; letter-spacing:3px; text-transform:uppercase; color:rgba(201,168,76,0.35); display:block; margin-top:4px; }
+
+  /* ===== TOAST ===== */
+  .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(100px); background:rgba(10,10,10,0.95); border:1px solid rgba(201,168,76,0.4); color:var(--gold); font-family:'Playfair Display',serif; font-size:0.95rem; letter-spacing:2px; padding:12px 24px; z-index:9999; transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275); max-width:calc(100vw - 40px); text-align:center; }
+  .toast.show { transform:translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 
-<div class="topBar">
-    <div class="balanceDisplay">Баланс: <span id="casinoBalance">10000</span></div>
-    <div class="profileTab" onclick="toggleProfile()">Профиль 📊</div>
+<!-- Balance Modal -->
+<div class="balance-modal-overlay" id="balanceModalOverlay" onclick="closeBMOnBg(event)">
+  <div class="balance-modal">
+    <div class="bm-header">
+      <span class="bm-title">Баланс</span>
+      <button class="bm-close" onclick="closeBalanceModal()">✕</button>
+    </div>
+    <div class="bm-amount">
+      <div class="bm-amount-label">Текущий баланс</div>
+      <div class="bm-amount-value" id="bmAmount">₽ —</div>
+    </div>
+    <div class="bm-add">
+      <div class="bm-add-hint">Пополнение</div>
+      <button class="btn-add-funds" onclick="addFunds()">+ 10 000</button>
+    </div>
+    <div class="bm-tx-title">История операций</div>
+    <div class="bm-tx-list" id="bmTxList"><div class="bm-empty">Нет операций</div></div>
+  </div>
 </div>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <a href="index.html" class="back-link">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    <span>Главное меню</span>
+  </a>
+  <span class="top-bar-title">Royal Casino</span>
+  <div class="top-bar-balance" onclick="openBalanceModal()">
+    <span class="tbl-label">Баланс</span>
+    <span class="tbl-amount" id="topBalanceDisplay">₽ —</span>
+  </div>
+</div>
+
 <header>
-    <div class="welcome">Reaper<span> Casino</span></div>
+  <div class="header-ornament">✦ &nbsp; Royal Casino &nbsp; ✦</div>
+  <h1>POKER<span>Ultimate Texas Hold'em</span></h1>
+  <div class="gold-line"></div>
 </header>
 
-<div class="main-container">
-    <div class="sidebar" id="sidebar">
-        <a href="blackjack.html">🂡 Blackjack</a>
-        <a href="roulette.html">🎡 Рулетка</a>
-        <a href="index.html">🏠 Главная</a>
+<nav>
+  <button class="tab-btn active" onclick="showTab('game',this)">Игра</button>
+  <button class="tab-btn" onclick="showTab('stats',this)">Статистика</button>
+  <button class="tab-btn" onclick="showTab('rules',this)">Правила</button>
+</nav>
+
+<!-- ====== GAME TAB ====== -->
+<div id="tab-game" class="section active">
+  <div class="game-layout">
+    <div class="side-left"></div>
+    <div class="game-col">
+
+      <!-- Bet inputs -->
+      <div class="bet-row">
+        <div class="bet-field">
+          <label>BB / Ante</label>
+          <input type="number" id="bbBet" min="1" placeholder="100">
+        </div>
+        <div class="bet-field">
+          <label>Trips</label>
+          <input type="number" id="tripsBet" min="0" placeholder="0">
+        </div>
+        <div class="bet-field">
+          <label>Ultimate</label>
+          <input type="number" id="ultimateBet" min="0" placeholder="0">
+        </div>
+        <div style="display:flex;align-items:flex-end;">
+          <button class="btn-primary" id="startBtn">Раздать</button>
+        </div>
+      </div>
+
+      <!-- Stake bar -->
+      <div class="stake-bar">
+        <div class="stake-item"><span class="stake-label">Баланс</span><span class="stake-value" id="balanceInGame">₽ 0</span></div>
+        <div class="stake-item"><span class="stake-label">Ante / BB</span><span class="stake-value" id="disp-ante">—</span></div>
+        <div class="stake-item"><span class="stake-label">Play</span><span class="stake-value" id="disp-play">—</span></div>
+        <div class="stake-item"><span class="stake-label">Trips</span><span class="stake-value" id="disp-trips">—</span></div>
+        <div class="stake-item"><span class="stake-label">Ultimate</span><span class="stake-value" id="disp-ult">—</span></div>
+      </div>
+
+      <!-- Felt table -->
+      <div class="felt-table">
+        <div class="hand-section">
+          <div class="hand-label">Дилер</div>
+          <div class="cards-row" id="botCards"></div>
+          <div class="combo-display" id="dealerCombo"></div>
+        </div>
+        <div style="height:1px;background:rgba(201,168,76,0.15);margin:12px 0;"></div>
+        <div class="hand-section">
+          <div class="hand-label">Стол</div>
+          <div class="cards-row" id="tableCards"></div>
+        </div>
+        <div style="height:1px;background:rgba(201,168,76,0.15);margin:12px 0;"></div>
+        <div class="hand-section" style="margin-bottom:0;">
+          <div class="hand-label">Ваши карты</div>
+          <div class="cards-row" id="playerCards"></div>
+          <div class="combo-display" id="playerCombo"></div>
+        </div>
+      </div>
+
+      <div class="result-box" id="resultBox">
+        <span class="result-text" style="color:rgba(201,168,76,0.3);font-style:italic;">Сделайте ставку и нажмите «Раздать»</span>
+      </div>
+
+      <div class="action-area" id="actionArea">
+        <div class="action-btns" id="actionBtns"></div>
+      </div>
     </div>
 
-    <div class="gameWrapper">
-        <div style="text-align:center; margin-bottom:20px;">
-            <input type="number" id="bbBet" placeholder="BB / Ante" min="1">
-            <input type="number" id="tripsBet" placeholder="Trips" min="0">
-            <input type="number" id="ultimateBet" placeholder="Ultimate" min="0">
-            <button id="startBtn">Начать игру</button>
-        </div>
-
-        <div class="cardsSection">
-            <h3>Ваши карты</h3>
-            <div class="cardsContainer" id="playerCards"></div>
-            <div id="playerCombo" class="player-combo"></div>
-        </div>
-
-        <div class="cardsSection">
-            <h3>Карты дилера</h3>
-            <div class="cardsContainer" id="botCards"></div>
-            <div id="dealerCombo" class="dealer-combo"></div>
-        </div>
-
-        <div class="cardsSection">
-            <h3>Стол</h3>
-            <div class="cardsContainer" id="tableCards"></div>
-        </div>
-
-        <div id="actionButtons"></div>
-        <p id="playerWinText"></p>
-
-        <p id="totalStakeDisplay">Общая ставка: 0</p>
-
-        <div style="text-align:center; font-size:1.2em; margin-top:15px;">
-            Баланс: <span id="casinoBalanceBottom">10000</span>
-        </div>
+    <!-- Pay tables -->
+    <div class="side-tables">
+      <div class="pay-table">
+        <div class="pay-table-head">Trips Bonus</div>
+        <table>
+          <tr><td>Сет</td><td>3:1</td></tr>
+          <tr><td>Стрит</td><td>5:1</td></tr>
+          <tr><td>Флеш</td><td>7:1</td></tr>
+          <tr><td>Фулл-хаус</td><td>10:1</td></tr>
+          <tr><td>Каре</td><td>25:1</td></tr>
+          <tr><td>Стрит-флеш</td><td>40:1</td></tr>
+          <tr><td>Роял-флеш</td><td>70:1</td></tr>
+        </table>
+      </div>
+      <div class="pay-table">
+        <div class="pay-table-head">Ultimate Bonus</div>
+        <table>
+          <tr><td>AA</td><td>30×</td></tr>
+          <tr><td>AK suited</td><td>25×</td></tr>
+          <tr><td>AQ suited</td><td>20×</td></tr>
+          <tr><td>AJ suited</td><td>15×</td></tr>
+          <tr><td>KK / QQ / JJ</td><td>15×</td></tr>
+          <tr><td>AK offsuit</td><td>10×</td></tr>
+          <tr><td>AQ offsuit</td><td>5×</td></tr>
+          <tr><td>AJ offsuit</td><td>2×</td></tr>
+        </table>
+      </div>
     </div>
-
-    <div style="flex: 0 0 300px; display:flex; flex-direction:column; gap:20px;">
-        <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:15px;">
-            <h3 style="text-align:center; color:#ffb347; margin-bottom:12px;">Trips Bonus</h3>
-            <table style="width:100%; border-collapse:collapse; font-size:0.95em;">
-                <tr><th>Комбинация</th><th>Выплата</th></tr>
-                <tr><td>Сет</td><td>3:1</td></tr>
-                <tr><td>Стрит</td><td>5:1</td></tr>
-                <tr><td>Флеш</td><td>7:1</td></tr>
-                <tr><td>Фулл-хаус</td><td>10:1</td></tr>
-                <tr><td>Каре</td><td>25:1</td></tr>
-                <tr><td>Стрит-флеш</td><td>40:1</td></tr>
-                <tr><td>Роял-флеш</td><td>70:1</td></tr>
-            </table>
-        </div>
-
-        <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:15px;">
-            <h3 style="text-align:center; color:#ffb347; margin-bottom:12px;">Ultimate Bonus</h3>
-            <table style="width:100%; border-collapse:collapse; font-size:0.95em;">
-                <tr><th>Комбинация</th><th>Выплата</th></tr>
-                <tr><td>AA</td><td>30x</td></tr>
-                <tr><td>AK suited</td><td>25x</td></tr>
-                <tr><td>AQ suited</td><td>20x</td></tr>
-                <tr><td>AJ suited</td><td>15x</td></tr>
-                <tr><td>KK / QQ / JJ</td><td>15x</td></tr>
-                <tr><td>AK off-suited</td><td>10x</td></tr>
-                <tr><td>AQ off-suited</td><td>5x</td></tr>
-                <tr><td>AJ off-suited</td><td>2x</td></tr>
-            </table>
-        </div>
-    </div>
+  </div>
 </div>
 
-<div id="profileModal" class="profileModal">
-    <div class="profileContent">
-        <span class="closeProfile" onclick="toggleProfile()">✖</span>
-        <h2>Статистика в Ultimate Texas Hold'em</h2>
-        <p>Всего игр: <span class="value" id="statGames">0</span></p>
-        <p>Выигрышей: <span class="value" id="statWins">0</span></p>
-        <p>Проигрышей: <span class="value" id="statLosses">0</span></p>
-        <p>Макс. выплата: <span class="value" id="statMaxWin">0</span></p>
-        <p>Лучшая комбинация: <span class="value" id="statBestCombo">-</span></p>
-        <button class="resetStatsBtn" onclick="resetStats()">Сбросить статистику</button>
+<!-- ====== STATS TAB ====== -->
+<div id="tab-stats" class="section">
+  <div class="section-title">Статистика</div>
+  <div class="gold-line" style="margin-bottom:32px;"></div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><span class="stat-value" id="s-games">0</span><span class="stat-label">Игр сыграно</span></div>
+    <div class="stat-card"><span class="stat-value" id="s-wins">0</span><span class="stat-label">Побед</span></div>
+    <div class="stat-card"><span class="stat-value" id="s-losses">0</span><span class="stat-label">Поражений</span></div>
+    <div class="stat-card"><span class="stat-value" id="s-folds">0</span><span class="stat-label">Фолдов</span></div>
+    <div class="stat-card"><span class="stat-value" id="s-maxwin" style="color:var(--gold);">₽ 0</span><span class="stat-label">Макс. выигрыш</span></div>
+    <div class="stat-card"><span class="stat-value" id="s-best">—</span><span class="stat-label">Лучшая комбо</span></div>
+  </div>
+
+  <div class="win-bar-wrap">
+    <div class="win-bar-labels">
+      <span id="pct-win">Победы 0%</span>
+      <span id="pct-loss">Поражения 0%</span>
     </div>
+    <div class="win-bar-track">
+      <div class="win-bar-win" id="bar-win" style="width:0%"></div>
+      <div class="win-bar-loss" id="bar-loss" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="history-title">История раундов</div>
+  <div id="empty-history" class="empty-history">История пуста. Сыграйте первый раунд!</div>
+  <div class="history-table-wrap" id="history-table-wrap" style="display:none;">
+    <table class="history-table">
+      <thead><tr><th>#</th><th>Рука игрока</th><th>Рука дилера</th><th>Исход</th><th>Выплата</th></tr></thead>
+      <tbody id="history-body"></tbody>
+    </table>
+  </div>
+  <button class="reset-btn" onclick="resetStats()">⚠ Сбросить статистику</button>
 </div>
 
-<button id="addFundsBtn">+10000</button>
+<!-- ====== RULES TAB ====== -->
+<div id="tab-rules" class="section">
+  <div class="section-title">Правила</div>
+  <div class="gold-line" style="margin-bottom:32px;"></div>
+  <div style="max-width:760px;margin:0 auto;">
+    <div style="background:linear-gradient(135deg,rgba(201,168,76,0.05),rgba(10,61,46,0.2));border:1px solid rgba(201,168,76,0.2);padding:28px;margin-bottom:20px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--gold),transparent);"></div>
+      <h3 style="font-family:'Playfair Display',serif;color:var(--gold);font-size:1.2rem;margin-bottom:16px;letter-spacing:2px;">Основные ставки</h3>
+      <p style="font-size:1rem;line-height:1.8;color:rgba(232,224,208,0.85);font-weight:300;">BB/Ante — обязательная ставка, ставится дважды (BB и Ante одновременно). <strong style="color:var(--gold)">Trips</strong> — боковая ставка на получение комбинации от Сета и выше. <strong style="color:var(--gold)">Ultimate</strong> — боковая ставка на стартовые карты (AA, AK suited и т.д.).</p>
+    </div>
+    <div style="background:linear-gradient(135deg,rgba(201,168,76,0.05),rgba(10,61,46,0.2));border:1px solid rgba(201,168,76,0.2);padding:28px;margin-bottom:20px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--gold),transparent);"></div>
+      <h3 style="font-family:'Playfair Display',serif;color:var(--gold);font-size:1.2rem;margin-bottom:16px;letter-spacing:2px;">Ставка Play</h3>
+      <p style="font-size:1rem;line-height:1.8;color:rgba(232,224,208,0.85);font-weight:300;"><strong style="color:var(--gold)">Префлоп:</strong> Ставка 4× (рекомендуется с сильными картами) или чек.<br><strong style="color:var(--gold)">Флоп:</strong> Ставка 2× или чек.<br><strong style="color:var(--gold)">Терн/Ривер:</strong> Ставка 1× или фолд (теряете Ante и BB).</p>
+    </div>
+    <div style="background:linear-gradient(135deg,rgba(201,168,76,0.05),rgba(10,61,46,0.2));border:1px solid rgba(201,168,76,0.2);padding:28px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--gold),transparent);"></div>
+      <h3 style="font-family:'Playfair Display',serif;color:var(--gold);font-size:1.2rem;margin-bottom:16px;letter-spacing:2px;">Комбинации рук</h3>
+      <div class="hand-legend">
+        <div class="legend-item"><span class="legend-name">Роял-флеш</span><span class="legend-rank">A K Q J 10 одной масти</span></div>
+        <div class="legend-item"><span class="legend-name">Стрит-флеш</span><span class="legend-rank">5 подряд одной масти</span></div>
+        <div class="legend-item"><span class="legend-name">Каре</span><span class="legend-rank">4 одинаковых</span></div>
+        <div class="legend-item"><span class="legend-name">Фулл-хаус</span><span class="legend-rank">Тройка + пара</span></div>
+        <div class="legend-item"><span class="legend-name">Флеш</span><span class="legend-rank">5 одной масти</span></div>
+        <div class="legend-item"><span class="legend-name">Стрит</span><span class="legend-rank">5 карт подряд</span></div>
+        <div class="legend-item"><span class="legend-name">Сет</span><span class="legend-rank">3 одинаковых</span></div>
+        <div class="legend-item"><span class="legend-name">Две пары</span><span class="legend-rank">2 пары</span></div>
+        <div class="legend-item"><span class="legend-name">Пара</span><span class="legend-rank">2 одинаковых</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="games-footer">
+  <div class="games-footer-title">Другие игры</div>
+  <div class="games-grid">
+    <a href="baccarat.html" class="game-card-link"><span class="game-card-icon">🎴</span><span class="game-card-name">Baccarat</span><span class="game-card-sub">Royal Table</span></a>
+    <a href="roulette.html" class="game-card-link"><span class="game-card-icon">🎡</span><span class="game-card-name">Roulette</span><span class="game-card-sub">European</span></a>
+    <a href="blackjack.html" class="game-card-link"><span class="game-card-icon">🂡</span><span class="game-card-name">Blackjack</span><span class="game-card-sub">Classic 21</span></a>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
 
 <script>
-// Загружаем баланс сразу при открытии страницы
-let casinoBalance = localStorage.getItem("casinoBalance") 
-    ? parseInt(localStorage.getItem("casinoBalance")) 
-    : 10000;
+// ==================== CONSTANTS ====================
+const SUITS = ['♠','♥','♦','♣'];
+const RANKS = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+const RED = new Set(['♥','♦']);
+const BAL_KEY = 'casinoBalance';
+const TX_KEY = 'pokerTxHistory';
+const STATS_KEY = 'pokerStats';
 
-// Обновляем отображение сразу
-updateCasinoBalance();
+// ==================== STATE ====================
+let casinoBalance = parseInt(localStorage.getItem(BAL_KEY) || '10000');
+let txHistory = (() => { try { return JSON.parse(localStorage.getItem(TX_KEY)||'[]'); } catch(e){return[];} })();
+let pokerStats = (() => { try { return JSON.parse(localStorage.getItem(STATS_KEY)||'{}'); } catch(e){return {};} })();
 
-// Слушаем изменения из других вкладок/игр
-window.addEventListener('storage', (e) => {
-    if (e.key === "casinoBalance") {
-        casinoBalance = e.newValue ? parseInt(e.newValue) : 10000;
-        updateCasinoBalance();
-    }
+let deck=[], playerCards=[], botCards=[], flop=[], turn=[], river=[];
+let bbBet=0, anteBet=0, tripsBet=0, ultimateBet=0, currentPlayBet=0;
+let stage='';
+let lastBB=0, lastTrips=0, lastUltimate=0;
+
+// ==================== BALANCE MODAL ====================
+function openBalanceModal() {
+  renderBalanceModal();
+  document.getElementById('balanceModalOverlay').classList.add('open');
+}
+function closeBalanceModal() { document.getElementById('balanceModalOverlay').classList.remove('open'); }
+function closeBMOnBg(e) { if(e.target===document.getElementById('balanceModalOverlay')) closeBalanceModal(); }
+
+function renderBalanceModal() {
+  document.getElementById('bmAmount').textContent = fmtMoney(casinoBalance);
+  const list = document.getElementById('bmTxList');
+  if(!txHistory.length) { list.innerHTML='<div class="bm-empty">Нет операций</div>'; return; }
+  list.innerHTML='';
+  txHistory.forEach(tx=>{
+    const row=document.createElement('div'); row.className='tx-row';
+    const credit=tx.amount>0;
+    const d=new Date(tx.ts);
+    const time=d.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+    row.innerHTML=`<div><div class="tx-info-desc">${tx.desc}</div><div class="tx-info-time">${time}</div></div><div class="tx-amount ${credit?'credit':'debit'}">${credit?'+':''}${fmtMoney(tx.amount)}</div>`;
+    list.appendChild(row);
+  });
+}
+
+function addFunds() {
+  casinoBalance+=10000;
+  recordTx('Пополнение баланса',10000);
+  saveBalance(); updateUI(); renderBalanceModal();
+  showToast('+ 10 000 добавлено');
+}
+
+function recordTx(desc,amount) {
+  txHistory.unshift({desc,amount,ts:Date.now()});
+  if(txHistory.length>150) txHistory=txHistory.slice(0,150);
+  localStorage.setItem(TX_KEY,JSON.stringify(txHistory));
+}
+
+function saveBalance() { localStorage.setItem(BAL_KEY,casinoBalance); }
+
+function updateUI() {
+  document.getElementById('topBalanceDisplay').textContent=fmtMoney(casinoBalance);
+  document.getElementById('balanceInGame').textContent=fmtMoney(casinoBalance);
+  saveBalance();
+}
+
+function fmtMoney(n) { return '₽ '+Number(n).toLocaleString('ru-RU'); }
+
+// Sync on focus (user returns from another game page)
+window.addEventListener('focus', ()=>{
+  const s=parseInt(localStorage.getItem(BAL_KEY)||casinoBalance);
+  if(s!==casinoBalance){casinoBalance=s;updateUI();}
 });
 
-// Функция обновления баланса (и в topBar, и внизу)
-function updateCasinoBalance() {
-    const balStr = casinoBalance.toLocaleString('ru-RU');
-    document.getElementById("casinoBalance").innerText = balStr;
-    document.getElementById("casinoBalanceBottom").innerText = balStr;
-    localStorage.setItem("casinoBalance", casinoBalance);
+// ==================== TABS ====================
+function showTab(name,btn) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(name==='stats') renderStats();
 }
 
-// Кнопка +10000 (синхронизация через localStorage)
-document.getElementById("addFundsBtn").onclick = () => {
-    casinoBalance += 10000;
-    updateCasinoBalance();
-};
+// ==================== DECK ====================
+function createDeck() {
+  const d=[];
+  for(const s of SUITS) for(const r of RANKS) d.push(r+s);
+  return d.sort(()=>Math.random()-0.5);
+}
+function draw(n) { return deck.splice(0,n); }
 
-let pokerStats = localStorage.getItem("pokerStats") 
-    ? JSON.parse(localStorage.getItem("pokerStats")) 
-    : {games:0, wins:0, losses:0, maxWin:0, bestCombo:"-"};
-
-function toggleProfile() {
-    const modal = document.getElementById("profileModal");
-    modal.style.display = modal.style.display === "flex" ? "none" : "flex";
-    if (modal.style.display === "flex") {
-        document.getElementById("statGames").innerText = pokerStats.games || 0;
-        document.getElementById("statWins").innerText = pokerStats.wins || 0;
-        document.getElementById("statLosses").innerText = pokerStats.losses || 0;
-        document.getElementById("statMaxWin").innerText = pokerStats.maxWin || 0;
-        document.getElementById("statBestCombo").innerText = pokerStats.bestCombo || "-";
+// ==================== RENDER CARDS (animated) ====================
+function renderCards(containerId, cards, animationType='deal') {
+  const el=document.getElementById(containerId);
+  el.innerHTML='';
+  cards.forEach((card,i)=>{
+    const div=document.createElement('div');
+    div.className='playing-card';
+    if(card==='BACK') {
+      div.classList.add('card-back');
+    } else {
+      const rank=card.slice(0,-1), suit=card.slice(-1);
+      const isRed=RED.has(suit);
+      div.innerHTML=`
+        <div class="card-corner-top ${isRed?'card-red':'card-black'}">${rank}<br>${suit}</div>
+        <div class="card-suit-center ${isRed?'card-red':'card-black'}">${suit}</div>
+        <div class="card-corner-bottom ${isRed?'card-red':'card-black'}">${rank}<br>${suit}</div>`;
     }
+    el.appendChild(div);
+
+    // Staggered animation
+    const delay = i * 110;
+    if(animationType==='community') {
+      div.style.animationDelay = delay+'ms';
+      div.classList.add('community-card');
+      // community-card uses @keyframes directly, force show
+      setTimeout(()=>{ div.style.opacity='1'; div.style.transform='none'; }, delay+400);
+    } else {
+      // For player/dealer: use show class with transition
+      setTimeout(()=> div.classList.add('show'), 80 + delay);
+    }
+  });
 }
 
-function resetStats() {
-    if (!confirm("Сбросить статистику?")) return;
-    pokerStats = {games:0, wins:0, losses:0, maxWin:0, bestCombo:"-"};
-    localStorage.setItem("pokerStats", JSON.stringify(pokerStats));
-    toggleProfile();
+// Reveal bot cards with flip animation
+function revealBotCards(cards) {
+  const el=document.getElementById('botCards');
+  el.innerHTML='';
+  cards.forEach((card,i)=>{
+    const div=document.createElement('div');
+    div.className='playing-card';
+    const rank=card.slice(0,-1), suit=card.slice(-1);
+    const isRed=RED.has(suit);
+    div.innerHTML=`
+      <div class="card-corner-top ${isRed?'card-red':'card-black'}">${rank}<br>${suit}</div>
+      <div class="card-suit-center ${isRed?'card-red':'card-black'}">${suit}</div>
+      <div class="card-corner-bottom ${isRed?'card-red':'card-black'}">${rank}<br>${suit}</div>`;
+    el.appendChild(div);
+    const delay=i*160;
+    setTimeout(()=>{ div.classList.add('card-flip'); div.style.opacity='1'; }, delay);
+  });
 }
 
-let deck = [], player = [], bot = [], flop = [], turn = [], river = [];
-let bbBet = 0, anteBet = 0, tripsBet = 0, ultimateBet = 0;
-let stage = "", currentPlayBet = 0;
-
-const suits = ["♠","♥","♦","♣"];
-const ranks = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
-
-document.getElementById("startBtn").onclick = startPoker;
-
-function createDeck(){
-    let d = []; 
-    for(let s of suits) for(let r of ranks) d.push(r+s); 
-    return d.sort(()=>Math.random()-0.5);
-}
-
-function deal(n){ return deck.splice(0,n); }
-
-function displayCards(id, cards){
-    const container = document.getElementById(id); 
-    container.innerHTML = "";
-    cards.forEach((card, i) => {
-        const div = document.createElement("div");
-        div.classList.add("card");
-        if(card==="🂠"){ 
-            div.classList.add("back"); 
-        } else {
-            const rank = card.slice(0,-1), suit = card.slice(-1);
-            if(suit==="♥"||suit==="♦") div.classList.add("red"); else div.classList.add("black");
-            div.innerHTML = `
-                <div class="corner top-left">${rank}<br>${suit}</div>
-                <div class="center">${suit}</div>
-                <div class="corner bottom-right">${rank}<br>${suit}</div>
-            `;
-        }
-        container.appendChild(div);
-        setTimeout(() => div.classList.add("show"), 100 + i * 120);
-    });
-}
-
+// ==================== HAND EVALUATION ====================
 function evaluateHand(cards) {
-    const values = cards.map(c => ranks.indexOf(c.slice(0,-1))).sort((a,b)=>b-a);
-    const suitsArr = cards.map(c => c.slice(-1));
-    const count = {};
-    values.forEach(v => count[v] = (count[v] || 0) + 1);
-
-    const flushSuit = suitsArr.find(s => suitsArr.filter(x=>x===s).length >= 5);
-    const flushCards = flushSuit ? cards.filter(c=>c.slice(-1)===flushSuit) : [];
-    const flushValues = flushCards.map(c=>ranks.indexOf(c.slice(0,-1))).sort((a,b)=>b-a);
-
-    const pairs = Object.keys(count).filter(k=>count[k]===2).map(Number).sort((a,b)=>b-a);
-    const three = Object.keys(count).filter(k=>count[k]===3).map(Number);
-    const four = Object.keys(count).filter(k=>count[k]===4).map(Number);
-
-    function getStraight(vals) {
-        vals = [...new Set(vals)].sort((a,b)=>b-a);
-        for (let i = 0; i <= vals.length - 5; i++) {
-            if (vals[i] - vals[i+4] === 4) return vals[i];
-        }
-        if (vals.includes(12) && vals.includes(3) && vals.includes(2) && vals.includes(1) && vals.includes(0)) return 3;
-        return null;
-    }
-
-    const straightHigh = getStraight(values);
-    let sfHigh = null;
-    if (flushSuit) sfHigh = getStraight(flushValues);
-
-    let result = {score:0, name:"Старшая карта", ranks:values.slice(0,5)};
-
-    if (sfHigh === 12) result = {score:9, name:"Роял-флеш", ranks:flushValues.slice(0,5)};
-    else if (sfHigh !== null) result = {score:8, name:"Стрит-флеш", ranks:flushValues.slice(0,5)};
-    else if (four.length) result = {score:7, name:"Каре", ranks:[four[0], ...values.filter(v=>v!==four[0]).slice(0,4)]};
-    else if (three.length && pairs.length) result = {score:6, name:"Фулл-хаус", ranks:[three[0], pairs[0]]};
-    else if (flushSuit) result = {score:5, name:"Флеш", ranks:flushValues.slice(0,5)};
-    else if (straightHigh !== null) result = {score:4, name:"Стрит", ranks:values.slice(0,5)};
-    else if (three.length) result = {score:3, name:"Сет", ranks:[three[0], ...values.filter(v=>v!==three[0]).slice(0,4)]};
-    else if (pairs.length >= 2) result = {score:2, name:"Две пары", ranks:[pairs[0], pairs[1], ...values.filter(r => r !== pairs[0] && r !== pairs[1]).slice(0,3)]};
-    else if (pairs.length === 1) result = {score:1, name:"Пара", ranks:[pairs[0], ...values.filter(r => r !== pairs[0]).slice(0,4)]};
-    else result = {score:0, name:"Старшая карта", ranks:values.slice(0,5)};
-
-    return result;
+  const values=cards.map(c=>RANKS.indexOf(c.slice(0,-1))).sort((a,b)=>b-a);
+  const suits=cards.map(c=>c.slice(-1));
+  const count={};
+  values.forEach(v=>count[v]=(count[v]||0)+1);
+  const flushSuit=suits.find(s=>suits.filter(x=>x===s).length>=5);
+  const flushVals=flushSuit?cards.filter(c=>c.slice(-1)===flushSuit).map(c=>RANKS.indexOf(c.slice(0,-1))).sort((a,b)=>b-a):[];
+  const pairs=Object.keys(count).filter(k=>count[k]===2).map(Number).sort((a,b)=>b-a);
+  const three=Object.keys(count).filter(k=>count[k]===3).map(Number);
+  const four=Object.keys(count).filter(k=>count[k]===4).map(Number);
+  function getStraight(vals){
+    const u=[...new Set(vals)].sort((a,b)=>b-a);
+    for(let i=0;i<=u.length-5;i++) if(u[i]-u[i+4]===4) return u[i];
+    if(u.includes(12)&&u.includes(3)&&u.includes(2)&&u.includes(1)&&u.includes(0)) return 3;
+    return null;
+  }
+  const sfHigh=flushSuit?getStraight(flushVals):null;
+  const stHigh=getStraight(values);
+  if(sfHigh===12) return{score:9,name:'Роял-флеш',ranks:flushVals.slice(0,5)};
+  if(sfHigh!==null) return{score:8,name:'Стрит-флеш',ranks:flushVals.slice(0,5)};
+  if(four.length) return{score:7,name:'Каре',ranks:[four[0],...values.filter(v=>v!==four[0]).slice(0,1)]};
+  if(three.length&&pairs.length) return{score:6,name:'Фулл-хаус',ranks:[three[0],pairs[0]]};
+  if(flushSuit) return{score:5,name:'Флеш',ranks:flushVals.slice(0,5)};
+  if(stHigh!==null) return{score:4,name:'Стрит',ranks:values.slice(0,5)};
+  if(three.length) return{score:3,name:'Сет',ranks:[three[0],...values.filter(v=>v!==three[0]).slice(0,2)]};
+  if(pairs.length>=2) return{score:2,name:'Две пары',ranks:[pairs[0],pairs[1],...values.filter(r=>r!==pairs[0]&&r!==pairs[1]).slice(0,1)]};
+  if(pairs.length===1) return{score:1,name:'Пара',ranks:[pairs[0],...values.filter(r=>r!==pairs[0]).slice(0,3)]};
+  return{score:0,name:'Старшая карта',ranks:values.slice(0,5)};
 }
 
-function compareHands(p, d){
-    if(p.score !== d.score) return p.score > d.score ? 1 : -1;
-    for(let i=0; i<Math.min(p.ranks.length, d.ranks.length); i++){
-        if(p.ranks[i] !== d.ranks[i]) return p.ranks[i] > d.ranks[i] ? 1 : -1;
-    }
-    return 0;
+function compareHands(p,d){
+  if(p.score!==d.score) return p.score>d.score?1:-1;
+  for(let i=0;i<Math.min(p.ranks.length,d.ranks.length);i++) if(p.ranks[i]!==d.ranks[i]) return p.ranks[i]>d.ranks[i]?1:-1;
+  return 0;
 }
 
-function updatePlayerCombo(show = false) {
-    const el = document.getElementById("playerCombo");
-    if (!show) {
-        el.textContent = "";
-        el.className = "player-combo";
-        return;
-    }
-
-    let currentCards = [...player];
-    if (flop.length) currentCards = currentCards.concat(flop);
-    if (turn.length) currentCards = currentCards.concat(turn);
-    if (river.length) currentCards = currentCards.concat(river);
-
-    const eval = evaluateHand(currentCards);
-    el.textContent = eval.name;
-    el.className = "player-combo"; // будет переопределено в finishPoker
+function evaluateUltimate(cards){
+  const[c1,c2]=cards; const r1=c1.slice(0,-1),s1=c1.slice(-1),r2=c2.slice(0,-1),s2=c2.slice(-1);
+  if(r1==='A'&&r2==='A') return 30;
+  if(r1===r2&&['K','Q','J'].includes(r1)) return 15;
+  const suited=s1===s2;
+  const hasAK=(r1==='A'&&r2==='K')||(r1==='K'&&r2==='A');
+  const hasAQ=(r1==='A'&&r2==='Q')||(r1==='Q'&&r2==='A');
+  const hasAJ=(r1==='A'&&r2==='J')||(r1==='J'&&r2==='A');
+  if(hasAK) return suited?25:10;
+  if(hasAQ) return suited?20:5;
+  if(hasAJ) return suited?15:2;
+  return 0;
 }
 
-function updateTotalStake() {
-    const total = (bbBet * 2) + tripsBet + ultimateBet + currentPlayBet;
-    document.getElementById("totalStakeDisplay").textContent = `Общая ставка: ${total}`;
+// ==================== UI HELPERS ====================
+function setResult(html,cls){
+  document.getElementById('resultBox').innerHTML=`<span class="result-text ${cls}">${html}</span>`;
 }
 
-function startPoker(){
-    document.getElementById("playerCombo").textContent = "";
-    document.getElementById("playerCombo").className = "player-combo";
-    document.getElementById("dealerCombo").textContent = "";
-    document.getElementById("dealerCombo").className = "dealer-combo";
-
-    document.getElementById("playerWinText").innerText = "";
-    document.getElementById("actionButtons").innerHTML = "";
-
-    bbBet = parseInt(document.getElementById("bbBet").value) || 0;
-    anteBet = bbBet;
-    tripsBet = parseInt(document.getElementById("tripsBet").value) || 0;
-    ultimateBet = parseInt(document.getElementById("ultimateBet").value) || 0;
-
-    lastBB = bbBet;
-    lastTrips = tripsBet;
-    lastUltimate = ultimateBet;
-
-    const totalCost = bbBet * 2 + tripsBet + ultimateBet;
-
-    if (bbBet < 1) {
-        alert("BB / Ante минимум 1");
-        return;
-    }
-    if (casinoBalance < totalCost) {
-        alert("Недостаточно средств");
-        return;
-    }
-
-    casinoBalance -= totalCost;
-    updateCasinoBalance();
-    updateTotalStake();
-
-    deck = createDeck();
-    player = deal(2);
-    bot = deal(2);
-    flop = []; turn = []; river = [];
-
-    displayCards("playerCards", player);
-    displayCards("botCards", ["🂠","🂠"]);
-    displayCards("tableCards", []);
-
-    updatePlayerCombo(false); // ничего не показываем
-    updateTotalStake();
-
-    stage = "preflop";
-    currentPlayBet = 0;
-
-    showButtons("Префлоп: 4× или чек", 4, false, true);
+function updateCombo(show){
+  const el=document.getElementById('playerCombo');
+  if(!show){el.textContent='';el.className='combo-display';return;}
+  const all=[...playerCards,...flop,...turn,...river];
+  const ev=evaluateHand(all);
+  el.textContent=ev.name; el.className='combo-display neutral';
 }
 
-function showButtons(text, mult, allowFold = false, showCheck = true) {
-    const div = document.getElementById("actionButtons");
-    div.innerHTML = `<p style="margin:10px 0;">${text}</p>`;
-    
-    if (mult > 0) {
-        const btn = document.createElement("button");
-        btn.textContent = `Ставка ${mult}×`;
-        btn.onclick = () => playerMove(mult);
-        div.appendChild(btn);
-    }
-    
-    if (showCheck) {
-        const btn = document.createElement("button");
-        btn.textContent = "Чек";
-        btn.onclick = () => playerMove(0);
-        div.appendChild(btn);
-    }
-    
-    if (allowFold) {
-        const btn = document.createElement("button");
-        btn.textContent = "Фолд";
-        btn.onclick = foldPoker;
-        div.appendChild(btn);
-    }
+function updateStakeBar(){
+  document.getElementById('disp-ante').textContent=bbBet>0?fmtMoney(bbBet):'—';
+  document.getElementById('disp-play').textContent=currentPlayBet>0?fmtMoney(currentPlayBet):'—';
+  document.getElementById('disp-trips').textContent=tripsBet>0?fmtMoney(tripsBet):'—';
+  document.getElementById('disp-ult').textContent=ultimateBet>0?fmtMoney(ultimateBet):'—';
+  updateUI();
 }
 
-function playerMove(mult) {
-    if (mult > 0) {
-        const stake = bbBet * mult;
-        if (stake > casinoBalance) {
-            alert("Недостаточно средств");
-            return;
-        }
-        casinoBalance -= stake;
-        updateCasinoBalance();
-        currentPlayBet += stake;
-        updateTotalStake();
-    }
+function clearActions(){ document.getElementById('actionBtns').innerHTML=''; }
 
-    if (stage === "preflop") {
-        if (mult === 4) {
-            deal(3); flop = deal(3);
-            deal(1); turn = deal(1);
-            deal(1); river = deal(1);
-            stage = "showdown";
-            displayCards("tableCards", flop.concat(turn, river));
-            updatePlayerCombo(true);
-            finishPoker();
-            return;
-        }
-        stage = "flop";
-        deal(3); flop = deal(3);
-        displayCards("tableCards", flop);
-        showButtons("Флоп: 2× или чек", 2, false, true);
-    } else if (stage === "flop") {
-        if (mult === 2) {
-            deal(1); turn = deal(1);
-            deal(1); river = deal(1);
-            stage = "showdown";
-            displayCards("tableCards", flop.concat(turn, river));
-            updatePlayerCombo(true);
-            finishPoker();
-            return;
-        }
-        stage = "turn_river";
-        deal(1); turn = deal(1);
-        deal(1); river = deal(1);
-        displayCards("tableCards", flop.concat(turn, river));
-        showButtons("Терн/Ривер: 1× или фолд", 1, true, false);
-    } else if (stage === "turn_river") {
-        stage = "showdown";
-        updatePlayerCombo(true);
-        finishPoker();
-    }
+function showActions(hint,buttons){
+  const area=document.getElementById('actionBtns');
+  area.innerHTML='';
+  if(hint){ const h=document.createElement('div'); h.className='action-hint'; h.style.width='100%'; h.textContent=hint; area.appendChild(h); }
+  buttons.forEach(({label,cls,onClick})=>{ const b=document.createElement('button'); b.className=cls||'btn-secondary'; b.textContent=label; b.onclick=onClick; area.appendChild(b); });
 }
 
-function foldPoker() {
-    displayCards("botCards", bot);
+// ==================== GAME FLOW ====================
+document.getElementById('startBtn').onclick=startGame;
 
-    if (flop.length === 0) {
-        deal(3); flop = deal(3);
-    }
-    if (turn.length === 0) {
-        deal(1); turn = deal(1);
-        deal(1); river = deal(1);
-    }
-    displayCards("tableCards", flop.concat(turn, river));
-
-    const dealerHand = [...bot, ...flop, ...turn, ...river];
-    const dealerEval = evaluateHand(dealerHand);
-    document.getElementById("dealerCombo").textContent = dealerEval.name;
-    document.getElementById("dealerCombo").className = "dealer-combo better";
-
-    updatePlayerCombo(true);
-
-    document.getElementById("playerWinText").style.color = "#f87171";
-    document.getElementById("playerWinText").innerText = "Вы сбросили карты — потери: Ante + BB + Play";
-    document.getElementById("actionButtons").innerHTML = "";
-    setTimeout(showRestartButton, 300);
+function startGame(){
+  bbBet=parseInt(document.getElementById('bbBet').value)||0;
+  anteBet=bbBet;
+  tripsBet=parseInt(document.getElementById('tripsBet').value)||0;
+  ultimateBet=parseInt(document.getElementById('ultimateBet').value)||0;
+  lastBB=bbBet; lastTrips=tripsBet; lastUltimate=ultimateBet;
+  if(bbBet<1){showToast('BB / Ante минимум 1');return;}
+  const cost=bbBet*2+tripsBet+ultimateBet;
+  if(cost>casinoBalance){showToast('Недостаточно средств');return;}
+  casinoBalance-=cost;
+  recordTx('Покер — ставка (Ante+BB)',-bbBet*2);
+  if(tripsBet>0) recordTx('Покер — Trips',-tripsBet);
+  if(ultimateBet>0) recordTx('Покер — Ultimate',-ultimateBet);
+  currentPlayBet=0;
+  updateStakeBar();
+  deck=createDeck();
+  playerCards=draw(2); botCards=draw(2);
+  flop=[]; turn=[]; river=[];
+  renderCards('playerCards',playerCards,'deal');
+  renderCards('botCards',['BACK','BACK'],'deal');
+  renderCards('tableCards',[],'deal');
+  document.getElementById('playerCombo').textContent='';
+  document.getElementById('dealerCombo').textContent='';
+  setResult('<span style="color:rgba(201,168,76,0.35);font-style:italic;">Префлоп — выберите действие</span>','');
+  stage='preflop';
+  // Show actions after cards deal animation
+  setTimeout(()=>{
+    showActions('Префлоп',[
+      {label:'Ставка 4×',cls:'btn-primary',onClick:()=>playerMove(4)},
+      {label:'Чек',cls:'btn-secondary',onClick:()=>playerMove(0)},
+    ]);
+  }, 400);
 }
 
-function finishPoker(){
-    displayCards("botCards", bot);
-
-    const playerHand = [...player, ...flop, ...turn, ...river];
-    const dealerHand = [...bot, ...flop, ...turn, ...river];
-
-    const playerEval = evaluateHand(playerHand);
-    const dealerEval = evaluateHand(dealerHand);
-
-    const cmp = compareHands(playerEval, dealerEval);
-    const playerWins = cmp > 0;
-    const tie = cmp === 0;
-    const dealerQualified = dealerEval.score >= 1;
-
-    const playerComboEl = document.getElementById("playerCombo");
-    const dealerComboEl = document.getElementById("dealerCombo");
-
-    playerComboEl.textContent = playerEval.name;
-    dealerComboEl.textContent = dealerEval.name;
-
-    playerComboEl.className = "player-combo";
-    dealerComboEl.className = "dealer-combo";
-
-    if (cmp > 0) {
-        playerComboEl.classList.add("better");
-        dealerComboEl.classList.add("worse");
-    } else if (cmp < 0) {
-        playerComboEl.classList.add("worse");
-        dealerComboEl.classList.add("better");
-    } else {
-        playerComboEl.classList.add("tie");
-        dealerComboEl.classList.add("tie");
+function playerMove(mult){
+  if(mult>0){
+    const stake=bbBet*mult;
+    if(stake>casinoBalance){showToast('Недостаточно средств');return;}
+    casinoBalance-=stake;
+    recordTx(`Покер — Play bet ${mult}×`,-stake);
+    currentPlayBet+=stake;
+    updateStakeBar();
+  }
+  if(stage==='preflop'){
+    if(mult===4){
+      draw(1); flop=draw(3); draw(1); turn=draw(1); draw(1); river=draw(1);
+      renderCards('tableCards',[...flop,...turn,...river],'community');
+      setTimeout(()=>{updateCombo(true);stage='showdown';finishGame();},600);
+      return;
     }
-
-    let totalWin = 0;
-    let messages = [];
-
-    if (playerWins) {
-        totalWin += currentPlayBet;
-        messages.push("Play 1:1");
-    } else if (tie) {
-        totalWin += currentPlayBet;
-        messages.push("Play push");
+    draw(1); flop=draw(3);
+    renderCards('tableCards',flop,'community');
+    setTimeout(()=>{
+      updateCombo(true);
+      stage='flop';
+      showActions('Флоп',[
+        {label:'Ставка 2×',cls:'btn-primary',onClick:()=>playerMove(2)},
+        {label:'Чек',cls:'btn-secondary',onClick:()=>playerMove(0)},
+      ]);
+    },500);
+  } else if(stage==='flop'){
+    if(mult===2){
+      draw(1); turn=draw(1); draw(1); river=draw(1);
+      renderCards('tableCards',[...flop,...turn,...river],'community');
+      setTimeout(()=>{updateCombo(true);stage='showdown';finishGame();},600);
+      return;
     }
-
-    if (tie || !dealerQualified) {
-        totalWin += anteBet;
-        messages.push("Ante push");
-    } else if (playerWins) {
-        totalWin += anteBet;
-        messages.push("Ante 1:1");
-    }
-
-    if (tie) {
-        totalWin += bbBet;
-        messages.push("Blind push");
-    } else if (playerWins) {
-        const blindMult = {
-            "Стрит":1, "Флеш":2, "Фулл-хаус":3, "Каре":10,
-            "Стрит-флеш":50, "Роял-флеш":500
-        }[playerEval.name] || 0;
-        if (blindMult > 0) {
-            totalWin += bbBet * (blindMult + 1);
-            messages.push(`Blind ${blindMult+1}:1`);
-        } else {
-            totalWin += bbBet;
-            messages.push("Blind push");
-        }
-    }
-
-    const tripsMult = {
-        "Сет":3, "Стрит":5, "Флеш":7, "Фулл-хаус":10,
-        "Каре":25, "Стрит-флеш":40, "Роял-флеш":70
-    }[playerEval.name] || 0;
-    if (tripsBet > 0 && tripsMult > 0) {
-        totalWin += tripsBet * (tripsMult + 1);
-        messages.push(`Trips ${tripsMult+1}:1`);
-    }
-
-    const ultMult = evaluateUltimate(player);
-    if (ultimateBet > 0 && ultMult > 0) {
-        totalWin += ultimateBet * ultMult;
-        messages.push(`Ultimate ${ultMult}x`);
-    }
-
-    casinoBalance += totalWin;
-    updateCasinoBalance();
-
-    const winEl = document.getElementById("playerWinText");
-    if (totalWin > 0) {
-        winEl.style.color = "#34d399";
-        winEl.innerText = `Выигрыш: ${totalWin} | ${messages.join(" | ")}`;
-    } else if (tie) {
-        winEl.style.color = "#fbbf24";
-        winEl.innerText = `Ничья | ${messages.join(" | ")}`;
-    } else {
-        winEl.style.color = "#f87171";
-        winEl.innerText = `Проигрыш`;
-    }
-
-    pokerStats.games += 1;
-    if (playerWins) pokerStats.wins += 1;
-    else if (!tie) pokerStats.losses += 1;
-    if (totalWin > pokerStats.maxWin) pokerStats.maxWin = totalWin;
-    if (playerEval.score > 0 && playerEval.name !== pokerStats.bestCombo) {
-        pokerStats.bestCombo = playerEval.name;
-    }
-    localStorage.setItem("pokerStats", JSON.stringify(pokerStats));
-
-    setTimeout(showRestartButton, 800);
+    draw(1); turn=draw(1); draw(1); river=draw(1);
+    renderCards('tableCards',[...flop,...turn,...river],'community');
+    setTimeout(()=>{
+      updateCombo(true);
+      stage='turn_river';
+      showActions('Терн / Ривер',[
+        {label:'Ставка 1×',cls:'btn-primary',onClick:()=>playerMove(1)},
+        {label:'Фолд',cls:'btn-danger',onClick:foldGame},
+      ]);
+    },500);
+  } else if(stage==='turn_river'){
+    stage='showdown';
+    updateCombo(true);
+    finishGame();
+  }
 }
 
-function evaluateUltimate(cards) {
-    const [c1, c2] = cards;
-    const r1 = c1.slice(0,-1), s1 = c1.slice(-1);
-    const r2 = c2.slice(0,-1), s2 = c2.slice(-1);
-
-    if (r1 === "A" && r2 === "A") return 30;
-    if (r1 === r2 && ["K","Q","J"].includes(r1)) return 15;
-    if ((r1==="A" && r2==="K" || r1==="K" && r2==="A") && s1===s2) return 25;
-    if ((r1==="A" && r2==="Q" || r1==="Q" && r2==="A") && s1===s2) return 20;
-    if ((r1==="A" && r2==="J" || r1==="J" && r2==="A") && s1===s2) return 15;
-    if ((r1==="A" && r2==="K" || r1==="K" && r2==="A")) return 10;
-    if ((r1==="A" && r2==="Q" || r1==="Q" && r2==="A")) return 5;
-    if ((r1==="A" && r2==="J" || r1==="J" && r2==="A")) return 2;
-    return 0;
+function foldGame(){
+  revealBotCards(botCards);
+  if(!flop.length){draw(1);flop=draw(3);}
+  if(!turn.length){draw(1);turn=draw(1);draw(1);river=draw(1);}
+  renderCards('tableCards',[...flop,...turn,...river],'community');
+  setTimeout(()=>{
+    const dEv=evaluateHand([...botCards,...flop,...turn,...river]);
+    document.getElementById('dealerCombo').textContent=dEv.name;
+    document.getElementById('dealerCombo').className='combo-display better';
+    updateCombo(true);
+    setResult('Вы сбросили карты','result-loss');
+    pokerStats.games=(pokerStats.games||0)+1;
+    pokerStats.folds=(pokerStats.folds||0)+1;
+    pokerStats.losses=(pokerStats.losses||0)+1;
+    savePokerStats();
+    clearActions();
+    setTimeout(showNewGameBtn,500);
+  },600);
 }
 
-function showRestartButton() {
-    const div = document.getElementById("actionButtons");
-    div.innerHTML = "";
-    const btn = document.createElement("button");
-    btn.textContent = "Новая игра";
-    btn.onclick = () => {
-        document.getElementById("playerCombo").textContent = "";
-        document.getElementById("playerCombo").className = "player-combo";
-        document.getElementById("dealerCombo").textContent = "";
-        document.getElementById("dealerCombo").className = "dealer-combo";
-
-        document.getElementById("playerWinText").innerText = "";
-        document.getElementById("playerCards").innerHTML = "";
-        document.getElementById("botCards").innerHTML = "";
-        document.getElementById("tableCards").innerHTML = "";
-        document.getElementById("actionButtons").innerHTML = "";
-
-        document.getElementById("bbBet").value = lastBB || "";
-        document.getElementById("tripsBet").value = lastTrips || "";
-        document.getElementById("ultimateBet").value = lastUltimate || "";
-
-        updateTotalStake();
-        startPoker();
-    };
-    div.appendChild(btn);
+function finishGame(){
+  clearActions();
+  setTimeout(()=>{
+    revealBotCards(botCards);
+    setTimeout(()=>{
+      const pAll=[...playerCards,...flop,...turn,...river];
+      const dAll=[...botCards,...flop,...turn,...river];
+      const pEv=evaluateHand(pAll);
+      const dEv=evaluateHand(dAll);
+      const cmp=compareHands(pEv,dEv);
+      const pEl=document.getElementById('playerCombo');
+      const dEl=document.getElementById('dealerCombo');
+      pEl.textContent=pEv.name; dEl.textContent=dEv.name;
+      if(cmp>0){pEl.className='combo-display better';dEl.className='combo-display worse';}
+      else if(cmp<0){pEl.className='combo-display worse';dEl.className='combo-display better';}
+      else{pEl.className='combo-display tie';dEl.className='combo-display tie';}
+      const playerWins=cmp>0; const tie=cmp===0; const dealerQualified=dEv.score>=1;
+      let totalWin=0; const msgs=[];
+      if(playerWins){totalWin+=currentPlayBet*2;msgs.push('Play 1:1');}
+      else if(tie){totalWin+=currentPlayBet;msgs.push('Play push');}
+      if(tie||!dealerQualified){totalWin+=anteBet;msgs.push('Ante push');}
+      else if(playerWins){totalWin+=anteBet*2;msgs.push('Ante 1:1');}
+      const blindMults={'Стрит':1,'Флеш':2,'Фулл-хаус':3,'Каре':10,'Стрит-флеш':50,'Роял-флеш':500};
+      if(tie){totalWin+=bbBet;msgs.push('Blind push');}
+      else if(playerWins){
+        const bm=blindMults[pEv.name]||0;
+        if(bm>0){totalWin+=bbBet*(bm+1);msgs.push(`Blind ${bm}:1`);}
+        else{totalWin+=bbBet;msgs.push('Blind push');}
+      }
+      const tripsMults={'Сет':3,'Стрит':5,'Флеш':7,'Фулл-хаус':10,'Каре':25,'Стрит-флеш':40,'Роял-флеш':70};
+      const tm=tripsMults[pEv.name]||0;
+      if(tripsBet>0&&tm>0){totalWin+=tripsBet*(tm+1);msgs.push(`Trips ${tm}:1`);}
+      const um=evaluateUltimate(playerCards);
+      if(ultimateBet>0&&um>0){totalWin+=ultimateBet*um;msgs.push(`Ultimate ${um}×`);}
+      casinoBalance+=totalWin;
+      if(totalWin>0) recordTx('Покер — выплата',totalWin);
+      updateStakeBar();
+      if(playerWins||tie&&totalWin>0){
+        setResult(`${totalWin>0?`+${fmtMoney(totalWin)}`:'—'} &nbsp;·&nbsp; ${msgs.join(' · ')}`,'result-win');
+      } else if(tie){
+        setResult(`Ничья &nbsp;·&nbsp; ${msgs.join(' · ')}`,'result-push');
+      } else {
+        setResult('Проигрыш','result-loss');
+      }
+      // Stats
+      pokerStats.games=(pokerStats.games||0)+1;
+      if(playerWins) pokerStats.wins=(pokerStats.wins||0)+1;
+      else if(!tie) pokerStats.losses=(pokerStats.losses||0)+1;
+      if(totalWin>(pokerStats.maxWin||0)) pokerStats.maxWin=totalWin;
+      const comboRank={'Роял-флеш':9,'Стрит-флеш':8,'Каре':7,'Фулл-хаус':6,'Флеш':5,'Стрит':4,'Сет':3,'Две пары':2,'Пара':1};
+      if((comboRank[pEv.name]||0)>(comboRank[pokerStats.bestCombo]||0)) pokerStats.bestCombo=pEv.name;
+      // Round history
+      if(!pokerStats.rounds) pokerStats.rounds=[];
+      pokerStats.rounds.unshift({n:(pokerStats.games||1),pHand:pEv.name,dHand:dEv.name,outcome:playerWins?'win':tie?'push':'loss',payout:totalWin});
+      if(pokerStats.rounds.length>80) pokerStats.rounds=pokerStats.rounds.slice(0,80);
+      savePokerStats();
+      setTimeout(showNewGameBtn,700);
+    },500);
+  },300);
 }
+
+function showNewGameBtn(){
+  showActions('',[{
+    label:'Новая игра',cls:'btn-primary',
+    onClick:()=>{
+      document.getElementById('bbBet').value=lastBB||'';
+      document.getElementById('tripsBet').value=lastTrips||'';
+      document.getElementById('ultimateBet').value=lastUltimate||'';
+      renderCards('playerCards',[],'deal');
+      renderCards('botCards',[],'deal');
+      renderCards('tableCards',[],'deal');
+      document.getElementById('playerCombo').textContent='';
+      document.getElementById('dealerCombo').textContent='';
+      setResult('<span style="color:rgba(201,168,76,0.3);font-style:italic;">Сделайте ставку и нажмите «Раздать»</span>','');
+      updateStakeBar();
+      startGame();
+    }
+  }]);
+}
+
+// ==================== STATS ====================
+function savePokerStats() { localStorage.setItem(STATS_KEY, JSON.stringify(pokerStats)); }
+
+function renderStats(){
+  document.getElementById('s-games').textContent=pokerStats.games||0;
+  document.getElementById('s-wins').textContent=pokerStats.wins||0;
+  document.getElementById('s-losses').textContent=pokerStats.losses||0;
+  document.getElementById('s-folds').textContent=pokerStats.folds||0;
+  document.getElementById('s-maxwin').textContent=fmtMoney(pokerStats.maxWin||0);
+  document.getElementById('s-best').textContent=pokerStats.bestCombo||'—';
+
+  const total=(pokerStats.games||0);
+  const wins=pokerStats.wins||0;
+  const losses=pokerStats.losses||0;
+  const wPct=total>0?Math.round(wins/total*100):0;
+  const lPct=total>0?Math.round(losses/total*100):0;
+  document.getElementById('bar-win').style.width=wPct+'%';
+  document.getElementById('bar-loss').style.width=lPct+'%';
+  document.getElementById('pct-win').textContent=`Победы ${wPct}%`;
+  document.getElementById('pct-loss').textContent=`Поражения ${lPct}%`;
+
+  const rounds=pokerStats.rounds||[];
+  const empty=document.getElementById('empty-history');
+  const wrap=document.getElementById('history-table-wrap');
+  if(!rounds.length){empty.style.display='block';wrap.style.display='none';return;}
+  empty.style.display='none'; wrap.style.display='block';
+  const tbody=document.getElementById('history-body');
+  tbody.innerHTML='';
+  rounds.forEach(r=>{
+    const pillMap={win:'pill-win',push:'pill-push',loss:'pill-loss'};
+    const labelMap={win:'Победа',push:'Ничья',loss:'Проигрыш'};
+    const pnlColor=r.payout>0?'#2ecc71':r.outcome==='push'?'var(--gold)':'#e74c3c';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="opacity:0.5">#${r.n}</td><td>${r.pHand}</td><td>${r.dHand}</td><td><span class="pill ${pillMap[r.outcome]}">${labelMap[r.outcome]}</span></td><td style="color:${pnlColor}">${r.payout>0?'+':''}${fmtMoney(r.payout)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function resetStats(){
+  if(!confirm('Сбросить всю статистику покера?')) return;
+  pokerStats={};
+  savePokerStats();
+  renderStats();
+  showToast('Статистика сброшена');
+}
+
+// ==================== TOAST ====================
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ==================== INIT ====================
+updateUI();
 </script>
 </body>
 </html>
