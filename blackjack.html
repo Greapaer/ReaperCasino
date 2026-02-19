@@ -326,22 +326,24 @@
   .hand-label { font-family: 'Playfair Display', serif; font-size: clamp(0.6rem, 2vw, 0.75rem); letter-spacing: clamp(2px, 1vw, 5px); text-transform: uppercase; color: rgba(201,168,76,0.7); margin-bottom: 10px; }
 
   /* SPLIT HANDS */
-  .split-container { display: flex; gap: 16px; justify-content: center; }
+  .split-container { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
   .split-hand {
     flex: 1;
+    min-width: 120px;
+    max-width: 220px;
     border: 1px solid rgba(201,168,76,0.2);
     padding: 10px;
     position: relative;
     transition: border-color 0.3s;
-    min-width: 0;
   }
   .split-hand.active-hand { border-color: var(--gold); box-shadow: 0 0 16px rgba(201,168,76,0.25); }
+  .split-hand.done-hand { opacity: 0.7; }
   .split-hand-label { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(201,168,76,0.5); margin-bottom: 8px; }
   .split-hand-bet { font-size: 0.75rem; color: rgba(201,168,76,0.6); margin-bottom: 6px; }
 
   .cards-row {
     display: flex;
-    gap: clamp(6px, 2vw, 10px);
+    gap: clamp(4px, 1.5vw, 8px);
     justify-content: center;
     min-height: clamp(76px, 18vw, 100px);
     align-items: center;
@@ -354,8 +356,8 @@
 
   /* CARDS */
   .playing-card {
-    width: clamp(52px, 12vw, 68px);
-    height: clamp(76px, 17vw, 100px);
+    width: clamp(48px, 11vw, 65px);
+    height: clamp(70px, 16vw, 96px);
     background: var(--card-bg);
     border-radius: 5px;
     box-shadow: 2px 4px 12px rgba(0,0,0,0.5);
@@ -364,7 +366,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    font-size: clamp(0.75rem, 2.5vw, 1.1rem);
+    font-size: clamp(0.7rem, 2.5vw, 1rem);
     font-weight: 700;
     animation: dealCard var(--deal-duration, 0.3s) ease;
     transform-origin: bottom center;
@@ -374,23 +376,17 @@
     from { opacity: 0; transform: scale(0.5) rotate(-5deg) translateY(-20px); }
     to   { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); }
   }
-  .card-corner-top { position: absolute; top: 4px; left: 5px; font-size: clamp(0.6rem, 1.8vw, 0.85rem); line-height: 1; }
-  .card-corner-bottom { position: absolute; bottom: 4px; right: 5px; font-size: clamp(0.6rem, 1.8vw, 0.85rem); line-height: 1; transform: rotate(180deg); }
-  .card-suit-center { font-size: clamp(1.2rem, 4vw, 1.8rem); }
+  .card-corner-top { position: absolute; top: 4px; left: 5px; font-size: clamp(0.55rem, 1.7vw, 0.8rem); line-height: 1; }
+  .card-corner-bottom { position: absolute; bottom: 4px; right: 5px; font-size: clamp(0.55rem, 1.7vw, 0.8rem); line-height: 1; transform: rotate(180deg); }
+  .card-suit-center { font-size: clamp(1rem, 3.5vw, 1.6rem); }
   .card-red { color: var(--red); }
   .card-black { color: #1a1a1a; }
   .card-back { background: linear-gradient(135deg, #0a3d2e, #1a6b52); }
   .card-back .card-suit-center { color: rgba(201,168,76,0.5); font-size: 2rem; }
 
   /* 3D CARD FLIP */
-  .card-flip-container {
-    perspective: 600px;
-    display: inline-flex;
-  }
-  .playing-card.flipping {
-    animation: flipCard 0.5s ease forwards;
-    transform-style: preserve-3d;
-  }
+  .card-flip-container { perspective: 600px; display: inline-flex; }
+  .playing-card.flipping { animation: flipCard 0.5s ease forwards; transform-style: preserve-3d; }
   @keyframes flipCard {
     0%   { transform: rotateY(0deg); }
     49%  { transform: rotateY(90deg); opacity: 1; }
@@ -600,8 +596,8 @@
   </a>
   <span class="top-bar-title">Royal Casino</span>
   <div style="display:flex;align-items:center;gap:8px;">
-    <button id="sfx-btn" onclick="toggleSfx()" title="Звуковые эффекты" style="background:none;border:1px solid rgba(201,168,76,0.4);border-radius:6px;color:var(--gold-light);font-size:0.75rem;padding:4px 8px;cursor:pointer;transition:all 0.2s;">🔊 Эффекты</button>
-    <button id="music-btn" onclick="toggleMusic()" title="Фоновая музыка" style="background:none;border:1px solid rgba(201,168,76,0.4);border-radius:6px;color:var(--gold-light);font-size:0.75rem;padding:4px 8px;cursor:pointer;transition:all 0.2s;">🎵 Музыка</button>
+    <button id="sfx-btn" onclick="toggleSfx()" style="background:none;border:1px solid rgba(201,168,76,0.4);border-radius:6px;color:var(--gold-light);font-size:0.75rem;padding:4px 8px;cursor:pointer;transition:all 0.2s;">🔊 Эффекты</button>
+    <button id="music-btn" onclick="toggleMusic()" style="background:none;border:1px solid rgba(201,168,76,0.4);border-radius:6px;color:var(--gold-light);font-size:0.75rem;padding:4px 8px;cursor:pointer;transition:all 0.2s;">🎵 Музыка</button>
     <div class="top-bar-balance" onclick="openBalanceModal()">
       <span class="tbl-label">Баланс</span>
       <span class="tbl-amount" id="topbar-balance">₽ —</span>
@@ -687,7 +683,6 @@
       <div class="hand-area">
         <div class="hand-label">Игрок</div>
         <div id="player-hands-container">
-          <!-- single hand by default -->
           <div class="cards-row" id="player-cards"></div>
           <div class="score-display" id="player-score"></div>
         </div>
@@ -740,12 +735,12 @@
         <li><strong style="color:var(--gold)">Взять</strong> — взять ещё одну карту</li>
         <li><strong style="color:var(--gold)">Стоп</strong> — остановиться, дилер вскрывает карты</li>
         <li><strong style="color:var(--gold)">Удвоить</strong> — удвоить ставку и взять ровно одну карту</li>
-        <li><strong style="color:#2980b9">Сплит</strong> — разделить пару на две руки (каждая по исходной ставке)</li>
+        <li><strong style="color:#2980b9">Сплит</strong> — разделить пару на две руки</li>
       </ul>
     </div>
     <div class="rule-card">
       <h3>Сплит (Split)</h3>
-      <p>Если первые две карты одного ранга — можно разделить их на две отдельные руки. Каждая рука играется независимо. Сплит Тузов даёт по одной карте на каждую руку.</p>
+      <p>Если первые две карты одного ранга — можно разделить их на две отдельные руки. Максимум 4 руки. Сплит Тузов даёт по одной карте на каждую руку автоматически. После получения второй одинаковой карты — можно снова сделать сплит.</p>
     </div>
     <div class="rule-card">
       <h3>Удвоение</h3>
@@ -772,6 +767,8 @@
     <div class="stat-card"><span class="stat-value" id="s-pnl" style="color:var(--gold)">₽ 0</span><span class="stat-label">Чистый P&L</span></div>
     <div class="stat-card"><span class="stat-value" id="s-winrate">0%</span><span class="stat-label">Процент побед</span></div>
     <div class="stat-card"><span class="stat-value" id="s-splits">0</span><span class="stat-label">Сплитов</span></div>
+    <div class="stat-card"><span class="stat-value" id="s-totalwon" style="color:#2ecc71">₽ 0</span><span class="stat-label">Общий выигрыш</span></div>
+    <div class="stat-card"><span class="stat-value" id="s-totallost" style="color:#e74c3c">₽ 0</span><span class="stat-label">Общий проигрыш</span></div>
   </div>
 
   <div class="win-bar-wrap">
@@ -810,6 +807,7 @@ const RED_SUITS = new Set(['♥','♦']);
 const BAL_KEY = 'casinoBalance';
 const STATS_KEY = 'bj_stats_v2';
 const TX_KEY = 'bjTxHistory';
+const MAX_HANDS = 4; // maximum split hands allowed
 
 // ==================== STATE ====================
 let balance = parseInt(localStorage.getItem(BAL_KEY) || '10000');
@@ -819,13 +817,14 @@ let deck = [];
 
 // Game state
 let dealerHand = [];
-let playerHands = []; // array of hand objects
+let playerHands = [];
 let currentHandIndex = 0;
 let lastBet = 0;
 let lastUltimateBet = 0;
 let roundBet = 0;
 let roundUltimateBet = 0;
 let isSplit = false;
+let isAceSplit = false; // ace split: auto-stand each hand after 1 card
 
 let stats = loadStats();
 let txHistory = (() => { try { return JSON.parse(localStorage.getItem(TX_KEY) || '[]'); } catch(e) { return []; } })();
@@ -847,9 +846,13 @@ function handTotal(cards) {
   return total;
 }
 
+const NUM_DECKS = 6; // 6-deck shoe like in real casinos
+
 function newDeck() {
   const d = [];
-  for (const s of SUITS) for (const r of RANKS) d.push({ rank: r, suit: s });
+  for (let n = 0; n < NUM_DECKS; n++)
+    for (const s of SUITS) for (const r of RANKS) d.push({ rank: r, suit: s });
+  // Fisher-Yates shuffle
   for (let i = d.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [d[i], d[j]] = [d[j], d[i]];
@@ -858,9 +861,10 @@ function newDeck() {
 }
 
 function drawCard() {
-  if (deck.length < 15) {
+  // Reshuffle when 25% of shoe remains (standard casino cut card rule)
+  if (deck.length < NUM_DECKS * 52 * 0.25) {
     deck = newDeck();
-    showToast('Колода перемешана');
+    showToast(`Колода перемешана (${NUM_DECKS} колоды)`);
   }
   return deck.pop();
 }
@@ -878,10 +882,7 @@ function setSpeed(s) {
 }
 
 // ==================== BALANCE MODAL ====================
-function openBalanceModal() {
-  renderBalanceModal();
-  document.getElementById('balanceModalOverlay').classList.add('open');
-}
+function openBalanceModal() { renderBalanceModal(); document.getElementById('balanceModalOverlay').classList.add('open'); }
 function closeBalanceModal() { document.getElementById('balanceModalOverlay').classList.remove('open'); }
 function closeBalanceModalOnBg(e) { if (e.target === document.getElementById('balanceModalOverlay')) closeBalanceModal(); }
 
@@ -973,16 +974,11 @@ function revealHiddenCard(container, card) {
     if (!hiddenEl) { resolve(); return; }
     playCardSound();
     const colorClass = isRed(card.suit) ? 'card-red' : 'card-black';
-
-    // Wrap in perspective container
     const wrapper = document.createElement('div');
     wrapper.className = 'card-flip-container';
     hiddenEl.parentNode.insertBefore(wrapper, hiddenEl);
     wrapper.appendChild(hiddenEl);
-
     hiddenEl.classList.add('flipping');
-
-    // At midpoint of flip, swap content
     setTimeout(() => {
       hiddenEl.classList.remove('card-back');
       hiddenEl.style.background = 'var(--card-bg)';
@@ -992,10 +988,8 @@ function revealHiddenCard(container, card) {
         <div class="card-corner-bottom ${colorClass}">${card.rank}<br>${card.suit}</div>
       `;
     }, 250);
-
     setTimeout(() => {
       hiddenEl.classList.remove('flipping');
-      // Unwrap from flip container
       wrapper.parentNode.insertBefore(hiddenEl, wrapper);
       wrapper.remove();
       resolve();
@@ -1011,12 +1005,67 @@ function updateUI() {
   saveBalance();
 }
 
-function setResult(html) {
-  document.getElementById('result-msg').innerHTML = html;
+function setResult(html) { document.getElementById('result-msg').innerHTML = html; }
+function setActions(html) { document.getElementById('action-row').innerHTML = html; }
+
+// ==================== SPLIT UI ====================
+
+// Rebuild the split hands container for N hands, re-render already-held cards without animation
+function rebuildSplitUI() {
+  const container = document.getElementById('player-hands-container');
+  let html = '<div class="split-container">';
+  for (let i = 0; i < playerHands.length; i++) {
+    const active = i === currentHandIndex;
+    const done = playerHands[i].done;
+    html += `
+      <div class="split-hand${active ? ' active-hand' : ''}${done ? ' done-hand' : ''}" id="split-hand-${i}">
+        <div class="split-hand-label">Рука ${i + 1}</div>
+        <div class="split-hand-bet" id="hand-bet-${i}">${fmtMoney(playerHands[i].bet)}</div>
+        <div class="cards-row" id="hand-cards-${i}"></div>
+        <div class="score-display" id="hand-score-${i}"></div>
+        <div id="hand-result-${i}" style="font-size:0.75rem;letter-spacing:2px;color:var(--gold-light);min-height:1.1em;margin-top:6px;text-align:center;"></div>
+      </div>`;
+  }
+  html += '</div>';
+  container.innerHTML = html;
+
+  // Re-render existing cards without deal animation
+  for (let i = 0; i < playerHands.length; i++) {
+    const cardRow = document.getElementById('hand-cards-' + i);
+    playerHands[i].cards.forEach(card => {
+      const el = makeCardEl(card, false);
+      el.style.animation = 'none'; // no animation for pre-existing cards
+      cardRow.appendChild(el);
+    });
+  }
+  updateSplitScores();
 }
 
-function setActions(html) {
-  document.getElementById('action-row').innerHTML = html;
+function markSplitHandDone(idx, msg) {
+  const el = document.getElementById('hand-result-' + idx);
+  if (el) el.textContent = msg;
+  const hand = document.getElementById('split-hand-' + idx);
+  if (hand) { hand.classList.remove('active-hand'); hand.classList.add('done-hand'); }
+}
+
+function updateSplitScores() {
+  if (isSplit) {
+    for (let i = 0; i < playerHands.length; i++) {
+      const total = handTotal(playerHands[i].cards);
+      const el = document.getElementById('hand-score-' + i);
+      if (el) {
+        el.textContent = playerHands[i].cards.length ? total : '';
+        el.className = 'score-display' + (total > 21 ? ' bust' : total === 21 ? ' blackjack-score' : '');
+      }
+    }
+  } else {
+    const total = handTotal(playerHands[0].cards);
+    const el = document.getElementById('player-score');
+    if (el) {
+      el.textContent = total;
+      el.className = 'score-display' + (total > 21 ? ' bust' : total === 21 ? ' blackjack-score' : '');
+    }
+  }
 }
 
 // ==================== GAME LOGIC ====================
@@ -1031,6 +1080,7 @@ async function startGame() {
 
   gameInProgress = true;
   isSplit = false;
+  isAceSplit = false;
   roundBet = bet;
   roundUltimateBet = ubet;
   balance -= bet + ubet;
@@ -1041,7 +1091,7 @@ async function startGame() {
 
   // Reset board
   dealerHand = [];
-  playerHands = [{ cards: [], bet: bet, doubled: false, done: false }];
+  playerHands = [{ cards: [], bet, doubled: false, done: false }];
   currentHandIndex = 0;
 
   document.getElementById('dealer-cards').innerHTML = '';
@@ -1051,7 +1101,6 @@ async function startGame() {
   setResult('<span class="result-text" style="color:rgba(201,168,76,0.3);font-style:italic;">Раздача...</span>');
   setActions('');
 
-  // Draw initial 4 cards
   const pCards = document.getElementById('player-cards');
   const dCards = document.getElementById('dealer-cards');
 
@@ -1071,11 +1120,9 @@ async function startGame() {
   await renderCardAnimated(hiddenCard, dCards, true);
   await sleep(t(300));
 
-  updateScores(false);
+  updateSplitScores();
 
   const pTotal = handTotal(playerHands[0].cards);
-
-  // Check natural blackjack
   if (pTotal === 21) {
     await revealDealer(dCards);
     await dealerPlay(dCards);
@@ -1087,15 +1134,7 @@ async function startGame() {
 }
 
 function updateScores(dealerRevealed) {
-  if (!isSplit) {
-    const pTotal = handTotal(playerHands[0].cards);
-    const pScoreEl = document.getElementById('player-score');
-    if (pScoreEl) {
-      pScoreEl.textContent = pTotal;
-      pScoreEl.className = 'score-display' + (pTotal > 21 ? ' bust' : pTotal === 21 ? ' blackjack-score' : '');
-    }
-  }
-
+  updateSplitScores();
   if (dealerRevealed) {
     const dTotal = handTotal(dealerHand);
     const dScoreEl = document.getElementById('dealer-score');
@@ -1112,27 +1151,32 @@ function updateScores(dealerRevealed) {
   }
 }
 
+// canSplit: allow re-split up to MAX_HANDS, no re-split on ace-split hands
 function canSplit() {
+  if (playerHands.length >= MAX_HANDS) return false;
+  if (isAceSplit) return false; // no re-split after ace split
   const h = playerHands[currentHandIndex];
-  return !isSplit && h.cards.length === 2 &&
+  return h.cards.length === 2 &&
     h.cards[0].rank === h.cards[1].rank &&
     balance >= h.bet;
 }
 
 function canDouble() {
   const h = playerHands[currentHandIndex];
-  const maxCards = isSplit ? 2 : 2; // in split, hand may start with 1 card
+  // After a split, hand starts with 1 card — doubling should still be available
+  const maxCards = isSplit ? 2 : 2;
   return !h.doubled && h.cards.length <= maxCards && balance >= h.bet;
 }
 
 function showPlayerActions() {
   const dbl = canDouble();
+  const sp = canSplit();
   const actions = [
     `<button class="btn-primary" onclick="hit()">Взять</button>`,
     `<button class="btn-secondary" onclick="stand()">Стоп</button>`,
-    `<button class="btn-secondary" onclick="doubleDown()" ${dbl ? '' : 'disabled style="opacity:0.4;cursor:not-allowed;"'}>Удвоить</button>`,
-    canSplit() ? `<button class="btn-split" onclick="split()">Сплит</button>` : '',
-  ].join('');
+    dbl ? `<button class="btn-secondary" onclick="doubleDown()">Удвоить</button>` : '',
+    sp ? `<button class="btn-split" onclick="doSplit()">Сплит</button>` : '',
+  ].filter(Boolean).join('');
   setActions(actions);
 }
 
@@ -1154,11 +1198,10 @@ async function hit() {
   updateSplitScores();
 
   if (total >= 21) {
-    if (total > 21) {
-      if (isSplit) markSplitHandDone(currentHandIndex, 'Перебор');
-      else setResult('<span class="result-text result-loss">Перебор!</span>');
-    }
+    if (total > 21 && isSplit) markSplitHandDone(currentHandIndex, 'Перебор');
+    if (total > 21 && !isSplit) setResult('<span class="result-text result-loss">Перебор!</span>');
     setActions('');
+    hand.done = true;
     await advanceHand();
   } else {
     showPlayerActions();
@@ -1182,6 +1225,11 @@ async function doubleDown() {
   setActions('');
   updateUI();
 
+  if (isSplit) {
+    const betEl = document.getElementById('hand-bet-' + currentHandIndex);
+    if (betEl) betEl.textContent = fmtMoney(hand.bet);
+  }
+
   const card = drawCard();
   hand.cards.push(card);
 
@@ -1200,123 +1248,85 @@ async function doubleDown() {
   await advanceHand();
 }
 
-async function split() {
+// ==================== SPLIT ====================
+async function doSplit() {
   if (!gameInProgress || !canSplit()) return;
-  isSplit = true;
-  const originalHand = playerHands[0];
-  balance -= originalHand.bet;
-  recordTx('Блэкджек — сплит доп. ставка', -originalHand.bet);
+  setActions('');
+
+  const hand = playerHands[currentHandIndex];
+  const splitCard = hand.cards[1];
+  const firstSplit = !isSplit;
+
+  if (firstSplit) {
+    isAceSplit = hand.cards[0].rank === 'A';
+    isSplit = true;
+  }
+
+  balance -= hand.bet;
+  recordTx('Блэкджек — сплит доп. ставка', -hand.bet);
   stats.splits = (stats.splits || 0) + 1;
   updateUI();
 
-  // Create two hands
-  const card1 = originalHand.cards[0];
-  const card2 = originalHand.cards[1];
-  playerHands = [
-    { cards: [card1], bet: originalHand.bet, doubled: false, done: false },
-    { cards: [card2], bet: originalHand.bet, doubled: false, done: false },
-  ];
-  currentHandIndex = 0;
+  // Current hand keeps only the first card
+  hand.cards = [hand.cards[0]];
+  // New hand with the split card inserted right after
+  const newHand = { cards: [splitCard], bet: hand.bet, doubled: false, done: false };
+  playerHands.splice(currentHandIndex + 1, 0, newHand);
 
-  // Rebuild UI for split hands
-  const container = document.getElementById('player-hands-container');
-  container.innerHTML = `
-    <div class="split-container">
-      <div class="split-hand active-hand" id="split-hand-0">
-        <div class="split-hand-label">Рука 1</div>
-        <div class="split-hand-bet" id="hand-bet-0">${fmtMoney(playerHands[0].bet)}</div>
-        <div class="cards-row" id="hand-cards-0"></div>
-        <div class="score-display" id="hand-score-0"></div>
-        <div class="split-hand-label" id="hand-result-0" style="margin-top:8px;color:var(--gold-light);font-size:0.75rem;min-height:1em;"></div>
-      </div>
-      <div class="split-hand" id="split-hand-1">
-        <div class="split-hand-label">Рука 2</div>
-        <div class="split-hand-bet" id="hand-bet-1">${fmtMoney(playerHands[1].bet)}</div>
-        <div class="cards-row" id="hand-cards-1"></div>
-        <div class="score-display" id="hand-score-1"></div>
-        <div class="split-hand-label" id="hand-result-1" style="margin-top:8px;color:var(--gold-light);font-size:0.75rem;min-height:1em;"></div>
-      </div>
-    </div>
-  `;
-
-  // Deal first card to each hand - player sees both cards and chooses action
-  await renderCardAnimated(card1, document.getElementById('hand-cards-0'));
+  // Rebuild UI — both hands show their 1 card, no auto-draw
+  rebuildSplitUI();
   await sleep(t(200));
-  await renderCardAnimated(card2, document.getElementById('hand-cards-1'));
   updateSplitScores();
-  await sleep(t(200));
 
-  // Ace split: one auto card each, then auto-stand
-  if (card1.rank === 'A') {
-    // Draw extra card for hand 1
-    const extra1 = drawCard();
-    playerHands[1].cards.push(extra1);
-    await renderCardAnimated(extra1, document.getElementById('hand-cards-1'));
-    updateSplitScores();
-    await sleep(t(200));
-    // Auto-stand both
-    playerHands[0].done = true;
-    playerHands[1].done = true;
-    currentHandIndex = 2; // skip
+  setResult(`<span class="result-text" style="color:rgba(201,168,76,0.5);font-size:1rem;">Играет Рука ${currentHandIndex + 1}</span>`);
+  // Player manually chooses what to do with their 1-card hand
+  showPlayerActions();
+}
+
+// Advance to next split hand — no auto-draw, player acts on whatever cards hand has
+async function advanceSplitHand() {
+  const curEl = document.getElementById('split-hand-' + currentHandIndex);
+  if (curEl) { curEl.classList.remove('active-hand'); curEl.classList.add('done-hand'); }
+
+  currentHandIndex++;
+
+  if (currentHandIndex >= playerHands.length) {
     await finishSplitGame();
     return;
   }
 
-  setResult('<span class="result-text" style="color:rgba(201,168,76,0.5);font-size:1rem;">Играет Рука 1</span>');
+  const nextEl = document.getElementById('split-hand-' + currentHandIndex);
+  if (nextEl) { nextEl.classList.remove('done-hand'); nextEl.classList.add('active-hand'); }
+
+  const hand = playerHands[currentHandIndex];
+  updateSplitScores();
+
+  const total = handTotal(hand.cards);
+  if (total > 21) {
+    markSplitHandDone(currentHandIndex, 'Перебор');
+    hand.done = true;
+    await advanceSplitHand();
+    return;
+  }
+  if (total === 21) {
+    hand.done = true;
+    await advanceSplitHand();
+    return;
+  }
+
+  setResult(`<span class="result-text" style="color:rgba(201,168,76,0.5);font-size:1rem;">Играет Рука ${currentHandIndex + 1}</span>`);
   showPlayerActions();
 }
 
-function markSplitHandDone(idx, msg) {
-  const el = document.getElementById('hand-result-' + idx);
-  if (el) el.textContent = msg;
-}
-
-function updateSplitScores() {
-  if (isSplit) {
-    for (let i = 0; i < playerHands.length; i++) {
-      const total = handTotal(playerHands[i].cards);
-      const el = document.getElementById('hand-score-' + i);
-      if (el) {
-        el.textContent = total;
-        el.className = 'score-display' + (total > 21 ? ' bust' : total === 21 ? ' blackjack-score' : '');
-      }
-    }
-  } else {
-    const total = handTotal(playerHands[0].cards);
-    const el = document.getElementById('player-score');
-    if (el) {
-      el.textContent = total;
-      el.className = 'score-display' + (total > 21 ? ' bust' : total === 21 ? ' blackjack-score' : '');
-    }
-  }
-}
-
+// Central advanceHand — routes to split or single
 async function advanceHand() {
   if (isSplit) {
-    // Mark current hand done and move to next
-    playerHands[currentHandIndex].done = true;
-
-    // Highlight current done, activate next
-    document.getElementById('split-hand-' + currentHandIndex)?.classList.remove('active-hand');
-    currentHandIndex++;
-
-    if (currentHandIndex < playerHands.length) {
-      document.getElementById('split-hand-' + currentHandIndex)?.classList.add('active-hand');
-      setResult(`<span class="result-text" style="color:rgba(201,168,76,0.5);font-size:1rem;">Играет Рука ${currentHandIndex + 1}</span>`);
-      updateSplitScores();
-      // Player plays their second hand — no auto draw, they start with 1 card and choose action
-      showPlayerActions();
-    } else {
-      await finishSplitGame();
-    }
+    await advanceSplitHand();
   } else {
-    // Single hand: go to dealer
     const dContainer = document.getElementById('dealer-cards');
     const playerBusted = handTotal(playerHands[0].cards) > 21;
     await revealDealer(dContainer);
-    if (!playerBusted) {
-      await dealerPlay(dContainer);
-    }
+    if (!playerBusted) await dealerPlay(dContainer);
     await finishGame();
   }
 }
@@ -1325,14 +1335,11 @@ async function finishSplitGame() {
   const dContainer = document.getElementById('dealer-cards');
   await revealDealer(dContainer);
   const allBusted = playerHands.every(h => handTotal(h.cards) > 21);
-  if (!allBusted) {
-    await dealerPlay(dContainer);
-  }
+  if (!allBusted) await dealerPlay(dContainer);
 
   const dTotal = handTotal(dealerHand);
   const dBust = dTotal > 21;
-  let totalPnl = 0;
-  let wins = 0, losses = 0, pushes = 0;
+  let totalPnl = 0, wins = 0, losses = 0, pushes = 0;
 
   for (let i = 0; i < playerHands.length; i++) {
     const h = playerHands[i];
@@ -1397,9 +1404,7 @@ async function finishGame() {
   const dBust = dTotal > 21;
   const isBlackjack = playerHands[0].cards.length === 2 && pTotal === 21;
 
-  let pnl = 0;
-  let resultLabel = '';
-  let resultCls = '';
+  let pnl = 0, resultLabel = '', resultCls = '';
 
   if (pBust) {
     resultLabel = 'Перебор!'; resultCls = 'result-loss'; pnl = -bet;
@@ -1419,7 +1424,6 @@ async function finishGame() {
     pnl = -bet; resultLabel = 'Проигрыш'; resultCls = 'result-loss';
   }
 
-  // Ultimate bonus
   let bonusPnl = 0;
   if (ubet > 0) {
     bonusPnl = calcUltimateBonus(playerHands[0].cards, dealerHand, ubet);
@@ -1429,14 +1433,14 @@ async function finishGame() {
     }
   }
 
-  const totalPnl = pnl + (bonusPnl - ubet);
+  const totalPnl = pnl + (bonusPnl > 0 ? bonusPnl - ubet : 0);
   updateUI();
 
   const pnlStr = totalPnl >= 0 ? `+${fmtMoney(totalPnl)}` : fmtMoney(totalPnl);
   const bonusLine = bonusPnl > 0 ? `<div style="font-size:0.8rem;color:#e8d08a;margin-top:5px;">♦ Ultimate: +${fmtMoney(bonusPnl - ubet)}</div>` : '';
   setResult(`<div><div class="result-text ${resultCls}">${resultLabel}</div><div style="font-size:0.95rem;margin-top:4px;color:${totalPnl>=0?'#2ecc71':'#e74c3c'}">${pnlStr}</div>${bonusLine}</div>`);
 
-  const outcome = pBust || pTotal < dTotal && !dBust ? 'loss' : (pTotal === dTotal ? 'push' : (isBlackjack ? 'blackjack' : 'win'));
+  const outcome = pBust || (pTotal < dTotal && !dBust) ? 'loss' : (pTotal === dTotal ? 'push' : (isBlackjack ? 'blackjack' : 'win'));
   if (outcome === 'win' || outcome === 'blackjack') playWinSound();
   recordGame({ type: 'single', outcome, bet, pnl: totalPnl });
   endRound();
@@ -1446,9 +1450,7 @@ function endRound() {
   lastBet = roundBet;
   lastUltimateBet = roundUltimateBet;
   gameInProgress = false;
-  setActions(`
-    <button class="btn-primary" onclick="startGame()">Играть снова</button>
-  `);
+  setActions(`<button class="btn-primary" onclick="startGame()">Играть снова</button>`);
   if (balance <= 0) {
     setTimeout(() => {
       showToast('Баланс исчерпан! +₽ 10,000');
@@ -1470,7 +1472,6 @@ function calcUltimateBonus(playerCards, dealerCards, ubet) {
   const pd7 = playerCards.filter(c => c.rank === '7' && c.suit === '♦');
   const dd7 = dealerCards.filter(c => c.rank === '7' && c.suit === '♦');
   if (pd7.length >= 2 && dd7.length >= 1) return ubet * 1000;
-
   const sevens = playerCards.filter(c => c.rank === '7');
   if (sevens.length >= 3) {
     const ss = new Set(sevens.map(c => c.suit));
@@ -1478,7 +1479,6 @@ function calcUltimateBonus(playerCards, dealerCards, ubet) {
   }
   const kings = playerCards.filter(c => c.rank === 'K');
   if (kings.length >= 2 && new Set(kings.map(c => c.suit)).size === 1) return ubet * 30;
-
   for (const r of ['Q', 'J']) {
     const cs = playerCards.filter(c => c.rank === r);
     if (cs.length >= 2 && new Set(cs.map(c => c.suit)).size === 1) return ubet * 25;
@@ -1492,7 +1492,7 @@ function loadStats() {
     const raw = localStorage.getItem(STATS_KEY);
     if (raw) return JSON.parse(raw);
   } catch(e) {}
-  return { games: 0, wins: 0, losses: 0, pushes: 0, blackjacks: 0, splits: 0, pnl: 0, rounds: [] };
+  return { games: 0, wins: 0, losses: 0, pushes: 0, blackjacks: 0, splits: 0, pnl: 0, totalWon: 0, totalLost: 0, rounds: [] };
 }
 
 function saveStats() { localStorage.setItem(STATS_KEY, JSON.stringify(stats)); }
@@ -1500,34 +1500,31 @@ function saveStats() { localStorage.setItem(STATS_KEY, JSON.stringify(stats)); }
 function recordGame(info) {
   stats.games++;
   stats.pnl += info.pnl;
-  let outcome = '', bet = 0;
-  let pnl = info.pnl;
-
+  if (!stats.totalWon) stats.totalWon = 0;
+  if (!stats.totalLost) stats.totalLost = 0;
+  if (info.pnl > 0) stats.totalWon += info.pnl;
+  if (info.pnl < 0) stats.totalLost += Math.abs(info.pnl);
+  let outcome = '';
   if (info.type === 'single') {
-    bet = info.bet;
     outcome = info.outcome;
     if (outcome === 'win' || outcome === 'blackjack') stats.wins++;
     else if (outcome === 'loss') stats.losses++;
     else stats.pushes++;
     if (outcome === 'blackjack') stats.blackjacks++;
   } else {
-    // split
     stats.wins += info.wins;
     stats.losses += info.losses;
     stats.pushes += info.pushes;
     outcome = 'split';
   }
 
-  const pillMap = { win: 'pill-win', loss: 'pill-loss', push: 'pill-push', blackjack: 'pill-bj', split: 'pill-push' };
-  const labelMap = { win: 'Победа', loss: 'Проигрыш', push: 'Ничья', blackjack: 'Blackjack', split: 'Сплит' };
+  const pillMap = { win:'pill-win', loss:'pill-loss', push:'pill-push', blackjack:'pill-bj', split:'pill-push' };
+  const labelMap = { win:'Победа', loss:'Проигрыш', push:'Ничья', blackjack:'Blackjack', split:'Сплит' };
 
   stats.rounds.unshift({
-    n: stats.games,
-    bet: bet || roundBet,
-    outcome,
+    n: stats.games, bet: info.bet || roundBet, outcome, pnl: info.pnl,
     pill: pillMap[outcome] || 'pill-push',
     label: labelMap[outcome] || outcome,
-    pnl,
     dealer: handTotal(dealerHand),
     player: isSplit ? '—' : handTotal(playerHands[0]?.cards || []),
   });
@@ -1548,8 +1545,12 @@ function renderStats() {
   pnlEl.style.color = stats.pnl >= 0 ? '#2ecc71' : '#e74c3c';
 
   const total = stats.wins + stats.losses + stats.pushes;
-  const winrate = total > 0 ? Math.round(stats.wins / total * 100) : 0;
-  document.getElementById('s-winrate').textContent = winrate + '%';
+  document.getElementById('s-winrate').textContent = total > 0 ? Math.round(stats.wins / total * 100) + '%' : '0%';
+
+  const wonEl = document.getElementById('s-totalwon');
+  wonEl.textContent = fmtMoney(stats.totalWon || 0);
+  const lostEl = document.getElementById('s-totallost');
+  lostEl.textContent = fmtMoney(stats.totalLost || 0);
 
   const wPct = total > 0 ? Math.round(stats.wins / total * 100) : 0;
   const lPct = total > 0 ? Math.round(stats.losses / total * 100) : 0;
@@ -1565,10 +1566,8 @@ function renderStats() {
   const empty = document.getElementById('empty-history');
   const wrap = document.getElementById('history-table-wrap');
   const tbody = document.getElementById('history-body');
-  if (!stats.rounds.length) {
-    empty.style.display = 'block'; wrap.style.display = 'none'; return;
-  }
-  empty.style.display = 'none'; wrap.style.display = 'block';
+  if (!stats.rounds.length) { empty.style.display='block'; wrap.style.display='none'; return; }
+  empty.style.display='none'; wrap.style.display='block';
   tbody.innerHTML = '';
   stats.rounds.forEach(r => {
     const pnlStr = (r.pnl >= 0 ? '+' : '') + fmtMoney(r.pnl);
@@ -1586,10 +1585,9 @@ function renderStats() {
 }
 
 function resetStats() {
-  if (!confirm('Сбросить всю статистику? Это действие необратимо.')) return;
-  stats = { games: 0, wins: 0, losses: 0, pushes: 0, blackjacks: 0, splits: 0, pnl: 0, rounds: [] };
-  saveStats();
-  renderStats();
+  if (!confirm('Сбросить всю статистику?')) return;
+  stats = { games:0, wins:0, losses:0, pushes:0, blackjacks:0, splits:0, pnl:0, rounds:[] };
+  saveStats(); renderStats();
   showToast('Статистика сброшена');
 }
 
@@ -1605,111 +1603,105 @@ function showToast(msg) {
 let audioCtx = null;
 let musicGain = null;
 let musicNodes = [];
+let musicLoopTimer = null;
 let sfxEnabled = true;
-let musicEnabled = false; // off by default, user activates
+let musicEnabled = false;
 
-function getAudioCtx() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
+async function getAudioCtx() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    await audioCtx.resume();
+  }
   return audioCtx;
 }
 
-// Card deal sound — soft whoosh + tap
 function playCardSound() {
   if (!sfxEnabled) return;
-  try {
-    const ctx = getAudioCtx();
-    const t = ctx.currentTime;
-
-    // Whoosh: filtered noise
-    const bufSize = ctx.sampleRate * 0.12;
-    const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1);
-    const src = ctx.createBufferSource();
-    src.buffer = buf;
-
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(2000, t);
-    filter.frequency.linearRampToValueAtTime(800, t + 0.1);
-    filter.Q.value = 0.8;
-
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.18, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
-
-    src.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
-    src.start(t);
-    src.stop(t + 0.13);
-
-    // Tap: short sine click
-    const osc = ctx.createOscillator();
-    osc.frequency.value = 900;
-    const tgain = ctx.createGain();
-    tgain.gain.setValueAtTime(0.08, t + 0.08);
-    tgain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
-    osc.connect(tgain);
-    tgain.connect(ctx.destination);
-    osc.start(t + 0.08);
-    osc.stop(t + 0.14);
-  } catch(e) {}
+  getAudioCtx().then(ctx => {
+    try {
+      const t0 = ctx.currentTime;
+      const bufSize = ctx.sampleRate * 0.12;
+      const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(2000, t0);
+      filter.frequency.linearRampToValueAtTime(800, t0 + 0.1);
+      filter.Q.value = 0.8;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.18, t0);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.12);
+      src.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+      src.start(t0); src.stop(t0 + 0.13);
+      // Tap
+      const osc = ctx.createOscillator();
+      osc.frequency.value = 900;
+      const tg = ctx.createGain();
+      tg.gain.setValueAtTime(0.08, t0 + 0.08);
+      tg.gain.exponentialRampToValueAtTime(0.001, t0 + 0.14);
+      osc.connect(tg); tg.connect(ctx.destination);
+      osc.start(t0 + 0.08); osc.stop(t0 + 0.14);
+    } catch(e) {}
+  }).catch(() => {});
 }
 
-// Chip click sound for bets
 function playChipSound() {
   if (!sfxEnabled) return;
-  try {
-    const ctx = getAudioCtx();
-    const t = ctx.currentTime;
-    const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(1200, t);
-    osc.frequency.exponentialRampToValueAtTime(600, t + 0.06);
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.12, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(t);
-    osc.stop(t + 0.09);
-  } catch(e) {}
-}
-
-// Win fanfare
-function playWinSound() {
-  if (!sfxEnabled) return;
-  try {
-    const ctx = getAudioCtx();
-    const notes = [523, 659, 784, 1047];
-    notes.forEach((freq, i) => {
-      const t = ctx.currentTime + i * 0.1;
+  getAudioCtx().then(ctx => {
+    try {
+      const t0 = ctx.currentTime;
       const osc = ctx.createOscillator();
       osc.type = 'sine';
-      osc.frequency.value = freq;
+      osc.frequency.setValueAtTime(1200, t0);
+      osc.frequency.exponentialRampToValueAtTime(600, t0 + 0.06);
       const gain = ctx.createGain();
-      gain.gain.setValueAtTime(0.12, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(t);
-      osc.stop(t + 0.26);
-    });
-  } catch(e) {}
+      gain.gain.setValueAtTime(0.12, t0);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.08);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(t0); osc.stop(t0 + 0.09);
+    } catch(e) {}
+  }).catch(() => {});
 }
 
-// Ambient casino background music loop
-function startMusic() {
-  if (!musicEnabled) return;
-  try {
-    const ctx = getAudioCtx();
-    musicGain = ctx.createGain();
-    musicGain.gain.value = 0.05;
+function playWinSound() {
+  if (!sfxEnabled) return;
+  getAudioCtx().then(ctx => {
+    try {
+      const notes = [523, 659, 784, 1047];
+      notes.forEach((freq, i) => {
+        const t0 = ctx.currentTime + i * 0.1;
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.12, t0);
+        gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.25);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(t0); osc.stop(t0 + 0.26);
+      });
+    } catch(e) {}
+  }).catch(() => {});
+}
 
-    // Subtle reverb convolver
-    const convSize = ctx.sampleRate * 1.5;
+// Ambient casino jazz — schedules looping chords, bass, hi-hats
+async function startMusic() {
+  if (!musicEnabled) return;
+  stopMusic();
+  try {
+    const ctx = await getAudioCtx();
+
+    // Master gain for music
+    musicGain = ctx.createGain();
+    musicGain.gain.value = 0.07;
+    musicGain.connect(ctx.destination);
+
+    // Simple reverb impulse
+    const convSize = Math.floor(ctx.sampleRate * 1.5);
     const convBuf = ctx.createBuffer(2, convSize, ctx.sampleRate);
     for (let ch = 0; ch < 2; ch++) {
       const d = convBuf.getChannelData(ch);
@@ -1718,114 +1710,101 @@ function startMusic() {
     const reverb = ctx.createConvolver();
     reverb.buffer = convBuf;
     const reverbGain = ctx.createGain();
-    reverbGain.gain.value = 0.35;
+    reverbGain.gain.value = 0.3;
     reverb.connect(reverbGain);
     reverbGain.connect(musicGain);
-    musicGain.connect(ctx.destination);
 
     const dryGain = ctx.createGain();
-    dryGain.gain.value = 0.65;
+    dryGain.gain.value = 0.7;
     dryGain.connect(musicGain);
-
-    // Jazz chord voicings (slow minor jazz: Am9 → Dm9 → G13 → Cmaj9)
-    const chords = [
-      [110, 164.8, 220, 261.6, 329.6, 415.3],   // Am9
-      [146.8, 174.6, 220, 293.7, 349.2, 440],    // Dm9
-      [98, 146.8, 196, 246.9, 329.6, 392],        // G13
-      [130.8, 164.8, 196, 261.6, 329.6, 392],     // Cmaj9
-    ];
 
     const bpm = 46;
     const beat = 60 / bpm;
     const chordDur = beat * 4;
 
-    // Walking bass line notes per chord
+    // Jazz chord voicings
+    const chords = [
+      [110, 164.8, 220, 261.6, 329.6, 415.3],
+      [146.8, 174.6, 220, 293.7, 349.2, 440],
+      [98,   146.8, 196, 246.9, 329.6, 392],
+      [130.8, 164.8, 196, 261.6, 329.6, 392],
+    ];
     const bassLines = [
-      [110, 123.5, 130.8, 146.8],   // Am
-      [146.8, 130.8, 123.5, 110],   // Dm
-      [98, 110, 123.5, 130.8],      // G
-      [130.8, 146.8, 164.8, 174.6], // C
+      [110, 123.5, 130.8, 146.8],
+      [146.8, 130.8, 123.5, 110],
+      [98,  110,   123.5, 130.8],
+      [130.8, 146.8, 164.8, 174.6],
     ];
 
-    function scheduleNote(freq, startTime, dur, gainVal, type = 'sine', dest = dryGain) {
+    function schedNote(freq, start, dur, vol, type='sine', dest=dryGain) {
       const osc = ctx.createOscillator();
       osc.type = type;
       osc.frequency.value = freq;
       const g = ctx.createGain();
-      g.gain.setValueAtTime(0, startTime);
-      g.gain.linearRampToValueAtTime(gainVal, startTime + 0.04);
-      g.gain.setValueAtTime(gainVal, startTime + dur * 0.7);
-      g.gain.linearRampToValueAtTime(0, startTime + dur);
-      osc.connect(g);
-      g.connect(dest);
-      g.connect(reverb);
-      osc.start(startTime);
-      osc.stop(startTime + dur + 0.05);
+      g.gain.setValueAtTime(0, start);
+      g.gain.linearRampToValueAtTime(vol, start + 0.04);
+      g.gain.setValueAtTime(vol, start + dur * 0.7);
+      g.gain.linearRampToValueAtTime(0, start + dur);
+      osc.connect(g); g.connect(dest); g.connect(reverb);
+      osc.start(start); osc.stop(start + dur + 0.05);
       musicNodes.push(osc);
     }
 
-    function scheduleChord(notes, startTime, dur) {
-      notes.forEach((freq, i) => {
-        scheduleNote(freq, startTime + i * 0.012, dur, 0.18 / notes.length);
-        scheduleNote(freq * 2, startTime + i * 0.012, dur, 0.06 / notes.length);
+    function schedChord(notes, start, dur) {
+      notes.forEach((f, i) => {
+        schedNote(f,   start + i*0.012, dur, 0.18/notes.length);
+        schedNote(f*2, start + i*0.012, dur, 0.06/notes.length);
       });
     }
 
-    function scheduleBass(notes, startTime) {
-      const stepDur = chordDur / notes.length;
-      notes.forEach((freq, i) => {
-        scheduleNote(freq / 2, startTime + i * stepDur, stepDur * 0.85, 0.28, 'triangle');
-      });
+    function schedBass(notes, start) {
+      const step = chordDur / notes.length;
+      notes.forEach((f, i) => schedNote(f/2, start + i*step, step*0.85, 0.28, 'triangle'));
     }
 
-    // Subtle hi-hat pattern
-    function scheduleHiHat(startTime, dur) {
+    function schedHiHat(start, dur) {
       const steps = Math.floor(dur / (beat / 2));
       for (let i = 0; i < steps; i++) {
-        const t0 = startTime + i * beat / 2;
-        const bufSize = Math.floor(ctx.sampleRate * 0.04);
-        const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-        const data = buf.getChannelData(0);
-        for (let j = 0; j < bufSize; j++) data[j] = (Math.random() * 2 - 1) * Math.pow(1 - j / bufSize, 3);
-        const src = ctx.createBufferSource();
-        src.buffer = buf;
-        const hpf = ctx.createBiquadFilter();
-        hpf.type = 'highpass';
-        hpf.frequency.value = 8000;
-        const hg = ctx.createGain();
-        hg.gain.value = i % 2 === 0 ? 0.04 : 0.02;
-        src.connect(hpf);
-        hpf.connect(hg);
-        hg.connect(dryGain);
+        const t0 = start + i * beat / 2;
+        const bsz = Math.floor(ctx.sampleRate * 0.04);
+        const b = ctx.createBuffer(1, bsz, ctx.sampleRate);
+        const d = b.getChannelData(0);
+        for (let j = 0; j < bsz; j++) d[j] = (Math.random()*2-1) * Math.pow(1-j/bsz, 3);
+        const src = ctx.createBufferSource(); src.buffer = b;
+        const hpf = ctx.createBiquadFilter(); hpf.type='highpass'; hpf.frequency.value=8000;
+        const hg = ctx.createGain(); hg.gain.value = i%2===0 ? 0.04 : 0.02;
+        src.connect(hpf); hpf.connect(hg); hg.connect(dryGain);
         src.start(t0);
         musicNodes.push(src);
       }
     }
 
-    function scheduleLoop(startTime) {
+    function schedLoop(startTime) {
       if (!musicEnabled) return;
       const totalDur = chords.length * chordDur;
       chords.forEach((ch, i) => {
         const t0 = startTime + i * chordDur;
-        scheduleChord(ch, t0, chordDur * 0.92);
-        scheduleBass(bassLines[i], t0);
+        schedChord(ch, t0, chordDur * 0.92);
+        schedBass(bassLines[i], t0);
       });
-      scheduleHiHat(startTime, totalDur);
-      setTimeout(() => {
-        if (musicEnabled) scheduleLoop(ctx.currentTime + 0.2);
+      schedHiHat(startTime, totalDur);
+      // Schedule the next loop 1.5s before this one ends
+      musicLoopTimer = setTimeout(() => {
+        if (musicEnabled) schedLoop(startTime + totalDur);
       }, (totalDur - 1.5) * 1000);
     }
 
-    scheduleLoop(ctx.currentTime + 0.3);
-  } catch(e) { console.warn('Music error:', e); }
+    schedLoop(ctx.currentTime + 0.3);
+  } catch(e) {
+    console.warn('Music error:', e);
+  }
 }
 
 function stopMusic() {
-  try {
-    musicNodes.forEach(n => { try { n.stop(); } catch(e) {} });
-    musicNodes = [];
-    if (musicGain) { musicGain.disconnect(); musicGain = null; }
-  } catch(e) {}
+  if (musicLoopTimer) { clearTimeout(musicLoopTimer); musicLoopTimer = null; }
+  musicNodes.forEach(n => { try { n.stop(); } catch(e) {} });
+  musicNodes = [];
+  if (musicGain) { try { musicGain.disconnect(); } catch(e) {} musicGain = null; }
 }
 
 function toggleSfx() {
